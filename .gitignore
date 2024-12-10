@@ -28,3 +28,4 @@ front/some-folder-to-ignore/
 node_modules/
 .development.env
 README.md.backup
+
