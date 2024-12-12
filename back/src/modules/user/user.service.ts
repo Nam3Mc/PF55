@@ -29,7 +29,7 @@ export class UserService {
       employmentStatus,
       userName,
       password,
-      roll,
+      role,
     } = createUserDto;
 
     const existingUser = await this.userRepository.findOne({ where: { email } });
@@ -62,7 +62,7 @@ export class UserService {
     const newAccount = this.accountRepository.create({
       userName,
       password: hashedPassword,
-      roll,
+      role,
       user_: savedUser,
     });
 
@@ -117,7 +117,7 @@ export class UserService {
       employmentStatus,
       userName,
       password,
-      roll,
+      role,
     } = updateUserDto;
   
     if (
@@ -147,7 +147,7 @@ export class UserService {
     }
   
     const existingAccount = existingUser.account_;
-    if (userName || password || roll) {
+    if (userName || password || role) {
       if (userName) {
         const accountWithSameUserName = await this.accountRepository.findOne({ where: { userName } });
         if (accountWithSameUserName && accountWithSameUserName.id !== existingAccount.id) {
@@ -161,8 +161,8 @@ export class UserService {
         existingAccount.password = hashedPassword;
       }
   
-      if (roll) {
-        existingAccount.roll = roll;
+      if (role) {
+        existingAccount.role = role;
       }
   
       await this.accountRepository.save(existingAccount);

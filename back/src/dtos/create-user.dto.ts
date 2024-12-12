@@ -4,7 +4,7 @@ import {
 import { ApiProperty } from "@nestjs/swagger";
 import { CivilStatus, EmploymentStatus } from "../enums/user";
 import { MatchPassword } from "../decorators/matchPassword.decorator";
-import { Roll } from "../enums/account";
+import { Role } from "../enums/account";
 import { Type } from "class-transformer";
 
 export class CreateUserDto {
@@ -79,7 +79,7 @@ export class CreateUserDto {
   @Validate(MatchPassword, ["password"])
   comfirmPassword: string;
 
-  @ApiProperty({ example: Roll.USER, enum: Roll, description: "Role of the user" })
-  @IsEnum(Roll)
-  roll: Roll = Roll.USER;
+  @ApiProperty({ example: Role.USER, enum: Role, description: "Role of the user" })
+  @IsEnum(Role)
+  role: Role = Role.USER;
 }
