@@ -1,7 +1,9 @@
+import { ApiProperty } from "@nestjs/swagger"
 import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLength, MinLength } from "class-validator"
 
 export class CreatePropertyDto {
 
+    @ApiProperty({ example: "John", description: "First name of the user" })
     @IsNotEmpty()
     @IsString()
     @MinLength(8)
