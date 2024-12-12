@@ -9,11 +9,11 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:3000', 
+      'http://localhost:3001', 
       'http://localhost:3000'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, 
+    // credentials: true,
   });
 
   const swaggerConfig = new DocumentBuilder()
@@ -30,7 +30,7 @@ async function bootstrap() {
 
   //const loggerMiddleware = new LoggerMiddleware();
   //app.use(loggerMiddleware.use);
-  app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(process.env.PORT ?? 3000);
 }
