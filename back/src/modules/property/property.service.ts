@@ -61,4 +61,5 @@ export class PropertyService {
           return createdProperty
       }
   }
+
 }
