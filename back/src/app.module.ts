@@ -3,6 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/config';
 import { UserModule } from './modules/user/user.module';
+import { AccountModule } from './modules/account/account.module';
+import { PropertyModule } from './modules/property/property.module';
+import { ImageModule } from './modules/image/image.module';
 
 @Module({
   imports: [
@@ -17,6 +20,9 @@ import { UserModule } from './modules/user/user.module';
       }),
     }),
     UserModule,
+    AccountModule,
+    PropertyModule,
+    ImageModule
   ],
   controllers: [],
   providers: [],

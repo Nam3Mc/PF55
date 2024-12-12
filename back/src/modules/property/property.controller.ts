@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PropertyService } from './property.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 
 @ApiTags('Properties')
@@ -16,6 +16,7 @@ export class PropertyController {
 
   @Get()
   @ApiOperation({ summary: 'Get all properties'})
+  @ApiQuery({ name: "property name"})
   getAllProperties() {
     return this.propertyService.getProperties()
   }
