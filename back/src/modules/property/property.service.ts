@@ -1,26 +1,64 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePropertyDto } from './dto/create-property.dto';
-import { UpdatePropertyDto } from './dto/update-property.dto';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Property } from '../../entities/property.entity';
+import { Repository } from 'typeorm';
+import { CreatePropertyDto } from '../../dtos/create-property.dto';
+import { Account } from '../../entities/account.entity';
+import { AccountService } from '../account/account.service';
+
 
 @Injectable()
 export class PropertyService {
-  create(createPropertyDto: CreatePropertyDto) {
-    return 'This action adds a new property';
+  
+  constructor( 
+    @InjectRepository(Property)
+    private readonly propertyDB: Repository<Property>,
+    private readonly accountDB: AccountService
+  ) {}
+
+  async getProperties() {
+    const properties = await this.propertyDB.find()
+    return properties
   }
 
-  findAll() {
-    return `This action returns all property`;
+  async getPropertyById(id: string): Promise<Property> {
+    const property = await this.propertyDB.findOneBy({ id });
+    if (!property) {
+        throw new NotFoundException("This property does not exist");
+    }
+    console.log(property);
+    return property;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} property`;
+  async getOwnersProperties(id: string): Promise<Property[]>  {
+      const properties = await this.propertyDB.find({
+          where: {account_: {id}}
+      })
+      if (!properties) {
+          throw new NotFoundException("You haven't listed a property yet")
+      }
+      else {
+          return properties
+      }
   }
+  async createProperty(propertyData: CreatePropertyDto) {
+      const {name, price, image, description, address, hasMinor, pets, accountId } = propertyData
+      const account = await this.accountDB.findAccountById(accountId)
 
-  update(id: number, updatePropertyDto: UpdatePropertyDto) {
-    return `This action updates a #${id} property`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} property`;
+      if (!account) {
+          throw new BadRequestException("Was not posible add the property to you account")
+      }
+      else {
+          const newProperty = new Property
+          newProperty.name = name
+          newProperty.price = price
+          newProperty.description = description
+          newProperty.address = address
+          newProperty.hasMinor = hasMinor
+          newProperty.pets = pets
+          newProperty.account_ = account
+          const createdProperty = await this.propertyDB.save(newProperty) 
+          return createdProperty
+      }
   }
 }
