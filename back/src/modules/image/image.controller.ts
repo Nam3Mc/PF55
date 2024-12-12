@@ -15,8 +15,8 @@ export class ImageController {
   @ApiOperation({ summary: 'endpoint to upload an imimage'})
   @UseInterceptors(FileInterceptor('file'))
   async create(@UploadedFile() file: Express.Multer.File) {
-    const image = await  cloudinary.uploader.upload(file.path)
-    console.log(file)
+    // const image = await  cloudinary.uploader.upload(file)
+    console.log(file.size, "SI")
     // console.log(imagePath)
   }
   
