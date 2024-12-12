@@ -1,34 +1,35 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PropertyService } from './property.service';
-import { CreatePropertyDto } from './dto/create-property.dto';
-import { UpdatePropertyDto } from './dto/update-property.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreatePropertyDto } from '../../dtos/create-property.dto';
 
+@ApiTags('Properties')
 @Controller('property')
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Post()
-  create(@Body() createPropertyDto: CreatePropertyDto) {
-    return this.propertyService.create(createPropertyDto);
+  @ApiOperation({ summary: 'Create new property'})
+  createProperty(@Body() propertyData: CreatePropertyDto) {
+    return this.propertyService.createProperty(propertyData)
   }
 
   @Get()
-  findAll() {
-    return this.propertyService.findAll();
+  @ApiOperation({ summary: 'Get all properties'})
+  getAllProperties() {
+    return this.propertyService.getProperties()
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.propertyService.findOne(+id);
+  @ApiOperation({ summary: 'Get property by ID'})
+  getPropertyById(@Param('id') id:string) {
+    return this.propertyService.getPropertyById(id)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePropertyDto: UpdatePropertyDto) {
-    return this.propertyService.update(+id, updatePropertyDto);
+  @Get('owner/:id')
+  @ApiOperation({ summary: 'Get all prperties for an owner'})
+  getOwnersProperties(@Param('id') id:string ) {
+    return this.propertyService.getOwnersProperties(id)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.propertyService.remove(+id);
-  }
 }
