@@ -26,6 +26,6 @@ back/some-folder-to-ignore/
 front/some-folder-to-ignore/
 
 node_modules/
-.development.env
+.env
 README.md.backup
 
