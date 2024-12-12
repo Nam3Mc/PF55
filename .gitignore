@@ -1,31 +1,23 @@
 # Ignorar archivos de configuración y carpetas comunes de node
 back/node_modules/
-front/node_modules/
 
 # Ignorar archivos de logs
 back/logs/
-front/logs/
 *.log
 
 # Ignorar compilaciones y builds
 back/dist/
-front/.next/
-front/out/
 
 # Ignorar configuraciones locales
+back/.development.env
 back/.env
-front/.env
 
 # Ignorar archivos temporales
 back/tmp/
-front/tmp/
 *.tmp
 
 # Ignorar carpetas específicas
 back/some-folder-to-ignore/
-front/some-folder-to-ignore/
 
 node_modules/
 .development.env
-README.md.backup
-
