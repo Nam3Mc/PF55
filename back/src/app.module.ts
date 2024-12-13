@@ -6,7 +6,6 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AccountModule } from './modules/account/account.module';
 import { PropertyModule } from './modules/property/property.module';
-import { ImageModule } from './modules/image/image.module';
 import { LoggingMiddleware } from './midledware/loggingMiddleware';
 import { MulterModule } from '@nestjs/platform-express';
 
@@ -29,7 +28,7 @@ import { MulterModule } from '@nestjs/platform-express';
     AuthModule,
     AccountModule,
     PropertyModule,
-    ImageModule
+    
   ],
   controllers: [],
   providers: [],
