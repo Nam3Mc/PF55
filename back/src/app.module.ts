@@ -9,6 +9,13 @@ import { PropertyModule } from './modules/property/property.module';
 import { ImageModule } from './modules/image/image.module';
 import { LoggingMiddleware } from './midledware/loggingMiddleware';
 import { MulterModule } from '@nestjs/platform-express';
+const cloudinary = require('cloudinary');
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 @Module({
   imports: [
@@ -21,9 +28,6 @@ import { MulterModule } from '@nestjs/platform-express';
       useFactory: (config: ConfigService) => ({
         ...config.get('typeorm'),
       }),
-    }),
-    MulterModule.register({
-      dest: '/uploads'
     }),
     UserModule,
     AuthModule,
