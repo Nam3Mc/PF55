@@ -1,5 +1,5 @@
 import { 
-  IsDate, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumberString, IsString, Matches, MaxLength, MinLength, Validate 
+  IsDate, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumberString, IsString, Matches, Max, MaxLength, MinLength, Validate 
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { CivilStatus, EmploymentStatus } from "../enums/user";
@@ -26,6 +26,7 @@ export class CreateUserDto {
   @ApiProperty({ example: "1234567890", description: "Phone number of the user" })
   @IsNotEmpty()
   @IsInt()
+  @Max(99999999999)
   phone: number;
 
   @ApiProperty({ example: "American", description: "Nationality of the user" })
@@ -36,6 +37,7 @@ export class CreateUserDto {
   @ApiProperty({ example: "12345678", description: "Unique DNI of the user" })
   @IsNotEmpty()
   @IsInt()
+  @Max(99999999999)
   dni: number;
 
   @ApiProperty({ example: "1990-01-01", description: "Date of birth of the user (YYYY-MM-DD)", type: "string", format: "date" })
