@@ -2,7 +2,7 @@ import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/c
 import { ImageService } from './image.service';
 import { ApiOperation, ApiTags, ApiConsumes, ApiBody, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Property } from 'src/entities/property.entity';
+import { Property } from '../../entities/property.entity';
 
 @ApiTags('Images')
 @Controller('image')
