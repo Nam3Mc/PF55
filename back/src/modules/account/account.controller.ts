@@ -5,5 +5,8 @@ import { AccountService } from './account.service';
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  
+  @Get()
+  getAllAccoumns() {
+    return this.accountService.getAllAccounts()
+  }
 }

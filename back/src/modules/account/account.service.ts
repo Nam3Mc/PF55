@@ -27,5 +27,10 @@ export class AccountService {
         }
     }
 
+    async getAllAccounts(): Promise<Account[]> {
+        const accounts: Account[] = await this.accountDB.find()
+        return accounts
+    }
+
 }
 

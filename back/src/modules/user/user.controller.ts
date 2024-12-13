@@ -24,8 +24,8 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    try {
+  async createUser(@Body() createUserDto: any): Promise<User> {
+     try {
       return await this.userService.createUser(createUserDto);
     } catch (error) {
       throw new HttpException(
