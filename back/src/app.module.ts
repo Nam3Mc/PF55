@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/config';
@@ -7,6 +7,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AccountModule } from './modules/account/account.module';
 import { PropertyModule } from './modules/property/property.module';
 import { ImageModule } from './modules/image/image.module';
+import { LoggingMiddleware } from './midledware/loggingMiddleware';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -20,6 +22,9 @@ import { ImageModule } from './modules/image/image.module';
         ...config.get('typeorm'),
       }),
     }),
+    MulterModule.register({
+      dest: '/uploads'
+    }),
     UserModule,
     AuthModule,
     AccountModule,
@@ -29,4 +34,8 @@ import { ImageModule } from './modules/image/image.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*')
+  }
+}
