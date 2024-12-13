@@ -26,5 +26,6 @@ export class ImageController {
   @UseInterceptors(FileInterceptor('file'))
   uploadImage(@UploadedFile() file: Express.Multer.File) {
     console.log(file, 'SI');
+    return this.imageService.uploadPicture(file.path, file.filename)
   }
 }
