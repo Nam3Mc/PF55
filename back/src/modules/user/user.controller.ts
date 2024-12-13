@@ -8,7 +8,8 @@ import {
   Query, 
   ParseUUIDPipe, 
   HttpException, 
-  HttpStatus 
+  HttpStatus, 
+  Delete
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '../../dtos/create-user.dto';
@@ -74,6 +75,23 @@ export class UserController {
     } catch (error) {
       throw new HttpException(
         'Error updating user: ' + error.message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Deactivate a user by ID' })
+  @ApiParam({ name: 'id', description: 'UUID of the user', example: '123e4567-e89b-12d3-a456-426614174000' })
+  async deactivateUser(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    try {
+      await this.userService.deactivateUser(id);
+      return { message: 'Usuario desactivado exitosamente' };
+    } catch (error) {
+      throw new HttpException(
+        `Error deactivating user with ID ${id}: ${error.message}`,
         HttpStatus.BAD_REQUEST,
       );
     }
