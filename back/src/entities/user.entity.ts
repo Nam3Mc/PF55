@@ -9,7 +9,7 @@ import { Account } from "./account.entity";
 export class User {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string
+    id: string;
 
     @Column({ length: 50, nullable: false })
     name: string;
@@ -20,23 +20,26 @@ export class User {
     @Column({ unique: true, length: 50, nullable: false })
     email: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, type: "bigint" })
     phone: number;
     
     @Column()
-    nationality: string
+    nationality: string;
 
-    @Column({ unique: true, nullable: false })
-    dni: number
+    @Column({ unique: true, nullable: false, type: "bigint" })
+    dni: number;
     
     @Column({ nullable: false })
-    DOB: Date
+    DOB: Date;
     
     @Column()
-    civilStatus: CivilStatus
+    civilStatus: CivilStatus;
     
     @Column()
-    employmentStatus: EmploymentStatus
+    employmentStatus: EmploymentStatus;
+
+    @Column({ default: true })
+    isActive: boolean;
     
     @OneToOne(() => Account, (account) => account.user_ )
     account_: Account

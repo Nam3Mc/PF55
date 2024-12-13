@@ -1,11 +1,14 @@
 import { 
-  IsDate, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumberString, IsString, Matches, Max, MaxLength, MinLength, Validate 
+  IsBIC,
+  IsBoolean,
+  IsDate, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString, Matches, MaxLength, MinLength, validate, Validate 
+
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { CivilStatus, EmploymentStatus } from "../enums/user";
 import { MatchPassword } from "../decorators/matchPassword.decorator";
 import { Role } from "../enums/account";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 export class CreateUserDto {
   @ApiProperty({ example: "John", description: "First name of the user" })
@@ -55,6 +58,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEnum(EmploymentStatus)
   employmentStatus: EmploymentStatus;
+
+  @ApiProperty({ example: true, description: "Status of the user" })
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 
   @ApiProperty({ example: "john_doe", description: "Username of the user" })
   @IsNotEmpty()

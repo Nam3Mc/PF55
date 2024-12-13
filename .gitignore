@@ -20,4 +20,7 @@ back/tmp/
 back/some-folder-to-ignore/
 
 node_modules/
+.env
+README.md.backup
+
 .development.env

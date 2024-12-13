@@ -82,7 +82,7 @@ export class UserService {
     });
 
     if (users.length === 0) {
-        throw new NotFoundException('No users found.');
+        throw new NotFoundException('No se encontraron usuarios.');
     }
     
     return users;
@@ -92,7 +92,7 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
-        throw new NotFoundException('User not found.');
+        throw new NotFoundException('Usuario no encontrado.');
     }
 
     return user;
@@ -102,7 +102,7 @@ export class UserService {
     const existingUser = await this.userRepository.findOne({ where: { id }, relations: ['account_'] });
   
     if (!existingUser) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException('Usuario no encontrado.');
     }
   
     const {
@@ -174,6 +174,17 @@ export class UserService {
     });
   }
   
+  async deactivateUser(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
+    user.isActive = false;
+    await this.userRepository.save(user);
+    
+  }
 
   
 }
