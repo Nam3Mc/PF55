@@ -1,8 +1,16 @@
 import { 
-  IsBIC,
   IsBoolean,
-  IsDate, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString, Matches, Max, MaxLength, MinLength, validate, Validate 
-
+  IsDate,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+  Validate
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { CivilStatus, EmploymentStatus } from "../enums/user";

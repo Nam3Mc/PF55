@@ -15,7 +15,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from '../../dtos/create-user.dto';
 import { UpdateUserDto } from '../../dtos/update-user.dto';
 import { User } from '../../entities/user.entity';
-import { ApiTags, ApiOperation, ApiQuery, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('Users')
 @Controller('users')
@@ -24,8 +24,9 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
-  async createUser(@Body() createUserDto: any): Promise<User> {
-     try {
+  @ApiBody({ type: CreateUserDto })
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    try {
       return await this.userService.createUser(createUserDto);
     } catch (error) {
       throw new HttpException(
