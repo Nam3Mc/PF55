@@ -1,7 +1,7 @@
 import { 
   IsBIC,
   IsBoolean,
-  IsDate, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString, Matches, MaxLength, MinLength, validate, Validate 
+  IsDate, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString, Matches, Max, MaxLength, MinLength, validate, Validate 
 
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
@@ -29,7 +29,6 @@ export class CreateUserDto {
   @ApiProperty({ example: "1234567890", description: "Phone number of the user" })
   @IsNotEmpty()
   @IsInt()
-  @Max(99999999999)
   phone: number;
 
   @ApiProperty({ example: "American", description: "Nationality of the user" })
@@ -40,7 +39,6 @@ export class CreateUserDto {
   @ApiProperty({ example: "12345678", description: "Unique DNI of the user" })
   @IsNotEmpty()
   @IsInt()
-  @Max(99999999999)
   dni: number;
 
   @ApiProperty({ example: "1990-01-01", description: "Date of birth of the user (YYYY-MM-DD)", type: "string", format: "date" })
