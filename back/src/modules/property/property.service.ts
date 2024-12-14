@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { Account } from '../../entities/account.entity';
 import { AccountService } from '../account/account.service';
+import { ImageService } from '../image/image.service';
+import { Image } from '../../entities/image.entity';
 
 
 @Injectable()
@@ -13,7 +15,8 @@ export class PropertyService {
   constructor( 
     @InjectRepository(Property)
     private readonly propertyDB: Repository<Property>,
-    private readonly accountDB: AccountService
+    private readonly accountDB: AccountService,
+    private readonly imageDB: ImageService
   ) {}
 
   async getProperties() {
@@ -41,8 +44,9 @@ export class PropertyService {
           return properties
       }
   }
+
   async createProperty(propertyData: CreatePropertyDto) {
-      const {name, price, image, description, address, hasMinor, pets, accountId } = propertyData
+      const {name, price, images, description, address, hasMinor, pets, accountId } = propertyData
       const account = await this.accountDB.findAccountById(accountId)
 
       if (!account) {
@@ -58,6 +62,11 @@ export class PropertyService {
           newProperty.pets = pets
           newProperty.account_ = account
           const createdProperty = await this.propertyDB.save(newProperty) 
+
+          for (const image of images) {
+            await this.imageDB.savePicture( createdProperty, image)
+          }
+
           return createdProperty
       }
   }

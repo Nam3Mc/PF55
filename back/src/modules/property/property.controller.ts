@@ -21,7 +21,7 @@ export class PropertyController {
     return this.propertyService.getProperties()
   }
 
-  @Get(':id')
+  @Get('unique/:id')
   @ApiOperation({ summary: 'Get property by ID'})
   getPropertyById(@Param('id') id:string) {
     return this.propertyService.getPropertyById(id)

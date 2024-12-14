@@ -7,7 +7,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AccountModule } from './modules/account/account.module';
 import { PropertyModule } from './modules/property/property.module';
 import { LoggingMiddleware } from './midledware/loggingMiddleware';
-import { MulterModule } from '@nestjs/platform-express';
 const cloudinary = require('cloudinary');
 
 cloudinary.config({

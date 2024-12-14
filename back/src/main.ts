@@ -1,7 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-//import { LoggerMiddleware } from './middlewares/logger.middleware';
-import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -19,9 +17,11 @@ async function bootstrap() {
     customSiteTitle: 'Documents backend RentaFacil',
   });
 
-  //const loggerMiddleware = new LoggerMiddleware();
-  //app.use(loggerMiddleware.use);
-  // app.useGlobalPipes(new ValidationPipe());
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN ?? '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, 
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }
