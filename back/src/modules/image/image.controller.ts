@@ -29,11 +29,4 @@ export class ImageController {
     return this.imageService.uploadPicture(file)
   }
 
-  @Post()
-  @ApiOperation({ summary: 'Endpoint to upload an image' })
-  savePicture(@Body() PropertyId: string, url: string ) {
-    return this.imageService.savePicture(PropertyId, url)
-
-  }
-
 }
