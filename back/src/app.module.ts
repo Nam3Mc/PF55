@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AccountModule } from './modules/account/account.module';
 import { PropertyModule } from './modules/property/property.module';
 import { LoggingMiddleware } from './midledware/loggingMiddleware';
+import { ContractModule } from './modules/contract/contract.module';
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -31,6 +32,7 @@ cloudinary.config({
     AuthModule,
     AccountModule,
     PropertyModule,
+    ContractModule,
     
   ],
   controllers: [],
