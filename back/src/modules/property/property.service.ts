@@ -20,7 +20,9 @@ export class PropertyService {
   ) {}
 
   async getProperties() {
-    const properties = await this.propertyDB.find()
+    const properties = await this.propertyDB.find({
+      relations: ["image_"],
+    })
     return properties
   }
 
@@ -48,7 +50,7 @@ export class PropertyService {
   async createProperty(propertyData: CreatePropertyDto) {
       const {name, price, images, description, address, hasMinor, pets, accountId } = propertyData
       const account = await this.accountDB.findAccountById(accountId)
-
+      
       if (!account) {
           throw new BadRequestException("Was not posible add the property to you account")
       }
@@ -62,10 +64,7 @@ export class PropertyService {
           newProperty.pets = pets
           newProperty.account_ = account
           const createdProperty = await this.propertyDB.save(newProperty) 
-
-          for (const image of images) {
-            await this.imageDB.savePicture( createdProperty, image)
-          }
+          const propertyPictures = await this.imageDB.savePicture(createdProperty, images)
 
           return createdProperty
       }

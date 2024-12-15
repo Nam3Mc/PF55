@@ -23,9 +23,6 @@ export class CreateContractDto {
     @IsNotEmpty()
     @IsUUID()
     accountId: string
-
-    @IsUUID()
-    paymentId: string
     
     @IsNotEmpty()
     @IsUUID()    

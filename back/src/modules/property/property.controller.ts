@@ -16,7 +16,6 @@ export class PropertyController {
 
   @Get()
   @ApiOperation({ summary: 'Get all properties'})
-  @ApiQuery({ name: "property name"})
   getAllProperties() {
     return this.propertyService.getProperties()
   }

@@ -8,11 +8,22 @@ import { Property } from '../../entities/property.entity';
 
 @Injectable()
 export class ImageService {
-
+  
   constructor(
     @InjectRepository(Image)
     private readonly imagesDB: Repository<Image>,
   ) {}
+
+  async getAllPictures() {
+    const pictures = await this.imagesDB.find()
+    return pictures
+  }
+  async getPropertyPictures(property: Property): Promise<Image[]> {
+    const pictures = await this.imagesDB.find({
+      where: { property_: property }, 
+    });
+    return pictures;
+  }
 
   async uploadPicture(file: Express.Multer.File): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -30,12 +41,15 @@ export class ImageService {
     });
   }
 
-  async savePicture(property: Property, url:string ): Promise<Image> {
+  async savePicture(property: Property, urls:string[] ): Promise<Image[]> {
+    for (const link of urls) {
       const picture = new Image
-      picture.property_; property
-      picture.url; url
-      const newPicture = await this.imagesDB.save(picture)
-      return newPicture
+      picture.property_ = property
+      picture.url = link
+      await this.imagesDB.save(picture)
+    }
+    const images: Image[] = await this.getPropertyPictures(property)
+    return images
   }
 
 }
