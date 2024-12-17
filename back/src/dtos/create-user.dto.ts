@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   Matches,
   MaxLength,
   MinLength,
@@ -35,9 +36,10 @@ export class CreateUserDto {
   email: string;
 
   @ApiProperty({ example: "1234567890", description: "Phone number of the user" })
-  @IsNotEmpty()
+  @Transform(({ value }) => value === "" ? undefined : value)
+  @IsOptional()
   @IsInt()
-  phone: number;
+  phone?: number;
 
   @ApiProperty({ example: "American", description: "Nationality of the user" })
   @IsNotEmpty()
@@ -45,9 +47,10 @@ export class CreateUserDto {
   nationality: string;
 
   @ApiProperty({ example: "12345678", description: "Unique DNI of the user" })
-  @IsNotEmpty()
+  @Transform(({ value }) => value === "" ? undefined : value)
+  @IsOptional()
   @IsInt()
-  dni: number;
+  dni?: number;
 
   @ApiProperty({ example: "1990-01-01", description: "Date of birth of the user (YYYY-MM-DD)", type: "string", format: "date" })
   @IsNotEmpty()
@@ -56,14 +59,16 @@ export class CreateUserDto {
   DOB: Date;
 
   @ApiProperty({ example: CivilStatus.SINGLE, enum: CivilStatus, description: "Civil status of the user" })
-  @IsNotEmpty()
+  @Transform(({ value }) => value === "" ? undefined : value)
+  @IsOptional()
   @IsEnum(CivilStatus)
-  civilStatus: CivilStatus;
+  civilStatus?: CivilStatus;
 
   @ApiProperty({ example: EmploymentStatus.EMPLOYED, enum: EmploymentStatus, description: "Employment status of the user" })
-  @IsNotEmpty()
+  @Transform(({ value }) => value === "" ? undefined : value)
+  @IsOptional()
   @IsEnum(EmploymentStatus)
-  employmentStatus: EmploymentStatus;
+  employmentStatus?: EmploymentStatus;
 
   @ApiProperty({ example: true, description: "Status of the user" })
   @Transform(({ value }) => value === 'true' || value === true)
@@ -71,12 +76,11 @@ export class CreateUserDto {
   @IsOptional()
   isActive?: boolean;
 
-  @ApiProperty({ example: "john_doe", description: "Username of the user" })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(4)
-  @MaxLength(20)
-  userName: string;
+  @ApiProperty({ example: "https://example.com/photo.jpg", description: "Photo of the user", required: false })
+  @Transform(({ value }) => value === "" ? undefined : value)
+  @IsOptional()
+  @IsUrl()
+  photo?: string;
 
   @ApiProperty({ 
     example: "StrongPass1!", 
