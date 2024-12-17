@@ -1,7 +1,9 @@
 import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginUserDto } from '../../dtos/login-user.dto';
 import { OAuth2Client } from 'google-auth-library';
+import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { GoogleLoginDto } from '../../dtos/google-login.dto';
+import { LoginUserDto } from '../../dtos/login-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,8 +19,38 @@ export class AuthController {
   }
 
   @Post('/google-login')
-  async googleLogin(@Body('token') token: string) {
+  @ApiOperation({ summary: 'Login with Google token' })
+  @ApiBody({
+    description: 'Google OAuth2 token used to authenticate the user',
+    type: GoogleLoginDto, // Utiliza el DTO para definir el cuerpo
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully authenticated with Google',
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string' },
+        token: { type: 'string' },
+        user: {
+          type: 'object',
+          properties: {
+            email: { type: 'string' },
+            name: { type: 'string' },
+            photo: { type: 'string' },
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid Google token',
+  })
+  async googleLogin(@Body() googleLoginDto: GoogleLoginDto) { // Cambia para recibir el DTO completo
     try {
+      const { token } = googleLoginDto; // Extraemos el token del DTO
+
       const ticket = await this.googleClient.verifyIdToken({
         idToken: token,
         audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
