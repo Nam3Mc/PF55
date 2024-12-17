@@ -9,5 +9,6 @@ export enum EmploymentStatus {
     EMPLOYED = "Employed",
     UNEMPLOYED = "Unemployed",
     INDEPENDENT = "Independent",
-    RETIRED = "Retired"
+    RETIRED = "Retired",
+    STUDENT = "Student"
 }

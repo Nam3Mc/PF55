@@ -20,26 +20,29 @@ export class User {
     @Column({ unique: true, length: 50, nullable: false })
     email: string;
 
-    @Column({ nullable: false, type: "bigint" })
-    phone: number;
+    @Column({ nullable: true, type: "bigint" })
+    phone?: number;
     
-    @Column()
+    @Column({ length: 50, nullable: false })
     nationality: string;
 
-    @Column({ unique: true, nullable: false, type: "bigint" })
-    dni: number;
+    @Column({ unique: true, nullable: true, type: "bigint" })
+    dni?: number;
     
     @Column({ nullable: false })
     DOB: Date;
     
-    @Column()
-    civilStatus: CivilStatus;
+    @Column({ type: 'enum', enum: CivilStatus, nullable: true })
+    civilStatus?: CivilStatus;
     
-    @Column()
-    employmentStatus: EmploymentStatus;
+    @Column({ type: 'enum', enum: EmploymentStatus, nullable: true })
+    employmentStatus?: EmploymentStatus;
 
     @Column({ default: true })
     isActive: boolean;
+
+    @Column({ type: 'text', nullable: true })
+    photo?: string;
     
     @OneToOne(() => Account, (account) => account.user_ )
     account_: Account

@@ -16,9 +16,6 @@ export class Account {
     @Column({ nullable: false })
     password: string
 
-    @Column({ unique: true, length: 20, nullable: false })
-    userName: string
-
     @Column()
     role: Role = Role.USER
 
