@@ -80,8 +80,22 @@ export class CreatePropertyDto {
     @IsOptional()
     images: string[]
 
-    @ApiProperty({ example: "asd", description: "Amenities"})
-    @IsOptional()
-    amenities: string[]
+    @IsBoolean()
+    wifi: boolean;
+
+    @IsBoolean()
+    tv: boolean;
+
+    @IsBoolean()
+    airAcconditioning: boolean;
+    
+    @IsBoolean()
+    piscina: boolean;
+    
+    @IsBoolean()
+    parqueadero: boolean;
+
+    @IsBoolean()
+    kitchen: boolean;
 
 }
