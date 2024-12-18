@@ -48,9 +48,36 @@ export class PropertyService {
       }
   }
 
-  async createProperty(propertyData: CreatePropertyDto, amenities: AmenitiesDto) {
-      const {titel, price, images, description, state, city, bedrooms, bathrooms, latitude, longitude, hasMinor, pets, accountId } = propertyData
+  async createProperty(propertyData: CreatePropertyDto) {
+      const {
+        titel, 
+        price, 
+        images, 
+        description, 
+        state, 
+        city, 
+        bedrooms, 
+        bathrooms, 
+        latitude, 
+        longitude, 
+        hasMinor, 
+        pets, 
+        accountId, 
+        wifi, 
+        kitchen, 
+        tv, 
+        parqueadero, 
+        piscina, 
+        airAcconditioning } = propertyData
       const account = await this.accountDB.findAccountById(accountId)
+
+      const amenities = new AmenitiesDto
+      amenities.airAcconditioning = airAcconditioning
+      amenities.tv = tv
+      amenities.kitchen = kitchen
+      amenities.wifi = wifi
+      amenities.parqueadero = parqueadero
+      amenities.piscina = piscina
 
       if (!account) {
         throw new BadRequestException("Was not posible add the property to you account")
