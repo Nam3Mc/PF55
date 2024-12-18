@@ -1,17 +1,24 @@
-import { ApiProperty } from "@nestjs/swagger";
-import {  IsString } from "class-validator/types";
+import { IsBoolean, IsUUID } from 'class-validator';
 
 export class AmenitiesDto {
+  @IsUUID()
+  id: string;
 
-    @ApiProperty({ example: [
-        "'wifi': True''",
-        "'Tv': 'True'",
-        "'airAcconditioning': 'True'",
-        "'piscina': 'True'",
-        "'parqueadero': 'True'",
-        "'kitchen': 'True'",
-        ],description: "Mark true o false for each amenity your property has" })
-    @IsString()
-    amenities: []
+  @IsBoolean()
+  wifi: boolean;
 
+  @IsBoolean()
+  tv: boolean;
+
+  @IsBoolean()
+  airAcconditioning: boolean;
+
+  @IsBoolean()
+  piscina: boolean;
+
+  @IsBoolean()
+  parqueadero: boolean;
+
+  @IsBoolean()
+  kitchen: boolean;
 }
