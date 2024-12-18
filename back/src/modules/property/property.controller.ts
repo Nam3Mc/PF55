@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PropertyService } from './property.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
+import { AmenitiesDto } from '../../dtos/amenities.dto';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -10,8 +11,8 @@ export class PropertyController {
 
   @Post()
   @ApiOperation({ summary: 'Create new property'})
-  createProperty(@Body() propertyData: CreatePropertyDto) {
-    return this.propertyService.createProperty(propertyData)
+  createProperty(@Body() propertyData: CreatePropertyDto, amenities: AmenitiesDto) {
+    return this.propertyService.createProperty(propertyData,amenities )
   }
 
   @Get()

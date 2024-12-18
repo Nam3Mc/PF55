@@ -10,5 +10,6 @@ import { Amenities } from '../../entities/amenitie.entity';
   ],
   controllers: [AmenitiesController],
   providers: [AmenitiesService],
+  exports: [AmenitiesService]
 })
 export class AmenitiesModule {}
