@@ -11,8 +11,8 @@ export class PropertyController {
 
   @Post()
   @ApiOperation({ summary: 'Create new property'})
-  createProperty(@Body() propertyData: CreatePropertyDto, amenities: AmenitiesDto) {
-    return this.propertyService.createProperty(propertyData,amenities )
+  createProperty(@Body() propertyData: CreatePropertyDto) {
+    return this.propertyService.createProperty(propertyData )
   }
 
   @Get()
