@@ -43,9 +43,18 @@ export class AuthService {
       token,
       user: {
         id: user.id,
+        name: user.name,
+        lastName: user.lastName,
         email: user.email,
-        roles: user.account_.role,
+        phone: user.phone,
+        nationality: user.nationality,
+        dni: user.dni,
+        DOB: user.DOB,
+        civilStatus: user.civilStatus,
+        employmentStatus: user.employmentStatus,
         isActive: user.isActive,
+        photo: user.phone,
+        role: user.account_.role,
       },
     };
   }

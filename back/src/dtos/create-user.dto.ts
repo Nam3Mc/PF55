@@ -98,7 +98,7 @@ export class CreateUserDto {
   @ApiProperty({ example: "StrongPass1!", description: "Confirmation of the password" })
   @IsNotEmpty()
   @Validate(MatchPassword, ["password"])
-  comfirmPassword: string;
+  confirmPassword: string;
 
   @ApiProperty({ example: Role.USER, enum: Role, description: "Role of the user" })
   @IsEnum(Role)
