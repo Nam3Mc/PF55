@@ -8,7 +8,7 @@ export class AmenitiesController {
 
   @Post()
   create(@Body() amenities: any) {
-    return this.amenitiesService.setAmenities(amenities);
+    // return this.amenitiesService.setAmenities(amenities);
   }
 
 }

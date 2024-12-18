@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Property } from '../../entities/property.entity';
 import { Repository } from 'typeorm';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
-import { Account } from '../../entities/account.entity';
 import { AccountService } from '../account/account.service';
 import { ImageService } from '../image/image.service';
-import { Image } from '../../entities/image.entity';
+import { AmenitiesService } from '../amenities/amenities.service';
+import { AmenitiesDto } from '../../dtos/amenities.dto';
 
 
 @Injectable()
@@ -16,7 +16,8 @@ export class PropertyService {
     @InjectRepository(Property)
     private readonly propertyDB: Repository<Property>,
     private readonly accountDB: AccountService,
-    private readonly imageDB: ImageService
+    private readonly imageDB: ImageService,
+    private readonly amenitiesDB: AmenitiesService
   ) {}
 
   async getProperties() {
@@ -47,9 +48,10 @@ export class PropertyService {
       }
   }
 
-  async createProperty(propertyData: CreatePropertyDto) {
+  async createProperty(propertyData: CreatePropertyDto, amenities: AmenitiesDto) {
       const {titel, price, images, description, state, city, bedrooms, bathrooms, latitude, longitude, hasMinor, pets, accountId } = propertyData
       const account = await this.accountDB.findAccountById(accountId)
+
       if (!account) {
         throw new BadRequestException("Was not posible add the property to you account")
       }
@@ -69,7 +71,7 @@ export class PropertyService {
         newProperty.account_ = account
         const createdProperty = await this.propertyDB.save(newProperty) 
         const propertyPictures = await this.imageDB.savePicture(createdProperty, images)
-        // const propertyAmenities = await
+        const propertyAmenities = await this.amenitiesDB.setAmenities(amenities, createdProperty)
         return createdProperty
       }
   }

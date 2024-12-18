@@ -79,4 +79,9 @@ export class CreatePropertyDto {
     @IsArray()
     @IsOptional()
     images: string[]
+
+    @ApiProperty({ example: "asd", description: "Amenities"})
+    @IsOptional()
+    amenities: string[]
+
 }

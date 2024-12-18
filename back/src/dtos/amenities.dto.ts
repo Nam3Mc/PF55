@@ -1,8 +1,6 @@
 import { IsBoolean, IsUUID } from 'class-validator';
 
 export class AmenitiesDto {
-  @IsUUID()
-  id: string;
 
   @IsBoolean()
   wifi: boolean;
@@ -21,4 +19,5 @@ export class AmenitiesDto {
 
   @IsBoolean()
   kitchen: boolean;
+  
 }
