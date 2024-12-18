@@ -48,25 +48,29 @@ export class PropertyService {
   }
 
   async createProperty(propertyData: CreatePropertyDto) {
-      const {name, price, images, description, address, hasMinor, pets, accountId } = propertyData
+      const {titel, price, images, description, state, city, bedrooms, bathrooms, latitude, longitude, hasMinor, pets, accountId } = propertyData
       const account = await this.accountDB.findAccountById(accountId)
-      
       if (!account) {
-          throw new BadRequestException("Was not posible add the property to you account")
+        throw new BadRequestException("Was not posible add the property to you account")
       }
       else {
-          const newProperty = new Property
-          newProperty.name = name
-          newProperty.price = price
-          newProperty.description = description
-          newProperty.address = address
-          newProperty.hasMinor = hasMinor
-          newProperty.pets = pets
-          newProperty.account_ = account
-          const createdProperty = await this.propertyDB.save(newProperty) 
-          const propertyPictures = await this.imageDB.savePicture(createdProperty, images)
-
-          return createdProperty
+        const newProperty = new Property
+        newProperty.name = titel
+        newProperty.price = price
+        newProperty.description = description
+        newProperty.state = state
+        newProperty.city = city
+        newProperty.bedrooms = bedrooms
+        newProperty.bathrooms = bathrooms
+        newProperty.latitude = latitude
+        newProperty.longitude = longitude
+        newProperty.hasMinor = hasMinor
+        newProperty.pets = pets
+        newProperty.account_ = account
+        const createdProperty = await this.propertyDB.save(newProperty) 
+        const propertyPictures = await this.imageDB.savePicture(createdProperty, images)
+        // const propertyAmenities = await
+        return createdProperty
       }
   }
 

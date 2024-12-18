@@ -8,6 +8,7 @@ import { AccountModule } from './modules/account/account.module';
 import { PropertyModule } from './modules/property/property.module';
 import { LoggingMiddleware } from './midledware/loggingMiddleware';
 import { ContractModule } from './modules/contract/contract.module';
+import { AmenitiesModule } from './modules/amenities/amenities.module';
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -15,6 +16,7 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
+
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ cloudinary.config({
     AccountModule,
     PropertyModule,
     ContractModule,
-    
+    AmenitiesModule,    
   ],
   controllers: [],
   providers: [],

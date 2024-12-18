@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLength, MinLength } from "class-validator"
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, MaxLength, Min, MinLength } from "class-validator"
+import { Amenities } from "../entities/amenitie.entity"
 
 export class CreatePropertyDto {
 
@@ -8,7 +9,7 @@ export class CreatePropertyDto {
     @IsString()
     @MinLength(8)
     @MaxLength(50)
-    name: string
+    titel: string
     
     @ApiProperty({ example: "350", description: "Price per mouth" })
     @IsNotEmpty()
@@ -19,12 +20,41 @@ export class CreatePropertyDto {
     @IsNotEmpty()
     @IsString()
     description: string
-    
-    @ApiProperty({ example: "123 Greenfield Street", description: "Property's Address" })
+
+    @ApiProperty({ example: "Buenos Aires", description: "State where property is located" })
     @IsNotEmpty()
-    @IsString()
-    @MaxLength(50)
-    address: string
+    @IsNumber()
+    state: string
+
+    @ApiProperty({ example: "Mar del Plata", description: "Price per mouth" })
+    @IsNotEmpty()
+    @IsNumber()
+    city: string
+    
+    @ApiProperty({ example: "2", description: "How many Bedrooms your property has" })
+    @IsNotEmpty()
+    @IsNumber()
+    bedrooms: number
+
+    @ApiProperty({ example: "1", description: "How many Bathrooms your property has" })
+    @IsNotEmpty()
+    @IsNumber()
+    bathrooms: number
+
+    @ApiProperty({ example: "4", description: "How many people do you allow in your property" })
+    @IsNotEmpty()
+    @IsNumber()
+    capacity: number
+
+    @ApiProperty({ example: "-34.6037 ", description: "Coordenates" })
+    @IsNotEmpty()
+    @IsNumber()
+    latitude: any
+
+    @ApiProperty({ example: "-58.3816", description: "Coordenates" })
+    @IsNotEmpty()
+    @IsNumber()
+    longitude: any
 
     @ApiProperty({ example: true, description: "Do you allow minors" })
     @IsBoolean()   
