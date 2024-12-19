@@ -32,5 +32,9 @@ export class AccountService {
         return accounts
     }
 
+    async createNewAccount(account: Account) {
+        return this.accountDB.save(account)
+    }
+
 }
 

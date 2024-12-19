@@ -9,6 +9,7 @@ import { PropertyModule } from './modules/property/property.module';
 import { LoggingMiddleware } from './midledware/loggingMiddleware';
 import { ContractModule } from './modules/contract/contract.module';
 import { AmenitiesModule } from './modules/amenities/amenities.module';
+import { PreloadModule } from './modules/preload/preload.module';
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -35,7 +36,8 @@ cloudinary.config({
     AccountModule,
     PropertyModule,
     ContractModule,
-    AmenitiesModule,    
+    AmenitiesModule,
+    PreloadModule,    
   ],
   controllers: [],
   providers: [],
