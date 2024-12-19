@@ -23,13 +23,17 @@ export class CreatePropertyDto {
 
     @ApiProperty({ example: "Buenos Aires", description: "State where property is located" })
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     state: string
 
     @ApiProperty({ example: "Mar del Plata", description: "Price per mouth" })
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     city: string
+
+    @ApiProperty({ example: false, description: "Deberia ser inactive por defecto para que si el admi lo aprieva sea quien lo cambie " })
+    @IsBoolean()
+    isActive: boolean
     
     @ApiProperty({ example: "2", description: "How many Bedrooms your property has" })
     @IsNotEmpty()
@@ -48,12 +52,10 @@ export class CreatePropertyDto {
 
     @ApiProperty({ example: "-34.6037 ", description: "Coordenates" })
     @IsNotEmpty()
-    @IsNumber()
     latitude: any
 
     @ApiProperty({ example: "-58.3816", description: "Coordenates" })
     @IsNotEmpty()
-    @IsNumber()
     longitude: any
 
     @ApiProperty({ example: true, description: "Do you allow minors" })
