@@ -22,7 +22,7 @@ export class PropertyService {
 
   async getProperties() {
     const properties = await this.propertyDB.find({
-      relations: ["image_"],
+      relations: ["image_", "account_"],
     })
     return properties
   }

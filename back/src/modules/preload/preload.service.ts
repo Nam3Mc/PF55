@@ -40,7 +40,6 @@ export class PreloadServices implements OnApplicationBootstrap {
       return;
     }
 
-    // Creating a default user
     const newUser = new User();
     newUser.name = 'John';
     newUser.lastName = 'Doe';
@@ -52,10 +51,8 @@ export class PreloadServices implements OnApplicationBootstrap {
     newUser.civilStatus = CivilStatus.SINGLE;
     newUser.employmentStatus = EmploymentStatus.EMPLOYED;
     newUser.photo = 'https://example.com/photo.jpg';
-
     const createdUser = await this.userDB.createNewUser(newUser);
 
-    // Creating an account for the user
     const password = 'User1234!';
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -64,7 +61,7 @@ export class PreloadServices implements OnApplicationBootstrap {
     newAccount.role = Role.OWNER;
     newAccount.user_ = createdUser;
 
-    await this.accountDB.createNewAccount(newAccount);
+   const createdAccount = await this.accountDB.createNewAccount(newAccount);
 
     // Loading properties from JSON file
     const filePath = 'src/helpers/properties.json';
@@ -118,6 +115,7 @@ export class PreloadServices implements OnApplicationBootstrap {
       newProperty.pets = pets;
       newProperty.longitude = longitude;
       newProperty.latitude = latitude;
+      newProperty.account_ = createdAccount
 
       const createdProperty = await this.propertyDB.createNewProperty(newProperty);
 
