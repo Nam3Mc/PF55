@@ -53,7 +53,7 @@ export class AuthService {
         civilStatus: user.civilStatus,
         employmentStatus: user.employmentStatus,
         isActive: user.isActive,
-        photo: user.phone,
+        photo: user.photo,
         role: user.account_.role,
       },
     };
