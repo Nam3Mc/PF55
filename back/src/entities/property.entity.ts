@@ -44,11 +44,11 @@ export class Property {
     @Column({type: "int" })
     rating: number
 
-    @Column()
-    checkIn: number
+    // @Column()
+    // checkIn: number
 
-    @Column()
-    checkOut: number
+    // @Column()
+    // checkOut: number
 
     @Column()
     hasMinor: boolean

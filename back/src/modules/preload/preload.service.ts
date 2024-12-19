@@ -109,8 +109,8 @@ export class PreloadServices implements OnApplicationBootstrap {
       newProperty.city = city;
       newProperty.capacity = capacity;
       newProperty.rating = 5; // Default rating
-      newProperty.checkIn = 6; // Default check-in time
-      newProperty.checkOut = 12; // Default check-out time
+      // newProperty.checkIn = 6; // Default check-in time
+      // newProperty.checkOut = 12; // Default check-out time
       newProperty.hasMinor = hasMinor;
       newProperty.pets = pets;
       newProperty.longitude = longitude;
