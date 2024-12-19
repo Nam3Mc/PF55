@@ -37,7 +37,7 @@ cloudinary.config({
     PropertyModule,
     ContractModule,
     AmenitiesModule,
-    PreloadModule,    
+    PreloadModule,
   ],
   controllers: [],
   providers: [],

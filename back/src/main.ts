@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { PreloadServices } from './modules/preload/preload.service';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +19,14 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'Documents backend RentaFacil',
   });
+
+  const preloadServices = app.get(PreloadServices);
+  try {
+    await preloadServices.onApplicationBootstrap();
+    console.log('Database seeding completed successfully.');
+  } catch (error) {
+    console.error('Error during database seeding:', error);
+  }
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? '*', 

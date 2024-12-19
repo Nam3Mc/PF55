@@ -7,4 +7,9 @@ export class PreloadController {
     private readonly preloadService: PreloadServices
   ) {}
 
+  @Post()
+  initialPreload(){
+    return this.preloadService.onApplicationBootstrap()
+  }
+
 }
