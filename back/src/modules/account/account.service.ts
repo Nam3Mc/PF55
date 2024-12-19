@@ -13,7 +13,8 @@ export class AccountService {
 
     async findAccountById(id: string): Promise<Account> {
         const account = await this.accountDB.findOne({
-            where: {id}
+            where: {id}, 
+            relations: ['user_']
         })
         try {
             if (account) {

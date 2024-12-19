@@ -9,4 +9,9 @@ export class AccountController {
   getAllAccoumns() {
     return this.accountService.getAllAccounts()
   }
+
+  @Get(":id")
+  getAccountById(@Param("id") id: string) {
+    return this.accountService.findAccountById(id)
+  }
 }
