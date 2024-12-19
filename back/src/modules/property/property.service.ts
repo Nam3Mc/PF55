@@ -103,4 +103,8 @@ export class PropertyService {
       }
   }
 
+  async createNewProperty(property: Property) {
+    return this.propertyDB.save(property)
+  }
+
 }

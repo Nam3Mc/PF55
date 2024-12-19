@@ -188,6 +188,12 @@ async getUserById(id: string) {
     await this.userRepository.save(user);
     
   }
-
+// agregue estas funciones para la precarga de datos 
+  async getAllUser() {
+    return this.userRepository.find()
+  }
+  async createNewUser(user: User) {
+    return this.userRepository.save(user)
+  }
   
 }

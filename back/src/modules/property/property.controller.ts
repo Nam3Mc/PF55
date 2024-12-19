@@ -1,8 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PropertyService } from './property.service';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
-import { AmenitiesDto } from '../../dtos/amenities.dto';
 
 @ApiTags('Properties')
 @Controller('property')
