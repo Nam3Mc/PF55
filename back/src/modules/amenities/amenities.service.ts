@@ -14,11 +14,11 @@ export class AmenitiesService {
   ) {}
 
   async setAmenities ( amenities: AmenitiesDto, property: Property) {
-    const {wifi, tv, kitchen, piscina, parqueadero, airAcconditioning } = amenities
+    const {wifi, tv, cocina, piscina, parqueadero, airConditioning } = amenities
     const propertyAmenities = new Amenities
-    propertyAmenities.airAcconditioning = airAcconditioning
+    propertyAmenities.airConditioning = airConditioning
     propertyAmenities.tv = tv
-    propertyAmenities.kitchen = kitchen
+    propertyAmenities.cocina = cocina
     propertyAmenities.wifi = wifi
     propertyAmenities.parqueadero = parqueadero
     propertyAmenities.piscina = piscina

@@ -9,7 +9,7 @@ export class AmenitiesDto {
   tv: boolean;
 
   @IsBoolean()
-  airAcconditioning: boolean;
+  airConditioning: boolean;
 
   @IsBoolean()
   piscina: boolean;
@@ -18,6 +18,6 @@ export class AmenitiesDto {
   parqueadero: boolean;
 
   @IsBoolean()
-  kitchen: boolean;
+  cocina: boolean;
   
 }

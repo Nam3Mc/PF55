@@ -9,7 +9,7 @@ export class CreatePropertyDto {
     @IsString()
     @MinLength(8)
     @MaxLength(50)
-    titel: string
+    title: string
     
     @ApiProperty({ example: "350", description: "Price per mouth" })
     @IsNotEmpty()
@@ -33,6 +33,7 @@ export class CreatePropertyDto {
 
     @ApiProperty({ example: false, description: "Deberia ser inactive por defecto para que si el admi lo aprieva sea quien lo cambie " })
     @IsBoolean()
+    @IsOptional()
     isActive: boolean
     
     @ApiProperty({ example: "2", description: "How many Bedrooms your property has" })
@@ -89,7 +90,7 @@ export class CreatePropertyDto {
     tv: boolean;
 
     @IsBoolean()
-    airAcconditioning: boolean;
+    airConditioning: boolean;
     
     @IsBoolean()
     piscina: boolean;
@@ -98,6 +99,6 @@ export class CreatePropertyDto {
     parqueadero: boolean;
 
     @IsBoolean()
-    kitchen: boolean;
+    cocina: boolean;
 
 }

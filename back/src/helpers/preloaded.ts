@@ -61,7 +61,7 @@ export class propertiesSeeder implements OnApplicationBootstrap {
                     city, bedrooms, bathrooms, capacity,
                     latitude, longitude, hasMinor, pets,
                     images, wifi, tv, airAcconditioning,
-                    piscina, parqueadero, kitchen } = property
+                    piscina, parqueadero, cocina } = property
 
                 const newProperty = new Property
                 newProperty.name = titel
@@ -80,9 +80,9 @@ export class propertiesSeeder implements OnApplicationBootstrap {
                 const propertyPictures = await this.imageDB.savePicture(createdProperty, images)
                 
                 const newAmenities = new AmenitiesDto
-                newAmenities.airAcconditioning = airAcconditioning
+                newAmenities.airConditioning = airAcconditioning
                 newAmenities.tv = tv
-                newAmenities.kitchen = kitchen
+                newAmenities.cocina = cocina
                 newAmenities.wifi = wifi
                 newAmenities.parqueadero = parqueadero
                 newAmenities.piscina = piscina
