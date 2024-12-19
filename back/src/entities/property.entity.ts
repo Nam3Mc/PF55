@@ -1,9 +1,8 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Contract } from "./contract.entity";
 import { Account } from "./account.entity";
 import { Image } from "./image.entity";
 import { Amenities } from "./amenitie.entity";
-import { Max, Min } from "class-validator/types";
 
 @Entity({
     name: "properties"
@@ -71,7 +70,8 @@ export class Property {
     @OneToMany( () => Image, (image) => image.property_)
     image_: Image[]
 
-    @OneToOne( () => Amenities, (amenities) => amenities.property_)
+    @OneToOne( () => Amenities, (amenities) => amenities.property_, {cascade: true})
+    @JoinColumn({ name: "amenities_id"})
     amenities_: Amenities
 
 }

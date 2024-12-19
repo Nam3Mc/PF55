@@ -17,7 +17,7 @@ export class Amenities {
     tv: boolean
 
     @Column()
-    airAcconditioning: boolean
+    airConditioning: boolean
 
     @Column()
     piscina: boolean
@@ -26,7 +26,7 @@ export class Amenities {
     parqueadero: boolean
 
     @Column()
-    kitchen: boolean
+    cocina: boolean
 
     @OneToOne( () => Property, (property) => property.amenities_)
     property_: Property

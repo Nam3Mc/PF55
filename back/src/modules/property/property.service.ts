@@ -7,6 +7,7 @@ import { AccountService } from '../account/account.service';
 import { ImageService } from '../image/image.service';
 import { AmenitiesService } from '../amenities/amenities.service';
 import { AmenitiesDto } from '../../dtos/amenities.dto';
+import { Amenities } from '../../entities/amenitie.entity';
 
 
 @Injectable()
@@ -50,31 +51,18 @@ export class PropertyService {
 
   async createProperty(propertyData: CreatePropertyDto) {
       const {
-        titel, 
-        price, 
-        images, 
-        description, 
-        state, 
-        city, 
-        bedrooms, 
-        bathrooms, 
-        latitude, 
-        longitude, 
-        hasMinor, 
-        pets, 
-        accountId, 
-        wifi, 
-        kitchen, 
-        tv, 
-        parqueadero, 
-        piscina, 
-        airAcconditioning } = propertyData
+        title, price, images, description, isActive,
+        state, city, bedrooms, bathrooms, capacity,
+        latitude, longitude, hasMinor, 
+        pets, accountId, wifi, cocina, tv, 
+        parqueadero, piscina, airConditioning 
+      } = propertyData
       const account = await this.accountDB.findAccountById(accountId)
 
-      const amenities = new AmenitiesDto
-      amenities.airAcconditioning = airAcconditioning
+      const amenities = new Amenities
+      amenities.airConditioning = airConditioning
       amenities.tv = tv
-      amenities.kitchen = kitchen
+      amenities.cocina = cocina
       amenities.wifi = wifi
       amenities.parqueadero = parqueadero
       amenities.piscina = piscina
@@ -84,11 +72,12 @@ export class PropertyService {
       }
       else {
         const newProperty = new Property
-        newProperty.name = titel
+        newProperty.name = title
         newProperty.price = price
         newProperty.description = description
         newProperty.state = state
         newProperty.city = city
+        newProperty.capacity = capacity
         newProperty.bedrooms = bedrooms
         newProperty.bathrooms = bathrooms
         newProperty.latitude = latitude
@@ -96,9 +85,11 @@ export class PropertyService {
         newProperty.hasMinor = hasMinor
         newProperty.pets = pets
         newProperty.account_ = account
+        newProperty.isActive = isActive
+        newProperty.rating = 5
+        newProperty.amenities_ = amenities
         const createdProperty = await this.propertyDB.save(newProperty) 
         const propertyPictures = await this.imageDB.savePicture(createdProperty, images)
-        const propertyAmenities = await this.amenitiesDB.setAmenities(amenities, createdProperty)
         return createdProperty
       }
   }

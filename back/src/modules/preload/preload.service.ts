@@ -91,10 +91,10 @@ export class PreloadServices implements OnApplicationBootstrap {
         images,
         wifi,
         tv,
-        airAcconditioning,
+        airConditioning,
         piscina,
         parqueadero,
-        kitchen,
+        cocina,
       } = property;
 
       // Creating a property
@@ -124,9 +124,9 @@ export class PreloadServices implements OnApplicationBootstrap {
 
       // Adding amenities to the property
       const newAmenities = new AmenitiesDto();
-      newAmenities.airAcconditioning = airAcconditioning;
+      newAmenities.airConditioning = airConditioning;
       newAmenities.tv = tv;
-      newAmenities.kitchen = kitchen;
+      newAmenities.cocina = cocina;
       newAmenities.wifi = wifi;
       newAmenities.parqueadero = parqueadero;
       newAmenities.piscina = piscina;
