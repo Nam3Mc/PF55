@@ -92,6 +92,7 @@ export class PropertyService {
         newProperty.amenities_ = amenities
         const createdProperty = await this.propertyDB.save(newProperty) 
         const propertyPictures = await this.imageDB.savePicture(createdProperty, images)
+        
         return createdProperty
       }
   }
