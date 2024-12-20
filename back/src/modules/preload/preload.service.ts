@@ -10,8 +10,8 @@ import { Role } from '../../enums/account';
 import * as fs from 'fs';
 import { Property } from '../../entities/property.entity';
 import { ImageService } from '../../modules/image/image.service';
-import { AmenitiesDto } from '../../dtos/amenities.dto';
-import { AmenitiesService } from '../../modules/amenities/amenities.service';
+import { Amenities } from '../../entities/amenitie.entity';
+import { AmenitiesService } from '../amenities/amenities.service';
 
 @Injectable()
 export class PreloadServices implements OnApplicationBootstrap {
@@ -20,7 +20,7 @@ export class PreloadServices implements OnApplicationBootstrap {
     private readonly accountDB: AccountService,
     private readonly propertyDB: PropertyService,
     private readonly imageDB: ImageService,
-    private readonly amenitiesDB: AmenitiesService,
+    private readonly amenitiesDB: AmenitiesService
   ) {}
 
   async onApplicationBootstrap() {
@@ -63,7 +63,6 @@ export class PreloadServices implements OnApplicationBootstrap {
 
    const createdAccount = await this.accountDB.createNewAccount(newAccount);
 
-    // Loading properties from JSON file
     const filePath = 'src/helpers/properties.json';
     if (!fs.existsSync(filePath)) {
       console.error(`File not found: ${filePath}`);
@@ -74,31 +73,16 @@ export class PreloadServices implements OnApplicationBootstrap {
     const properties = JSON.parse(fileContent);
 
     for (const property of properties) {
+      console.log(property)
+      console.log(properties)
       const {
-        title, // Fixed typo from `titel` to `title`
-        price,
-        description,
-        state,
-        isActive,
-        city,
-        bedrooms,
-        bathrooms,
-        capacity,
-        latitude,
-        longitude,
-        hasMinor,
-        pets,
-        images,
-        wifi,
-        tv,
-        airConditioning,
-        piscina,
-        parqueadero,
-        cocina,
+        title, price, description, state, isActive,
+        city, bedrooms, bathrooms, capacity, latitude,
+        longitude, hasMinor, pets, images, wifi, tv,
+        airConditioning, piscina, parqueadero, cocina,
       } = property;
 
-      // Creating a property
-      const newProperty = new Property();
+      const newProperty = new Property
       newProperty.isActive = isActive;
       newProperty.name = title;
       newProperty.price = price;
@@ -108,30 +92,27 @@ export class PreloadServices implements OnApplicationBootstrap {
       newProperty.state = state;
       newProperty.city = city;
       newProperty.capacity = capacity;
-      newProperty.rating = 5; // Default rating
-      // newProperty.checkIn = 6; // Default check-in time
-      // newProperty.checkOut = 12; // Default check-out time
+      newProperty.rating = 5;
       newProperty.hasMinor = hasMinor;
       newProperty.pets = pets;
       newProperty.longitude = longitude;
       newProperty.latitude = latitude;
       newProperty.account_ = createdAccount
 
-      const createdProperty = await this.propertyDB.createNewProperty(newProperty);
-
-      // Saving property images
-      await this.imageDB.savePicture(createdProperty, images);
-
-      // Adding amenities to the property
-      const newAmenities = new AmenitiesDto();
+      const newAmenities = new Amenities;
       newAmenities.airConditioning = airConditioning;
       newAmenities.tv = tv;
       newAmenities.cocina = cocina;
       newAmenities.wifi = wifi;
       newAmenities.parqueadero = parqueadero;
       newAmenities.piscina = piscina;
+      await this.amenitiesDB.setAmenities(newAmenities, newProperty)
 
-      await this.amenitiesDB.setAmenities(newAmenities, createdProperty);
+      newProperty.amenities_ = newAmenities
+      const createdProperty = await this.propertyDB.createNewProperty(newProperty)
+      await this.imageDB.savePicture(createdProperty, images);
+
+
     }
 
     console.log('Database seeding completed successfully.');
