@@ -1,4 +1,4 @@
-import { Roll } from "../enums/account";
+import { Role } from "../enums/account";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Contract } from "./contract.entity";
@@ -16,11 +16,8 @@ export class Account {
     @Column({ nullable: false })
     password: string
 
-    @Column({ unique: true, length: 20, nullable: false })
-    userName: string
-
     @Column()
-    roll: Roll = Roll.USER
+    role: Role = Role.USER
 
     @OneToOne(() => User, (user) => user.account_)
     @JoinColumn()

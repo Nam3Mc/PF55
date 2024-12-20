@@ -1,6 +1,6 @@
-export enum Roll {
-    OWNER = "owner",
+export enum Role {
+    ADMIN = "admin",
     USER = "user",
-    MEMBER = "member",
-    ADMIN = "admin"
+    OWNER = "owner",
+    MEMBER = "member"
 }

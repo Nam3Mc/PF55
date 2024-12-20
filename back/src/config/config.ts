@@ -2,7 +2,7 @@ import { config as dotenvConfig } from 'dotenv';
 import { registerAs } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-dotenvConfig({ path: '.development.env' });
+dotenvConfig({ path: '.env' });
 
 const config = {
     type: 'postgres',
@@ -14,7 +14,7 @@ const config = {
     entities: ['dist/**/*.entity{.ts,.js}'],
     migrations: ['dist/**/migrations/*{.ts,.js}'],
     autoLoadEntities: true,
-    dropSchema: true,
+    //dropSchema: true,
     synchronize: true
 };
 
