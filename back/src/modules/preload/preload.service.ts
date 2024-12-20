@@ -73,6 +73,8 @@ export class PreloadServices implements OnApplicationBootstrap {
     const properties = JSON.parse(fileContent);
 
     for (const property of properties) {
+      console.log(property)
+      console.log(properties)
       const {
         title, price, description, state, isActive,
         city, bedrooms, bathrooms, capacity, latitude,

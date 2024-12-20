@@ -20,9 +20,9 @@
     "wifi": true,
     "tv": true,
     "airConditioning": false,
-    "pool": false,
-    "parking": false,
-    "kitchen": true
+    "piscina": false,
+    "parqueadero": false,
+    "cocina": true
   },
   {
     "title": "Beachside Bungalow",
@@ -45,10 +45,10 @@
     ],
     "wifi": true,
     "tv": true,
-    "airConditioning": true,
-    "pool": true,
-    "parking": true,
-    "kitchen": true
+    "airConditioning": false,
+    "piscina": false,
+    "parqueadero": false,
+    "cocina": true
   },
   {
     "title": "Mountain Cabin Retreat",
@@ -68,12 +68,12 @@
       "https://example.com/cabin1.jpg",
       "https://example.com/cabin2.jpg"
     ],
-    "wifi": false,
+    "wifi": true,
     "tv": true,
     "airConditioning": false,
-    "pool": false,
-    "parking": true,
-    "kitchen": true
+    "piscina": false,
+    "parqueadero": false,
+    "cocina": true
   },
   {
     "title": "Luxury Penthouse",
@@ -96,10 +96,10 @@
     ],
     "wifi": true,
     "tv": true,
-    "airConditioning": true,
-    "pool": true,
-    "parking": true,
-    "kitchen": true
+    "airConditioning": false,
+    "piscina": false,
+    "parqueadero": false,
+    "cocina": true
   },
   {
     "title": "Suburban Family Home",
@@ -121,9 +121,9 @@
     ],
     "wifi": true,
     "tv": true,
-    "airConditioning": true,
-    "pool": true,
-    "parking": true,
-    "kitchen": true
+    "airConditioning": false,
+    "piscina": false,
+    "parqueadero": false,
+    "cocina": true
   }
 ]
