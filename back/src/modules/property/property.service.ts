@@ -6,7 +6,6 @@ import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { AccountService } from '../account/account.service';
 import { ImageService } from '../image/image.service';
 import { AmenitiesService } from '../amenities/amenities.service';
-import { AmenitiesDto } from '../../dtos/amenities.dto';
 import { Amenities } from '../../entities/amenitie.entity';
 
 
@@ -18,18 +17,21 @@ export class PropertyService {
     private readonly propertyDB: Repository<Property>,
     private readonly accountDB: AccountService,
     private readonly imageDB: ImageService,
-    private readonly amenitiesDB: AmenitiesService
   ) {}
 
   async getProperties() {
     const properties = await this.propertyDB.find({
-      relations: ["image_", "account_"],
+      relations: ["image_", "account_", "amenities_"],
     })
     return properties
   }
 
-  async getPropertyById(id: string): Promise<Property> {
-    const property = await this.propertyDB.findOneBy({ id });
+  async getPropertyById(id: string): Promise<Property[]> {
+    const property = await this.propertyDB.find({
+      where: { id: id},
+      relations: ["account_", "amenities_"]
+    });
+
     if (!property) {
         throw new NotFoundException("This property does not exist");
     }

@@ -24,9 +24,9 @@ export class ContractService {
     const account = await this.accountDB.findAccountById(accountId) 
 
     if (property) {
-      const price = (await this.propertyDB.getPropertyById(propertyId)).price
+      const price = (await this.propertyDB.getPropertyById(propertyId))
       const nights = dayCalculator(startDate, endDate)
-      const total = price * nights
+      // const price. = price * nights
       
       const contract = new Contract
       contract.startDate = new Date(startDate)
@@ -34,7 +34,7 @@ export class ContractService {
       contract.guests = guests
       contract.pet = pet
       contract.minor = minor
-      contract.property_ = property
+      // contract.property_ = property
       const createdContrat = await this.contractDB.save(contract) 
 
       return createdContrat
