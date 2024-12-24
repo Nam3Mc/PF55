@@ -7,6 +7,7 @@ import { AccountService } from '../account/account.service';
 import { ImageService } from '../image/image.service';
 import { AmenitiesService } from '../amenities/amenities.service';
 import { Amenities } from '../../entities/amenitie.entity';
+import { FavoritesDto } from '../../dtos/favorites.dto';
 
 
 @Injectable()
@@ -30,13 +31,17 @@ export class PropertyService {
     const property = await this.propertyDB.find({
       where: { id: id},
       relations: ["account_", "amenities_"]
-    });
-
+    })
     if (!property) {
         throw new NotFoundException("This property does not exist");
     }
     console.log(property);
     return property;
+  }
+
+  async justProperty(id:string) {
+    const property = await this.propertyDB.findOneBy({id})
+    return property
   }
 
   async getOwnersProperties(id: string): Promise<Property[]>  {
@@ -99,6 +104,14 @@ export class PropertyService {
 
   async createNewProperty(property: Property) {
     return this.propertyDB.save(property)
+  }
+
+  async addFavorite(favoriteData: FavoritesDto) {
+    const { accountId, propertyId} = favoriteData
+    const property = await this.justProperty(propertyId)
+    if (property) {
+      await this.accountDB.addFavorite(accountId, property)
+    }
   }
 
 }

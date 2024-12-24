@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from '../../entities/account.entity';
 import { Repository } from 'typeorm';
+import { Property } from '../../entities/property.entity';
 
 @Injectable()
 export class AccountService {
@@ -14,7 +15,7 @@ export class AccountService {
     async findAccountById(id: string): Promise<Account> {
         const account = await this.accountDB.findOne({
             where: {id}, 
-            relations: ['user_']
+            relations: ['user_','favorites_']
         })
         try {
             if (account) {
@@ -35,6 +36,22 @@ export class AccountService {
 
     async createNewAccount(account: Account) {
         return this.accountDB.save(account)
+    }
+
+    async addFavorite(accountId: string, property:Property) {
+        const account = await this.findAccountById(accountId)
+        if (account) {
+            account.favorites_.push(property)
+            await this.accountDB.save(account)
+        }
+        else {
+            throw new BadRequestException ("No se pudo guardar la propiedad en favoritas")
+        }
+    }
+
+    async getFavorites(accountId: string) {
+        const account = await this.findAccountById(accountId)
+        return account.favorites_
     }
 
 }

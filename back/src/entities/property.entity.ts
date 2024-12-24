@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Contract } from "./contract.entity";
 import { Account } from "./account.entity";
 import { Image } from "./image.entity";
@@ -73,5 +73,8 @@ export class Property {
     @OneToOne( () => Amenities, (amenities) => amenities.property_, {cascade: true})
     @JoinColumn({ name: "amenities_id"})
     amenities_: Amenities
+
+    @ManyToMany(() => Account, (account) => account.favorites_)
+    favorites_: Account[];
 
 }

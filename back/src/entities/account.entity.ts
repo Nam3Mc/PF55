@@ -1,5 +1,5 @@
 import { Role } from "../enums/account";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Contract } from "./contract.entity";
 import { Property } from "./property.entity";
@@ -27,6 +27,9 @@ export class Account {
     contract_: Contract[]
 
     @OneToMany( () => Property, (property) => property.account_)
-    property_: Property
+    property_: Property[]
 
+    @ManyToMany(() => Property, (property) => property.favorites_)
+    @JoinTable() // Crea una tabla intermedia que relaciona cuentas y propiedades
+    favorites_: Property[];
 }
