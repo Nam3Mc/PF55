@@ -1,8 +1,8 @@
-import { Role } from "../enums/account";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Contract } from "./contract.entity";
 import { Property } from "./property.entity";
+import { Role } from "../enums/account";
 
 @Entity({
     name: "accounts"

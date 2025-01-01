@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { AccountService } from '../account/account.service';
 import { ImageService } from '../image/image.service';
-import { AmenitiesService } from '../amenities/amenities.service';
 import { Amenities } from '../../entities/amenitie.entity';
 import { FavoritesDto } from '../../dtos/favorites.dto';
 
