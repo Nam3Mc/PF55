@@ -1,9 +1,23 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import paypal from '@paypal/checkout-server-sdk'
 import axios from 'axios';
+import { PaymentOrderDto } from '../../dtos/paymentOrder.dto';
 
 @Injectable()
-export class PaymentsService {
+export class PaymentsService {  
+  private environment: paypal.core.SandboxEnvironment;
+  private client: paypal.core.PayPalHttpClient;
   private readonly PAYPAL_URL = process.env.PAYPAL_BASE_URL || 'https://api-m.sandbox.paypal.com';
+
+  constructor()
+    {
+      this.environment = new paypal.core.SandboxEnvironment(
+        process.env.PAYPAL_CLIENT_ID,
+        process.env.PAYPAL_CLIENT_SECRET 
+      )
+      this.client = new paypal.core.PayPalHttpClient(this.environment)
+   }
+
 
   async newPayment(): Promise<string> {
     try {
@@ -64,7 +78,7 @@ export class PaymentsService {
 
   async captureOrder(): Promise<any> {
     try {
-      const reqUrl = 'https://example.com/success?token=8DE27637T07523149&PayerID=PM4MW29ME9TH8';
+      const reqUrl = 'https://example.com/success?token=3Y453654PF931984A&PayerID=PM4MW29ME9TH8';
       const url = new URL(reqUrl);
       const orderId = url.searchParams.get('token');
 
@@ -91,5 +105,50 @@ export class PaymentsService {
       console.error('Error capturing order:', error.response?.data || error.message);
       throw new InternalServerErrorException('Failed to capture PayPal order');
     }
+  }
+
+  async orderAndComission(amount: number, receiverEmail: string, comissionPercentage: number) {
+    const comission = amount / comissionPercentage
+    
+    const request = new paypal.orders.OrdersCreateRequest()
+    request.prefer('return=representation')
+    
+    request.requestBody({
+      intent: 'CAPTURE',
+      purchase_units: [
+        {
+          amount: {
+            currency_code: 'USD',
+            value: amount.toFixed(2),
+            breakdown: {
+              item_total: {
+                currency_code: 'USD',
+                value: amount.toFixed(2),
+              }
+            }
+          },
+          payee: {
+            email_address: receiverEmail,
+          }
+        }
+      ],
+      payment_instruction: {
+        disbursement_mode: 'INSTANT',
+        platform_fees: [
+          {
+            amount: {
+              currency_code: 'USD',
+              value: comission.toFixed(2)
+            }
+          }
+        ],
+        application_context: {
+          return_url: 'https://example.com/success',
+          cancel_url: 'https://example.com/cancel',
+        },
+      }
+    })
+    const response = await this.client.execute(request)
+    return response.result
   }
 }
