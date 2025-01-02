@@ -1,6 +1,7 @@
-import { PaymentStatus } from "../enums/payments";
+// import { PaymentStatus } from "../enums/payments";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Contract } from "./contract.entity";
+import { PaymentStatus } from "../enums/payments";
 
 @Entity({
     name: "payments"

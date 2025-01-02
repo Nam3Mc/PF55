@@ -3,7 +3,6 @@ import { ImageService } from './image.service';
 import { ImageController } from './image.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Image } from '../../entities/image.entity';
-import { Property } from '../../entities/property.entity';
 import { User } from '../../entities/user.entity';
 
 @Module({
