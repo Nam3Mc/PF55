@@ -13,6 +13,9 @@ export class Payment {
     id: string
 
     @Column()
+    transactionId: string
+
+    @Column()
     value: number
 
     @Column()
