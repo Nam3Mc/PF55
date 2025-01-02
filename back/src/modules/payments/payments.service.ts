@@ -78,7 +78,7 @@ export class PaymentsService {
 
   async captureOrder(): Promise<any> {
     try {
-      const reqUrl = 'https://example.com/success?token=3Y453654PF931984A&PayerID=PM4MW29ME9TH8';
+      const reqUrl = 'https://example.com/success?token=9HK55769T4805532G&PayerID=PM4MW29ME9TH8';
       const url = new URL(reqUrl);
       const orderId = url.searchParams.get('token');
 
@@ -108,11 +108,10 @@ export class PaymentsService {
   }
 
   async orderAndComission(amount: number, receiverEmail: string, comissionPercentage: number) {
-    const comission = amount / comissionPercentage
+    const commission = amount / comissionPercentage
     
     const request = new paypal.orders.OrdersCreateRequest()
     request.prefer('return=representation')
-    
     request.requestBody({
       intent: 'CAPTURE',
       purchase_units: [
@@ -132,23 +131,24 @@ export class PaymentsService {
           }
         }
       ],
+      application_context: {
+        return_url: 'https://example.com/success',
+        cancel_url: 'https://example.com/cancel',
+      },
       payment_instruction: {
         disbursement_mode: 'INSTANT',
         platform_fees: [
           {
             amount: {
               currency_code: 'USD',
-              value: comission.toFixed(2)
+              value: commission.toFixed(2)
             }
           }
-        ],
-        application_context: {
-          return_url: 'https://example.com/success',
-          cancel_url: 'https://example.com/cancel',
-        },
+        ]
       }
     })
+
     const response = await this.client.execute(request)
-    return response.result
+    return response.result.links[1].href
   }
 }
