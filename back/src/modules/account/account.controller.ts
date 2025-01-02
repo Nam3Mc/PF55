@@ -10,8 +10,14 @@ export class AccountController {
     return this.accountService.getAllAccounts()
   }
 
-  @Get(":id")
+  @Get('favorites/:id')
+  getFavorites(@Param("id") id: string) {
+    return this.accountService.getFavorites(id)
+  }
+
+  @Get("user/:id")
   getAccountById(@Param("id") id: string) {
     return this.accountService.findAccountById(id)
   }
+
 }

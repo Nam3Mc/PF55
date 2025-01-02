@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PropertyService } from './property.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
+import { FavoritesDto } from '../../dtos/favorites.dto';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -12,6 +13,12 @@ export class PropertyController {
   @ApiOperation({ summary: 'Create new property'})
   createProperty(@Body() propertyData: CreatePropertyDto) {
     return this.propertyService.createProperty(propertyData )
+  }
+
+  @Post("favorite")
+  @ApiOperation({})
+  addFavorite(@Body() favoriteData: FavoritesDto) {
+    return this.propertyService.addFavorite(favoriteData)
   }
 
   @Get()

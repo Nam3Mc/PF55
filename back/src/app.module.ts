@@ -12,6 +12,8 @@ import { AmenitiesModule } from './modules/amenities/amenities.module';
 import { PreloadModule } from './modules/preload/preload.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { SocketModule } from './modules/socket/socket.module';
+import { PaymentsModule } from './modules/payments/payments.module';
+
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -41,7 +43,8 @@ cloudinary.config({
     AmenitiesModule,
     PreloadModule,
     NotificationsModule,
-    SocketModule
+    SocketModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [],

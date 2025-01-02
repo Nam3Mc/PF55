@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { AmenitiesService } from './amenities.service';
-// import { AmenitiesDto } from '../../dtos/amenities.dto';
 
 @Controller('amenities')
 export class AmenitiesController {
