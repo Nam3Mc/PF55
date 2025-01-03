@@ -59,20 +59,20 @@ export class Property {
     @Column()
     type: TypeOfProperty = TypeOfProperty.HOUSE
 
-    @OneToMany( () => Contract, (contract) => contract.property_)
+    @OneToMany( () => Contract, (contract) => contract.property_, {cascade: true})
     contract_: Contract
 
-    @ManyToOne( () => Account, (account) => account.property_)
+    @ManyToOne( () => Account, (account) => account.property_, {cascade: true})
     account_: Account
 
-    @OneToMany( () => Image, (image) => image.property_)
+    @OneToMany( () => Image, (image) => image.property_, {cascade: true})
     image_: Image[]
 
     @OneToOne( () => Amenities, (amenities) => amenities.property_, {cascade: true})
     @JoinColumn({ name: "amenities_id"})
     amenities_: Amenities
 
-    @ManyToMany(() => Account, (account) => account.favorites_)
+    @ManyToMany(() => Account, (account) => account.favorites_, {cascade: true})
     favorites_: Account[];
 
 }

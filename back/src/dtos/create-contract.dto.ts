@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsUUID } from "class-validator"
+import { IsBoolean, IsDate, IsEmail, IsNotEmpty, IsNumber, IsUUID } from "class-validator"
 
 export class CreateContractDto {
 
@@ -27,4 +27,8 @@ export class CreateContractDto {
     @IsNotEmpty()
     @IsUUID()    
     propertyId: string
+
+    @IsNotEmpty()
+    @IsEmail()
+    paypalEmail: string
 }

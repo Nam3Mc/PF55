@@ -27,7 +27,7 @@ export class Payment {
     @Column()
     status: PaymentStatus = PaymentStatus.PENDING
 
-    @OneToOne( () => Contract, (contract) => contract.payment_)
+    @OneToOne( () => Contract, (contract) => contract.payment_, {cascade: true})
     contract_: Contract
     
 }
