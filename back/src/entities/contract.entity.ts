@@ -39,5 +39,5 @@ export class Contract {
     payment_: Payment
 
     @ManyToOne(() => Property, (property) => property.contract_)
-    property_: Property[]
+    property_: Property
 }

@@ -54,5 +54,10 @@ export class AccountService {
         return account.favorites_
     }
 
+    async justAccount(id: string) {
+        const account = await this.accountDB.findOneBy({id})
+        return account
+    }
+
 }
 

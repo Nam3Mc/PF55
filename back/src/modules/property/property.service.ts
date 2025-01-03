@@ -35,6 +35,7 @@ export class PropertyService {
         throw new NotFoundException("This property does not exist");
     }
     console.log(property);
+    
     return property;
   }
 

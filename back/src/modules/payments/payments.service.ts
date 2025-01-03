@@ -1,113 +1,70 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import paypal from '@paypal/checkout-server-sdk'
 import axios from 'axios';
 import { ContractService } from '../contract/contract.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from '../../entities/payment.entity';
 import { Repository } from 'typeorm';
+import { CreateContractDto } from '../../dtos/create-contract.dto';
+import { dayCalculator } from '../../helpers/daysCalculator';
+import { PropertyService } from '../property/property.service';
+import { AccountService } from '../account/account.service';
+import { PaypalService } from '../paypal/paypal.service';
+import { ContractStatus } from '../../enums/contract';
+import { PaymentDto } from '../../dtos/payment.dto';
 
 @Injectable()
 export class PaymentsService {  
-  private environment: paypal.core.SandboxEnvironment
-  private client: paypal.core.PayPalHttpClient
-  private readonly PAYPAL_URL = process.env.PAYPAL_BASE_URL || 'https://api-m.sandbox.paypal.com'
 
   constructor(
     @InjectRepository(Payment)
     private readonly paymentDB: Repository<Payment>,
-    private readonly contractDB: ContractService
+    private readonly contractDB: ContractService,
+    private readonly propertyDB: PropertyService,
+    private readonly paypalServices: PaypalService
 
-  ) {
-      this.environment = new paypal.core.SandboxEnvironment(
-        process.env.PAYPAL_CLIENT_ID,
-        process.env.PAYPAL_CLIENT_SECRET 
-      )
-      this.client = new paypal.core.PayPalHttpClient(this.environment)
-   }
+  ) {}
 
-  async captureOrder(code: string): Promise<any> {
-    try {
-      const url = new URL(code);
-      const orderId = url.searchParams.get('token');
+  async orderAndComission(contractData: CreateContractDto) {
+    const { paypalEmail, startDate, endDate, propertyId} = contractData
+    const price = (await this.propertyDB.justProperty(propertyId)).price
+    const nights = dayCalculator(new Date(startDate), new Date(endDate))
+    const amount = ( (price * nights ) + (price * nights) * 0.04 )
+    const commission = ((price * nights) * 0.04 ) * 2
+    const paymentData  = this.paypalServices.createOrder(amount, paypalEmail, commission)
+    const response = (await paymentData).response
+    const status = (await paymentData).status
 
-      if (!orderId) {
-        throw new InternalServerErrorException('Order ID not found in URL');
-      }
-
-      const response = await axios.post(
-        `${this.PAYPAL_URL}/v2/checkout/orders/${orderId}/capture`,
-        {},
-        {
-          auth: {
-            username: process.env.PAYPAL_CLIENT_ID ?? '',
-            password: process.env.PAYPAL_CLIENT_SECRET ?? '',
-          },
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      const id = response.data.purchase_units[0].payments.captures[0].id
-      const status = response.data.purchase_units[0].payments.captures[0].status
-      const netAmount = response.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.paypal_fee.value
-      const paymentFee = response.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.net_amount.value
-
-      if (status === "COMPLETED") {
-        
-      }
-
-
-
-      return response.data.purchase_units[0].payments.captures[0]
-    } catch (error) {
-      console.error('Error capturing order:', error.response?.data || error.message);
-      throw new InternalServerErrorException('Failed to capture PayPal order');
+    if ( status === "CREATED") {
+      const contract = await this.contractDB.createContract(contractData)
+      console.log(contract)
+      return response.result.links[1].href
+    }
+    else {
+      throw new BadRequestException("El pago no se proceso")
     }
   }
 
-  async orderAndComission(amount: number, receiverEmail: string, comissionPercentage: number) {
-    const commission = amount / comissionPercentage
-    
-    const request = new paypal.orders.OrdersCreateRequest()
-    request.prefer('return=representation')
-    request.requestBody({
-      intent: 'CAPTURE',
-      purchase_units: [
-        {
-          amount: {
-            currency_code: 'USD',
-            value: amount.toFixed(2),
-            breakdown: {
-              item_total: {
-                currency_code: 'USD',
-                value: amount.toFixed(2),
-              }
-            }
-          },
-          payee: {
-            email_address: receiverEmail,
-          }
-        }
-      ],
-      application_context: {
-        return_url: 'https://example.com/success',
-        cancel_url: 'https://example.com/cancel',
-      },
-      payment_instruction: {
-        disbursement_mode: 'INSTANT',
-        platform_fees: [
-          {
-            amount: {
-              currency_code: 'USD',
-              value: commission.toFixed(2)
-            }
-          }
-        ]
-      }
-    })
-
-    const response = await this.client.execute(request)
-    return response.result.links[1].href
+  async captureOrder(paymentData: PaymentDto) {
+    const {url, contractId} = paymentData
+    const response = await this.paypalServices.captureOrder(url)
+    const id = response.id
+    const status = response.status
+    const netAmount = response.seller_receivable_breakdown.net_amount.value
+    const paymentFee = response.seller_receivable_breakdown.paypal_fee.value
+    console.log(netAmount, paymentFee)    
+    if ( status === "COMPLETED") {
+      const contract = await this.contractDB.getContractById(contractId)
+      contract.status = ContractStatus.ACEPTED
+      await this.contractDB.saveContract(contract)
+      const payment = new Payment
+      payment.transactionId = id
+      payment.status = status
+      payment.netAmount = netAmount
+      payment.paymentFee = paymentFee
+      payment.contract_ = contract
+      console.log(payment)
+    }
   }
+
 }
