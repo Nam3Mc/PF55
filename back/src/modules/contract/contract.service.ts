@@ -27,16 +27,13 @@ export class ContractService {
     return savedContract
   }
 
-  async createContract (contractData: CreateContractDto): Promise<Contract> {
+  async createContract (contractData: CreateContractDto) {
     const {startDate, endDate, guests, pet, minor, accountId, propertyId} = contractData
-    const property = await this.propertyDB.getPropertyById(propertyId)
-    const account = await this.accountDB.findAccountById(accountId) 
+    const property = await this.propertyDB.justProperty(propertyId)
+    const account = await this.accountDB.justAccount(accountId) 
 
     if (property) {
-      const price = (await this.propertyDB.getPropertyById(propertyId))
-      const nights = dayCalculator(startDate, endDate)
-      // const price. = price * nights
-      
+            
       const contract = new Contract
       contract.startDate = new Date(startDate)
       contract.endDate = new Date(endDate) 
@@ -52,7 +49,6 @@ export class ContractService {
     else {
       throw new BadRequestException("No se pudo generar tu reservacion")
     }
-    
   }
 }
  
