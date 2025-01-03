@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, PropertyType } from "typeorm";
 import { Contract } from "./contract.entity";
 import { Account } from "./account.entity";
 import { Image } from "./image.entity";
 import { Amenities } from "./amenitie.entity";
+import { TypeOfProperty } from "../enums/property";
 
 @Entity({
     name: "properties"
@@ -43,12 +44,6 @@ export class Property {
     @Column({type: "int" })
     rating: number
 
-    // @Column()
-    // checkIn: number
-
-    // @Column()
-    // checkOut: number
-
     @Column()
     hasMinor: boolean
     
@@ -61,8 +56,11 @@ export class Property {
     @Column()
     longitude: string
 
+    @Column()
+    type: TypeOfProperty = TypeOfProperty.HOUSE
+
     @OneToMany( () => Contract, (contract) => contract.property_)
-    contract_: Contract[]
+    contract_: Contract
 
     @ManyToOne( () => Account, (account) => account.property_)
     account_: Account
