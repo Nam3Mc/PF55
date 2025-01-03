@@ -6,9 +6,4 @@ import { CreateContractDto } from '../../dtos/create-contract.dto';
 export class ContractController {
   constructor(private readonly contractService: ContractService) {}
 
-  @Post()
-  createContract(@Body() contractData: CreateContractDto) {
-    return this.contractService.createContract(contractData)
-  }
-
 }
