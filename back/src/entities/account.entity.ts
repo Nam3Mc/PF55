@@ -29,7 +29,7 @@ export class Account {
     @OneToMany( () => Property, (property) => property.account_)
     property_: Property[]
 
-    @ManyToMany(() => Property, (property) => property.favorites_)
+    @ManyToMany(() => Property, (property) => property.favorites_ )
     @JoinTable() // Crea una tabla intermedia que relaciona cuentas y propiedades
     favorites_: Property[];
 }

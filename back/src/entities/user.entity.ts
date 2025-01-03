@@ -44,6 +44,6 @@ export class User {
     @Column({ type: 'text', nullable: true })
     photo?: string;
     
-    @OneToOne(() => Account, (account) => account.user_ )
+    @OneToOne(() => Account, (account) => account.user_, {cascade: true} )
     account_: Account
 }

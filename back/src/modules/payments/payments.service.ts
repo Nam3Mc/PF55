@@ -1,15 +1,23 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import paypal from '@paypal/checkout-server-sdk'
 import axios from 'axios';
+import { ContractService } from '../contract/contract.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Payment } from '../../entities/payment.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PaymentsService {  
-  private environment: paypal.core.SandboxEnvironment;
-  private client: paypal.core.PayPalHttpClient;
-  private readonly PAYPAL_URL = process.env.PAYPAL_BASE_URL || 'https://api-m.sandbox.paypal.com';
+  private environment: paypal.core.SandboxEnvironment
+  private client: paypal.core.PayPalHttpClient
+  private readonly PAYPAL_URL = process.env.PAYPAL_BASE_URL || 'https://api-m.sandbox.paypal.com'
 
-  constructor()
-    {
+  constructor(
+    @InjectRepository(Payment)
+    private readonly paymentDB: Repository<Payment>,
+    private readonly contractDB: ContractService
+
+  ) {
       this.environment = new paypal.core.SandboxEnvironment(
         process.env.PAYPAL_CLIENT_ID,
         process.env.PAYPAL_CLIENT_SECRET 
@@ -44,6 +52,12 @@ export class PaymentsService {
       const status = response.data.purchase_units[0].payments.captures[0].status
       const netAmount = response.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.paypal_fee.value
       const paymentFee = response.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.net_amount.value
+
+      if (status === "COMPLETED") {
+        
+      }
+
+
 
       return response.data.purchase_units[0].payments.captures[0]
     } catch (error) {

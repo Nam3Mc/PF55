@@ -17,8 +17,14 @@ export class ContractService {
     private readonly accountDB: AccountService
   ) {}
 
-  async getContract () {
-    
+  async getContractById (id: string): Promise<Contract> {
+    const contract = await this.contractDB.findOneBy({id})
+    return contract
+  }
+
+  async saveContract(contract: Contract): Promise<Contract> {
+    const savedContract = await this.contractDB.save(contract)
+    return savedContract
   }
 
   async createContract (contractData: CreateContractDto): Promise<Contract> {

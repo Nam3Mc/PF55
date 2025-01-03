@@ -32,7 +32,7 @@ export class Contract {
     @Column()
     status: ContractStatus = ContractStatus.NEGOCIATION
 
-    @ManyToOne(() => Account, (account) => account.contract_)
+    @ManyToOne(() => Account, (account) => account.contract_, {cascade: true})
     account_: Account
 
     @OneToOne(() => Payment, (payment) => payment.contract_)
