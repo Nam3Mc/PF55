@@ -1,7 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import paypal from '@paypal/checkout-server-sdk'
 import axios from 'axios';
-import { PaymentOrderDto } from '../../dtos/paymentOrder.dto';
 
 @Injectable()
 export class PaymentsService {  
@@ -18,68 +17,9 @@ export class PaymentsService {
       this.client = new paypal.core.PayPalHttpClient(this.environment)
    }
 
-
-  async newPayment(): Promise<string> {
+  async captureOrder(code: string): Promise<any> {
     try {
-      const params = new URLSearchParams();
-      params.append('grant_type', 'client_credentials');
-
-      const response = await axios.post(
-        `${this.PAYPAL_URL}/v1/oauth2/token`,
-        params,
-        {
-          auth: {
-            username: process.env.PAYPAL_CLIENT_ID ?? '',
-            password: process.env.PAYPAL_CLIENT_SECRET ?? '',
-          },
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      );
-
-      const access_token = response.data.access_token;
-
-      const order = {
-        intent: 'CAPTURE',
-        purchase_units: [
-          {
-            amount: {
-              currency_code: 'USD',
-              value: '100.00', 
-            },
-            description: 'Pago de prueba',
-          },
-        ],
-        application_context: {
-          return_url: 'https://example.com/success',
-          cancel_url: 'https://example.com/cancel',
-        },
-      };
-
-      const orderResponse = await axios.post(
-        `${this.PAYPAL_URL}/v2/checkout/orders`,
-        order,
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      console.log(orderResponse.data);
-      return orderResponse.data.links.find(link => link.rel === 'approve')?.href || '';
-    } catch (error) {
-      console.error('Error creating payment:', error.response?.data || error.message);
-      throw new InternalServerErrorException('Failed to create PayPal payment');
-    }
-  }
-
-  async captureOrder(): Promise<any> {
-    try {
-      const reqUrl = 'https://example.com/success?token=9HK55769T4805532G&PayerID=PM4MW29ME9TH8';
-      const url = new URL(reqUrl);
+      const url = new URL(code);
       const orderId = url.searchParams.get('token');
 
       if (!orderId) {
@@ -100,7 +40,12 @@ export class PaymentsService {
         },
       );
 
-      return response.data;
+      const id = response.data.purchase_units[0].payments.captures[0].id
+      const status = response.data.purchase_units[0].payments.captures[0].status
+      const netAmount = response.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.paypal_fee.value
+      const paymentFee = response.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.net_amount.value
+
+      return response.data.purchase_units[0].payments.captures[0]
     } catch (error) {
       console.error('Error capturing order:', error.response?.data || error.message);
       throw new InternalServerErrorException('Failed to capture PayPal order');

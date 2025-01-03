@@ -1,25 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Get} from '@nestjs/common';
 import { PaymentsService } from './payments.service';
-import { PaymentOrderDto } from '../../dtos/paymentOrder.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('payments')
 export class PaymentsController {
+
   constructor(
     private readonly paymentsService: PaymentsService
   ) {}
-  
-  @Get()
-  getToken() {
-    return this.paymentsService.newPayment()
-  }
 
   @Get('paid') 
-  paymentData() {
-    return this.paymentsService.captureOrder()
+  @ApiOperation({ summary: 'This end point give you all the details after procesing the payment'})
+  paymentData(@Body() body: {url: string}) {
+    return this.paymentsService.captureOrder(body.url)
   }
   
-  @Get('order')
+  @Get()
+  @ApiOperation({ summary: 'This endponit rewdirect client to payment page or give the payment page link'})
   payWithComission() {
-    return this.paymentsService.orderAndComission(450,'sb-047gso34940525@business.example.com', 10 )
+    return this.paymentsService.orderAndComission(450,'sb-hcd34334948799@personal.example.com', 10 )
   }
+
 }
