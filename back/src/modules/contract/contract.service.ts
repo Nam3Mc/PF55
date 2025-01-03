@@ -14,9 +14,12 @@ export class ContractService {
     @InjectRepository(Contract)
     private readonly contractDB: Repository<Contract>,
     private readonly propertyDB: PropertyService,
-    // private readonly paymentDB,
     private readonly accountDB: AccountService
   ) {}
+
+  async getContract () {
+    
+  }
 
   async createContract (contractData: CreateContractDto): Promise<Contract> {
     const {startDate, endDate, guests, pet, minor, accountId, propertyId} = contractData
@@ -34,7 +37,8 @@ export class ContractService {
       contract.guests = guests
       contract.pet = pet
       contract.minor = minor
-      // contract.property_ = property
+      contract.property_ = property
+      contract.account_ = account
       const createdContrat = await this.contractDB.save(contract) 
 
       return createdContrat

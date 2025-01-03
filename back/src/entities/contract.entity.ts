@@ -1,6 +1,6 @@
 
 import { ContractStatus } from "../enums/contract";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Account } from "./account.entity";
 import { Payment } from "./payment.entity";
 import { Property } from "./property.entity";
@@ -35,9 +35,9 @@ export class Contract {
     @ManyToOne(() => Account, (account) => account.contract_)
     account_: Account
 
-    @OneToMany(() => Payment, (payment) => payment.contract_)
-    payment_: Payment[]
+    @OneToOne(() => Payment, (payment) => payment.contract_)
+    payment_: Payment
 
     @ManyToOne(() => Property, (property) => property.contract_)
-    property_: Property
+    property_: Property[]
 }

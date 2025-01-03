@@ -1,5 +1,5 @@
 // import { PaymentStatus } from "../enums/payments";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Contract } from "./contract.entity";
 import { PaymentStatus } from "../enums/payments";
 
@@ -27,7 +27,7 @@ export class Payment {
     @Column()
     status: PaymentStatus = PaymentStatus.PENDING
 
-    @OneToMany( () => Contract, (contract) => contract.payment_)
+    @OneToOne( () => Contract, (contract) => contract.payment_)
     contract_: Contract
     
 }
