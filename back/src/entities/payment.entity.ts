@@ -16,10 +16,13 @@ export class Payment {
     transactionId: string
 
     @Column()
-    value: number
+    netAmount: number
 
     @Column()
-    dueDate: Date
+    paymentFee: number
+
+    @Column()
+    paymentDate: Date
 
     @Column()
     status: PaymentStatus = PaymentStatus.PENDING
