@@ -22,49 +22,57 @@ export class PaymentsService {
     private readonly contractDB: ContractService,
     private readonly propertyDB: PropertyService,
     private readonly paypalServices: PaypalService
-
   ) {}
 
   async orderAndComission(contractData: CreateContractDto) {
-    const { paypalEmail, startDate, endDate, propertyId} = contractData
-    const price = (await this.propertyDB.justProperty(propertyId)).price
-    const nights = dayCalculator(new Date(startDate), new Date(endDate))
-    const amount = ( (price * nights ) + (price * nights) * 0.04 )
-    const commission = ((price * nights) * 0.04 ) * 2
-    const paymentData  = this.paypalServices.createOrder(amount, paypalEmail, commission)
-    const response = (await paymentData).response
-    const status = (await paymentData).status
+    try {
+      const { paypalEmail, startDate, endDate, propertyId} = contractData
+      const price = (await this.propertyDB.justProperty(propertyId)).price
+      const nights = dayCalculator(new Date(startDate), new Date(endDate))
+      const amount = ( (price * nights ) + (price * nights) * 0.04 )
+      const commission = ((price * nights) * 0.04 ) * 2
+      const paymentData  = this.paypalServices.createOrder(amount, paypalEmail, commission)
+      const response = (await paymentData).response
+      const status = (await paymentData).status
 
-    if ( status === "CREATED") {
-      const contract = await this.contractDB.createContract(contractData)
-      console.log(contract)
-      return response.result.links[1].href
-    }
-    else {
-      throw new BadRequestException("El pago no se proceso")
+      if ( status === "CREATED") {
+        const contract = await this.contractDB.createContract(contractData)
+        console.log(contract)
+        return response.result.links[1].href
+      }
+      else {
+        throw new BadRequestException("El pago no se proceso")
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Error processing order and commission', error.message);
     }
   }
 
   async captureOrder(paymentData: PaymentDto) {
-    const {url, contractId} = paymentData
-    const response = await this.paypalServices.captureOrder(url)
-    const id = response.id
-    const status = response.status
-    const netAmount = response.seller_receivable_breakdown.net_amount.value
-    const paymentFee = response.seller_receivable_breakdown.paypal_fee.value
-    console.log(netAmount, paymentFee)    
-    if ( status === "COMPLETED") {
-      const contract = await this.contractDB.getContractById(contractId)
-      contract.status = ContractStatus.ACEPTED
-      await this.contractDB.saveContract(contract)
-      const payment = new Payment
-      payment.transactionId = id
-      payment.status = status
-      payment.netAmount = netAmount
-      payment.paymentFee = paymentFee
-      payment.contract_ = contract
-      console.log(payment)
+    try {
+      const {url, contractId} = paymentData
+      const response = await this.paypalServices.captureOrder(url)
+      const id = response.id
+      const status = response.status
+      const netAmount = response.seller_receivable_breakdown.net_amount.value
+      const paymentFee = response.seller_receivable_breakdown.paypal_fee.value
+      console.log(netAmount, paymentFee)    
+      
+      if ( status === "COMPLETED") {
+        const contract = await this.contractDB.getContractById(contractId)
+        contract.status = ContractStatus.ACEPTED
+        await this.contractDB.saveContract(contract)
+        const payment = new Payment
+        payment.transactionId = id
+        payment.status = status
+        payment.netAmount = netAmount
+        payment.paymentFee = paymentFee
+        payment.contract_ = contract
+        await this.paymentDB.save(payment)
+        console.log(payment)
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Error capturing order', error.message);
     }
   }
-
 }
