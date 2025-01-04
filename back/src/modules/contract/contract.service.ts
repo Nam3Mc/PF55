@@ -16,6 +16,22 @@ export class ContractService {
     private readonly propertyDB: PropertyService,
     private readonly accountDB: AccountService
   ) {}
+  
+  async isDateAvailable(checkIn: Date, checkOut: Date): Promise<boolean> {
+    const isAvailable = await this.contractDB
+      .createQueryBuilder('contract')
+      .where(
+        '(:checkIn BETWEEN contract.startDate AND contract.endDate OR :checkOut BETWEEN contract.startDate AND contract.endDate)',
+        { checkIn, checkOut },
+      )
+      .orWhere(
+        '(:checkIn <= contract.startDate AND :checkOut >= contract.endDate)',
+        { checkIn, checkOut },
+      )
+      .getCount();
+
+    return isAvailable === 0;
+  }
 
   async getContractById (id: string): Promise<Contract> {
     const contract = await this.contractDB.findOneBy({id})
@@ -31,20 +47,29 @@ export class ContractService {
     const {startDate, endDate, guests, pet, minor, accountId, propertyId} = contractData
     const property = await this.propertyDB.justProperty(propertyId)
     const account = await this.accountDB.justAccount(accountId) 
+    const checkIn = new Date(startDate)
+    const checkOut = new Date(endDate)
 
     if (property) {
-            
-      const contract = new Contract
-      contract.startDate = new Date(startDate)
-      contract.endDate = new Date(endDate) 
-      contract.guests = guests
-      contract.pet = pet
-      contract.minor = minor
-      contract.property_ = property
-      contract.account_ = account
-      const createdContrat = await this.contractDB.save(contract) 
+      const available = await this.isDateAvailable(checkIn, checkOut)
+      if (available) {
 
-      return createdContrat
+        const contract = new Contract
+
+        contract.startDate = checkIn
+        contract.endDate = checkOut
+        contract.guests = guests
+        contract.pet = pet
+        contract.minor = minor
+        contract.property_ = property
+        contract.account_ = account
+
+        const createdContrat = await this.contractDB.save(contract)  
+        return createdContrat
+      }
+      else {
+        throw new BadRequestException("Las fechas seleccionadas no estan disponibles")
+      }
     }
     else {
       throw new BadRequestException("No se pudo generar tu reservacion")
