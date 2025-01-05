@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { FavoritesDto } from '../../dtos/favorites.dto';
+import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -37,6 +38,12 @@ export class PropertyController {
   @ApiOperation({ summary: 'Get all prperties for an owner'})
   getOwnersProperties(@Param('id') id:string ) {
     return this.propertyService.getOwnersProperties(id)
+  }
+
+  @Put("update")
+  @ApiOperation({summary: "this end point received a partial fto and update properties"})
+  updateProperty(@Body() propertyData: UpdatePropertyDto) {
+    return this.propertyService.updateProperty( propertyData)
   }
 
 }

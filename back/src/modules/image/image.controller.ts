@@ -6,8 +6,7 @@ import {
   UploadedFile, 
   UseInterceptors, 
   BadRequestException, 
-  Delete, 
-  InternalServerErrorException
+  Delete
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { ApiOperation, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
@@ -15,7 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserPhotoDto } from '../../dtos/update-photo-user.dto';
 
 const imageFileFilter = (req, file, callback) => {
-  if (!file.mimetype.match(/\/\/(jpg|jpeg|png|gif)$/)) {
+  if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
     return callback(new BadRequestException('Only image files (jpg, jpeg, png, gif) are allowed!'), false);
   }
   callback(null, true);
@@ -29,12 +28,8 @@ export class ImageController {
 
   @Get()
   @ApiOperation({ summary: 'Get all pictures' })
-  async getPictures() {
-    try {
-      return await this.imageService.getAllPictures();
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to fetch pictures');
-    }
+  getPictures() {
+    return this.imageService.getAllPictures();
   }
 
   @Post()
@@ -58,15 +53,8 @@ export class ImageController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    try {
-      if (!file) {
-        throw new BadRequestException('File is required');
-      }
-      return await this.imageService.uploadPicture(file);
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to upload image');
-    }
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return this.imageService.uploadPicture(file);
   }
 
   @Post('/user-photo')
@@ -92,23 +80,13 @@ export class ImageController {
     @UploadedFile() file: Express.Multer.File,
     @Body() updatePhotoDto: UpdateUserPhotoDto,
   ) {
-    try {
-      if (!file) {
-        throw new BadRequestException('File is required');
-      }
-      return await this.imageService.uploadUserPhoto(file, updatePhotoDto.id);
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to upload user photo');
-    }
+    return this.imageService.uploadUserPhoto(file, updatePhotoDto.id);
   }
 
   @Delete()
-  @ApiOperation({ summary: 'Delete a picture by ID' })
-  async deletePicture(@Body() id: UpdateUserPhotoDto) {
-    try {
-      return await this.imageService.deleteImage(id);
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to delete picture');
-    }
+  @ApiOperation({summary: "picture id to delete"})
+  deletePicture(@Body() id: UpdateUserPhotoDto) {
+    return this.imageService.deleteImage(id)
   }
+
 }
