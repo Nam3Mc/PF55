@@ -42,8 +42,8 @@ export class PaypalService {
         }
       ],
       application_context: {
-        return_url: 'http://localhost:3001/profile',
-        cancel_url: 'http://localhost:3001',
+        return_url: 'http://localhost:3001/payment',
+        cancel_url: 'http://localhost:3001/components/FailurePay',
       },
       payment_instruction: {
         disbursement_mode: 'INSTANT',

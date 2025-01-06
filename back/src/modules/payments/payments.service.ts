@@ -37,8 +37,7 @@ export class PaymentsService {
 
       if ( status === "CREATED") {
         const contract = await this.contractDB.createContract(contractData)
-        console.log(contract)
-        return response.result.links[1].href
+        return response.result.links[1].href, contract
       }
       else {
         throw new BadRequestException("El pago no se proceso")
@@ -59,17 +58,25 @@ export class PaymentsService {
       console.log(netAmount, paymentFee)    
       
       if ( status === "COMPLETED") {
-        const contract = await this.contractDB.getContractById(contractId)
-        contract.status = ContractStatus.ACEPTED
-        await this.contractDB.saveContract(contract)
-        const payment = new Payment
-        payment.transactionId = id
-        payment.status = status
-        payment.netAmount = netAmount
-        payment.paymentFee = paymentFee
-        payment.contract_ = contract
-        await this.paymentDB.save(payment)
-        console.log(payment)
+        // const contract = await this.contractDB.getContractById(contractId)
+        // contract.status = ContractStatus.ACEPTED
+        // contract.startDate = contract.startDate
+        // contract.endDate = contract.endDate
+        // contract.guests =contract.guests
+        // contract.pet = contract.pet
+        // contract.minor = contract.minor
+        // await this.contractDB.saveContract(contract)
+        // const payment = new Payment
+        // payment.transactionId = id
+        // payment.status = status
+        // payment.netAmount = Math.round(netAmount)
+        // payment.paymentFee = Math.round(paymentFee)
+        // payment.contract_ = contract
+        // payment.paymentDate = new Date(Date.now())
+        // await this.paymentDB.save(payment)
+        // console.log(payment)
+        console.log(response)
+        return response
       }
     } catch (error) {
       throw new InternalServerErrorException('Error capturing order', error.message);
