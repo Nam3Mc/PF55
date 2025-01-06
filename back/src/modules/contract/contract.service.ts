@@ -87,8 +87,8 @@ export class ContractService {
       contract.minor = minor;
       contract.property_ = property;
       contract.account_ = account;
-
-      return await this.contractDB.save(contract);
+      const createdContract = await this.contractDB.save(contract);
+      return createdContract
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;

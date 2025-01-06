@@ -8,6 +8,7 @@ import { ImageService } from '../image/image.service'
 import { Amenities } from '../../entities/amenitie.entity'
 import { FavoritesDto } from '../../dtos/favorites.dto'
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto'
+import { TypeOfProperty } from '../../enums/property'
 
 @Injectable()
 export class PropertyService {
@@ -58,12 +59,12 @@ export class PropertyService {
       const properties = await this.propertyDB.find({
         where: { account_: { id } },
       });
-      if (!properties || properties.length === 0) {
+      if (!properties || properties.length === 0 || properties === null) {
         throw new NotFoundException("You haven't listed a property yet");
       }
       return properties;
     } catch (error) {
-      throw new InternalServerErrorException('Error fetching owner properties');
+      throw new BadRequestException('No has listado ninguna propiedad con esta cuenta');
     }
   }
 
@@ -175,4 +176,18 @@ export class PropertyService {
     }
   }
 
+  async propertyByType(type: string): Promise<Property[]> {
+    try {
+      const properties = await this.propertyDB
+        .createQueryBuilder('property')
+        .where('property.type = :type', { type })  
+        .getMany();
+  
+      return properties;
+    } catch (error) {
+      console.error('Error fetching properties by type:', error)
+      throw new Error('No se pudieron obtener las propiedades.')
+    }
+  }
+  
 }

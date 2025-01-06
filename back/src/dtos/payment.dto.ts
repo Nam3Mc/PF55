@@ -16,7 +16,7 @@ export class PaymentDto {
         description: "The contract Id to update the contract status"
     })
     @IsNotEmpty()
-    @IsUUID()
+    // @IsUUID()
     contractId: string
     
 }

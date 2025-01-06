@@ -28,6 +28,12 @@ export class PropertyController {
     return this.propertyService.getProperties()
   }
 
+  @Get()
+  @ApiOperation({summary: 'Get Properties by type'})
+  getPropertiesByType(@Body() type: string) {
+    return this.propertyService.propertyByType(type)
+  }
+
   @Get('unique/:id')
   @ApiOperation({ summary: 'Get property by ID'})
   getPropertyById(@Param('id') id:string) {
