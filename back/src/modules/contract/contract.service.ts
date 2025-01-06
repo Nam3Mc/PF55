@@ -4,8 +4,8 @@ import { Repository } from "typeorm";
 import { PropertyService } from "../property/property.service";
 import { CreateContractDto } from "../../dtos/create-contract.dto";
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { dayCalculator } from "../../helpers/daysCalculator";
 import { AccountService } from "../account/account.service";
+import { ContractStatus } from "../../enums/contract";
 
 @Injectable()
 export class ContractService {
@@ -95,5 +95,17 @@ export class ContractService {
       }
       throw new InternalServerErrorException('No se pudo generar el contrato');
     }
+  }
+
+  async updateContract(contractId: string) {
+    const contract = await this.contractDB
+    .createQueryBuilder()
+    .update(Contract)
+    .set({status: ContractStatus.ACEPTED})
+    .where( 'id = :contractId', {contractId})
+    .execute(
+    )
+    const uodatedContract = await this.getContractById(contractId)
+    return uodatedContract
   }
 }

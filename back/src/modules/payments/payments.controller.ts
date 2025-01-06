@@ -1,4 +1,4 @@
-import { Body, Controller, Get} from '@nestjs/common';
+import { Body, Controller, Get, Post} from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { CreateContractDto } from '../../dtos/create-contract.dto';
@@ -11,7 +11,7 @@ export class PaymentsController {
     private readonly paymentsService: PaymentsService
   ) {}
 
-  @Get('paid') 
+  @Post('paid') 
   @ApiOperation({ summary: 'This end point give you all the details after procesing the payment'})
   paymentData(@Body() paymentData: PaymentDto) {
     return this.paymentsService.captureOrder(paymentData)
