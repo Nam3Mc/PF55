@@ -3,6 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import paypal from '@paypal/checkout-server-sdk';
 import axios from 'axios';
 import { url } from 'inspector';
+const port = process.env.PORT
 
 
 @Injectable()
@@ -42,8 +43,8 @@ export class PaypalService {
         }
       ],
       application_context: {
-        return_url: 'http://localhost:3001/payment',
-        cancel_url: 'http://localhost:3001/components/FailurePay',
+        return_url: `http://localhost:${port}/payment`,
+        cancel_url: `http://localhost:${port}/components/FailurePay`,
       },
       payment_instruction: {
         disbursement_mode: 'INSTANT',
