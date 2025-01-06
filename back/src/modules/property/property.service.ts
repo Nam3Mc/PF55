@@ -144,12 +144,11 @@ export class PropertyService {
               bedrooms, bathrooms, hasMinor, pets, isActive, wifi, 
               piscina, parqueadero, cocina, tv, airConditioning 
             } = propertyData
-      const property = await this.getPropertyById(id)[0]
-      
+      const properties = await this.getPropertyById(id)
+      const property = properties[0]
       if (!property) {
         throw new Error('Property not found')
       }
-  
       property.name = title ?? property.name
       property.price = price ?? property.price
       property.description = description ?? property.description
