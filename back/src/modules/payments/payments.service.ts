@@ -58,11 +58,11 @@ export class PaymentsService {
       const netAmount = response.seller_receivable_breakdown.net_amount.value
       const paymentFee = response.seller_receivable_breakdown.paypal_fee.value
       
-      // if ( status === "COMPLETED") {
-        // const contract = await this.contractDB.getContractById(contractId)
-        // contract.status = ContractStatus.ACEPTED 
-        // contract.startDate = contract.startDate
-        // const updatedContract = await this.contractDB.saveContract(contract)
+      if ( status === "COMPLETED") {
+        const contract = await this.contractDB.getContractById(contractId)
+        contract.status = ContractStatus.ACEPTED 
+        contract.startDate = contract.startDate
+        const updatedContract = await this.contractDB.saveContract(contract)
         // const payment = new Payment
         // payment.transactionId = id
         // payment.status = status
@@ -72,8 +72,8 @@ export class PaymentsService {
         // payment.paymentDate = new Date(Date.now())
         // await this.paymentDB.save(payment)
         // console.log(response)
-        return response
-      // }
+        return updatedContract
+      }
     } catch (error) {
       throw new InternalServerErrorException('Error capturing order', error.message);
     }

@@ -58,6 +58,7 @@ export class PropertyService {
     try {
       const properties = await this.propertyDB.find({
         where: { account_: { id } },
+        relations: ["image_", "account_", "amenities_"]
       });
       if (!properties || properties.length === 0 || properties === null) {
         throw new NotFoundException("You haven't listed a property yet");
