@@ -28,7 +28,7 @@ export class PropertyController {
     return this.propertyService.getProperties()
   }
 
-  @Get()
+  @Get('type')
   @ApiOperation({summary: 'Get Properties by type'})
   getPropertiesByType(@Body() type: string) {
     return this.propertyService.propertyByType(type)
