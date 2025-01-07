@@ -23,4 +23,4 @@ node_modules/
 .env
 README.md.backup
 
-.development.env
+.env.development
