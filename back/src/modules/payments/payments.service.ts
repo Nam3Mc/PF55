@@ -63,15 +63,15 @@ export class PaymentsService {
         contract.status = ContractStatus.ACEPTED 
         contract.startDate = contract.startDate
         const updatedContract = await this.contractDB.saveContract(contract)
-        // const payment = new Payment
-        // payment.transactionId = id
-        // payment.status = status
-        // payment.netAmount = Math.round(netAmount)
-        // payment.paymentFee = Math.round(paymentFee)
-        // payment.contract_ = contract
-        // payment.paymentDate = new Date(Date.now())
-        // await this.paymentDB.save(payment)
-        // console.log(response)
+        const payment = new Payment
+        payment.transactionId = id
+        payment.status = status
+        payment.netAmount = Math.round(netAmount)
+        payment.paymentFee = Math.round(paymentFee)
+        payment.contract_ = contract
+        payment.paymentDate = new Date(Date.now())
+        await this.paymentDB.save(payment)
+        console.log(response)
         return updatedContract
       }
     } catch (error) {
