@@ -17,7 +17,7 @@ export class PaymentsController {
     return this.paymentsService.captureOrder(paymentData)
   }
   
-  @Get()
+  @Post()
   @ApiOperation({ summary: 'This endponit rewdirect client to payment page or give the payment page link'})
   payWithComission(@Body() contractData: CreateContractDto) {
     return this.paymentsService.orderAndComission(contractData )
