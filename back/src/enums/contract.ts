@@ -1,6 +1,6 @@
 export enum ContractStatus {
-    NEGOCIATION = "negociation",
-    COMPLETED = "completed",
-    ACEPTED = "acepted",
-    REJECTED = "rejected"
+    NEGOCIATION = "negociacion",
+    COMPLETED = "completado",
+    ACEPTED = "aceptado",
+    REJECTED = "rechazado"
 }

@@ -1,12 +1,12 @@
-FROM node:20
+FROM node
 
 WORKDIR /back
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install typeorm
 
-RUN npm instal bcrypt
+RUN npm install
 
 COPY . .
 

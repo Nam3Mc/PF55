@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, MaxLength, Min, MinLength } from "class-validator"
-import { Amenities } from "../entities/amenitie.entity"
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, MaxLength, Min, MinLength } from "class-validator"
+import { TypeOfProperty } from "../enums/property"
 
 export class CreatePropertyDto {
 
@@ -83,22 +83,32 @@ export class CreatePropertyDto {
     @IsOptional()
     images: string[]
 
+    @ApiProperty({ example: true, description: "Does the property has wifi" })
     @IsBoolean()
     wifi: boolean;
 
+    @ApiProperty({ example: true, description: "Does the property has tv" })
     @IsBoolean()
     tv: boolean;
 
+    @ApiProperty({ example: false, description: "Does the property has air conditioning" })
     @IsBoolean()
     airConditioning: boolean;
-    
+   
+    @ApiProperty({ example: false, description: "Does the property has pool" })
     @IsBoolean()
     piscina: boolean;
-    
+   
+    @ApiProperty({ example: true, description: "Does the property has parking" })
     @IsBoolean()
     parqueadero: boolean;
 
+    @ApiProperty({ example: true, description: "Does the property has kitchen" })
     @IsBoolean()
     cocina: boolean;
+
+    @ApiProperty({ example: TypeOfProperty.HOUSE, description: "Could be apparment, house or room" })
+    @IsEnum(TypeOfProperty)
+    type: TypeOfProperty = TypeOfProperty.HOUSE
 
 }

@@ -6,16 +6,25 @@ import { User } from '../../entities/user.entity';
 import { Account } from '../../entities/account.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from '../../dtos/login-user.dto';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
+  private googleClient: OAuth2Client;
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) {
+    // Inicializamos el cliente de Google con las credenciales desde el .env
+    this.googleClient = new OAuth2Client(
+      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
+    );
+  }
 
   async login(loginUserDto: LoginUserDto) {
     const { email, password } = loginUserDto;
@@ -59,21 +68,62 @@ export class AuthService {
     };
   }
 
-  /**
-   * Maneja el inicio de sesión con Google.
-   */
-  async googleLogin(googleUser: { email: string; name: string; photo: string }) {
-    const { email, name, photo } = googleUser;
+  async googleLogin(googleToken: string) {
+    try {
+      // Validamos el token con Google
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken: googleToken,
+        audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
 
-    // Busca el usuario en la base de datos por email
-    let user = await this.userRepository.findOne({ where: { email } });
+      if (!payload) {
+        throw new UnauthorizedException('Token inválido');
+      }
 
-    // Si no existe el usuario, permite acceso temporal sin registrar en la base de datos
-    if (!user) {
-      // Puedes decidir registrar un usuario temporal en memoria o simplemente generar un token
-      const payload = { email, name, photo };
+      const { email, name, picture } = payload;
 
-      const token = this.jwtService.sign(payload, {
+      // Buscamos al usuario en la base de datos
+      let user = await this.userRepository.findOne({ where: { email } });
+
+      if (!user) {
+        // Si no existe, devolvemos un token para un usuario no registrado
+        const tempPayload = { email, name, photo: picture };
+
+        const tempToken = this.jwtService.sign(tempPayload, {
+          secret: process.env.JWT_SECRET,
+          expiresIn: '1h',
+        });
+
+        return {
+          token: tempToken,
+          user: {
+            id: null,
+            name: name,
+            lastName: null,
+            email: email,
+            phone: null,
+            nationality: null,
+            dni: null,
+            DOB: null,
+            civilStatus: null,
+            employmentStatus: null,
+            isActive: null,
+            photo: picture,
+            role: 'user',
+            isRegistered: false,
+          },
+        };
+      }
+
+      // Si el usuario existe, generamos un token con su información
+      const userPayload = {
+        id: user.id,
+        email: user.email,
+        role: user.account_?.role || 'user',
+      };
+
+      const token = this.jwtService.sign(userPayload, {
         secret: process.env.JWT_SECRET,
         expiresIn: '1h',
       });
@@ -81,37 +131,25 @@ export class AuthService {
       return {
         token,
         user: {
-          email,
-          name,
-          photo,
-          isRegistered: false, // Indica que el usuario no está registrado en la base de datos
+          id: user.id,
+          name: user.name || name,
+          lastName: user.lastName || null,
+          email: user.email,
+          phone: user.phone || null,
+          nationality: user.nationality || null,
+          dni: user.dni || null,
+          DOB: user.DOB || null,
+          civilStatus: user.civilStatus || null,
+          employmentStatus: user.employmentStatus || null,
+          isActive: user.isActive,
+          photo: user.photo || picture,
+          role: user.account_?.role || 'user',
+          isRegistered: true,
         },
       };
+    } catch (error) {
+      console.error('Error en la verificación del token:', error);
+      throw new UnauthorizedException('Error al validar el token de Google');
     }
-
-    // Si el usuario existe, genera un token JWT
-    const payload = {
-      id: user.id,
-      email: user.email,
-      role: user.account_?.role || 'user', // Rol si existe
-    };
-
-    const token = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET,
-      expiresIn: '1h',
-    });
-
-    return {
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name || name, // Usa el nombre almacenado o el proporcionado por Google
-        photo: user.photo || photo, // Usa la foto almacenada o la proporcionada por Google
-        roles: user.account_?.role || 'user',
-        isActive: user.isActive,
-        isRegistered: true, // Indica que está registrado en la base de datos
-      },
-    };
   }
 }

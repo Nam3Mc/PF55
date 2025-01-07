@@ -10,6 +10,11 @@ import { LoggingMiddleware } from './midledware/loggingMiddleware';
 import { ContractModule } from './modules/contract/contract.module';
 import { AmenitiesModule } from './modules/amenities/amenities.module';
 import { PreloadModule } from './modules/preload/preload.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { SocketModule } from './modules/socket/socket.module';
+import { PaymentsModule } from './modules/payments/payments.module';
+import { PaypalModule } from './modules/paypal/paypal.module';
+
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -38,6 +43,10 @@ cloudinary.config({
     ContractModule,
     AmenitiesModule,
     PreloadModule,
+    NotificationsModule,
+    SocketModule,
+    PaymentsModule,
+    PaypalModule,
   ],
   controllers: [],
   providers: [],

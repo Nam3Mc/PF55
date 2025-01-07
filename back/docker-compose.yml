@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: rentafacil
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2Years*end2022
+    ports:
+      - "5432:5432"
+
+  nest-app:
+    build:
+      context: .
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=2Years*end2022
+      - DATABASE_NAME=rentafacil
+
+      NODE_ENV: development
+      PORT: 3000
+      CLOUDINARY_CLOUD_NAME: dzfctddxu
+      CLOUDINARY_API_KEY: 676517874938633
+      CLOUDINARY_API_SECRET: 8bTArKosRJFfjp64htSU5cCDmjc
+      JWT_SECRET: SecretRentaFacil
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  pgdata:
