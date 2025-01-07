@@ -1,4 +1,4 @@
-name: deploy
+name: Deploy to Docker Hub
 
 on: 
   push:
@@ -8,23 +8,29 @@ on:
 jobs: 
   build:
     runs-on: ubuntu-latest
+    
     steps:
+      # Checkout del código fuente
       - name: Checkout
         uses: actions/checkout@v4
         
+      # Login seguro a Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           
-      - name: Set up Docker Build
+      # Configuración de Docker Buildx para soporte multiplataforma
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      - name: Build and push
+      # Construcción y publicación de la imagen Docker
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with: 
           context: .
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/rentafacil:latest
+          platforms: linux/amd64,linux/arm64  # Opcional: construye para múltiples arquitecturas
