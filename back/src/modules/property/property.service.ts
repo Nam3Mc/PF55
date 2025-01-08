@@ -8,7 +8,6 @@ import { ImageService } from '../image/image.service'
 import { Amenities } from '../../entities/amenitie.entity'
 import { FavoritesDto } from '../../dtos/favorites.dto'
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto'
-import { TypeOfProperty } from '../../enums/property'
 
 @Injectable()
 export class PropertyService {
@@ -70,16 +69,13 @@ export class PropertyService {
     try {
       const properties = await this.propertyDB.find({
         where: { account_: { id } },
-        relations: ["image_", "account_", "amenities_"]
+        relations: ["account_", "amenities_", "image_"], 
       });
-      if (!properties || properties.length === 0 || properties === null) {
-        throw new NotFoundException("You haven't listed a property yet");
-      }
-      return properties;
+      return properties || [];
     } catch (error) {
       throw new BadRequestException('No has listado ninguna propiedad con esta cuenta');
-    }
-  }
+    }
+  }
 
   async createProperty(propertyData: CreatePropertyDto) {
     try {
