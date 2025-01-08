@@ -24,7 +24,7 @@ jobs:
       name: build and push
       uses: docker/build-push-action@v5
       with: 
-        contex: .back
+        contex: ./back
         file: ./back/Dockerfile
         build: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/rentafacil:latest
