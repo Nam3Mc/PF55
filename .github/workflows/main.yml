@@ -19,10 +19,10 @@ jobs:
         passowrd: ${{ secrets.DOCKERHUB_TOKEN }}
     -
       name: set up docker build
-      uses: docker/setuo-buildx-action@v3
+      uses: docker/setuo-buildx/action@v3
     -
       name: build and push
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-ction@v5
       with: 
         contex: ./back
         file: ./back/Dockerfile
