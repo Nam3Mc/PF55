@@ -19,6 +19,18 @@ export class PropertyService {
     private readonly accountDB: AccountService,
     private readonly imageDB: ImageService,
   ) {}
+
+  async gettingEmail(id: string) {
+    try {
+      const property = await this.getPropertyById(id)
+      const accountId = property[0].account_.id
+      const email = (await this.accountDB.findAccountById(accountId)).user_.email
+      return email
+    } catch (error) {
+      throw new InternalServerErrorException('error obteniendo el email');
+    }
+
+  }
   
   async getProperties() {
     try {
