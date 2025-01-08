@@ -4,6 +4,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { FavoritesDto } from '../../dtos/favorites.dto';
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
+import { get } from 'http';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -26,6 +27,12 @@ export class PropertyController {
   @ApiOperation({ summary: 'Get all properties'})
   getAllProperties() {
     return this.propertyService.getProperties()
+  }
+  
+  @Get("email/")
+  @ApiOperation({summary: "devuelve el email de la cuenta relacionado con la propiedad para paypal y recibe el id"})
+  getEmail(@Body() body: {id: string}) {
+    return this.propertyService.gettingEmail(body.id)
   }
 
   @Get('type')
