@@ -22,9 +22,9 @@ jobs:
       uses: docker/setuo-buildx/action@v3
     -
       name: build and push
-      uses: docker/build-push-ction@v5
+      uses: docker/build-push-action@v5
       with: 
-        contex: ./back
-        file: ./back/Dockerfile
+        contex: .
+        file: ./Dockerfile
         build: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/rentafacil:latest
