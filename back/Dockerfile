@@ -9,6 +9,7 @@ RUN npm install typeorm
 RUN npm install
 
 COPY . .
+COPY .env .env
 
 EXPOSE 3000
 

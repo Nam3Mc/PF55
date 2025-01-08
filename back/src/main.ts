@@ -5,8 +5,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { PreloadServices } from './modules/preload/preload.service';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { SocketService } from './modules/socket/socket.service';
+import { config } from 'dotenv';
+config();
 
 async function bootstrap() {
+  
+
   const app = await NestFactory.create(AppModule);
 
   const socketService = app.get(SocketService);
