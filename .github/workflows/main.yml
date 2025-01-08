@@ -26,4 +26,5 @@ jobs:
       with:
          context: ./back
          file: ./back/Dockerfile
+         push: true 
          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rentafacil:latest
