@@ -1,0 +1,29 @@
+name: deploy
+
+on:
+  push:
+    branches: 
+      - "main"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+    - 
+      name: checkout
+      uses: actions/checkout@v4
+    -
+      name: login to docker hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    -
+      name: set up docker build
+      uses: docker/setup-buildx-action@v3
+    -
+      name: build and push
+      uses: docker/build-push-action@v5
+      with:
+         context: ./back
+         file: ./back/Dockerfile
+         tags: ${{ secrets.DOCKERHUB_USERNAME }}/rentafacil:latest
