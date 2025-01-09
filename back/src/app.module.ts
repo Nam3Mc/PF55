@@ -11,7 +11,7 @@ import { ContractModule } from './modules/contract/contract.module';
 import { AmenitiesModule } from './modules/amenities/amenities.module';
 import { PreloadModule } from './modules/preload/preload.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-import { SocketModule } from './modules/socket/socket.module';
+import { MessagesModule } from './modules/messages/messages.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { PaypalModule } from './modules/paypal/paypal.module';
 
@@ -44,7 +44,7 @@ cloudinary.config({
     AmenitiesModule,
     PreloadModule,
     NotificationsModule,
-    SocketModule,
+    MessagesModule,
     PaymentsModule,
     PaypalModule,
   ],
