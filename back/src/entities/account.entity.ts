@@ -16,9 +16,10 @@ export class Account {
   @Column({ default: Role.USER })
   role: Role;
 
-  @OneToOne(() => User, (user) => user.account_, { nullable: false, cascade: true })
-  @JoinColumn({ name: 'user_id' }) // Define la columna en la base de datos
+  @OneToOne(() => User, (user) => user.account_, { nullable: false })
+  @JoinColumn({ name: 'user_id' })
   user_: User;
+
 
   @OneToMany(() => Contract, (contract) => contract.account_)
   contract_: Contract[];
@@ -33,12 +34,7 @@ export class Account {
   @OneToMany(() => Message, (message) => message.sender)
   sentMessages: Message[];
 
-
   @OneToMany(() => Message, (message) => message.recipient)
   receivedMessages: Message[];
-
-    @ManyToMany(() => Property, (property) => property.favorites_ )
-    @JoinTable() // Crea una tabla intermedia que relaciona cuentas y propiedades
-    favorites_: Property[];
 
 }
