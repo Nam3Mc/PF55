@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, PropertyType } from "typeorm";
 import { Contract } from "./contract.entity";
 import { Account } from "./account.entity";
 import { Image } from "./image.entity";
 import { Amenities } from "./amenitie.entity";
+import { TypeOfProperty } from "../enums/property";
 
 @Entity({
     name: "properties"
@@ -32,22 +33,22 @@ export class Property {
     description: string
     
     @Column({ length: 50, nullable: false })
+    city: string
+    
+    @Column({ length: 50, nullable: false })
     state: string
 
     @Column({ length: 50, nullable: false })
-    city: string
+    country: string
+
+    @Column({ length: 50, nullable: false })
+    address: string
 
     @Column({ nullable: false })
     capacity: number
 
     @Column({type: "int" })
     rating: number
-
-    // @Column()
-    // checkIn: number
-
-    // @Column()
-    // checkOut: number
 
     @Column()
     hasMinor: boolean
@@ -61,20 +62,23 @@ export class Property {
     @Column()
     longitude: string
 
-    @OneToMany( () => Contract, (contract) => contract.property_)
-    contract_: Contract[]
+    @Column()
+    type: TypeOfProperty = TypeOfProperty.HOUSE
 
-    @ManyToOne( () => Account, (account) => account.property_)
+    @OneToMany( () => Contract, (contract) => contract.property_, {cascade: true})
+    contract_: Contract
+
+    @ManyToOne( () => Account, (account) => account.property_, {cascade: true})
     account_: Account
 
-    @OneToMany( () => Image, (image) => image.property_)
+    @OneToMany( () => Image, (image) => image.property_, {cascade: true})
     image_: Image[]
 
     @OneToOne( () => Amenities, (amenities) => amenities.property_, {cascade: true})
     @JoinColumn({ name: "amenities_id"})
     amenities_: Amenities
 
-    @ManyToMany(() => Account, (account) => account.favorites_)
+    @ManyToMany(() => Account, (account) => account.favorites_, {cascade: true})
     favorites_: Account[];
 
 }

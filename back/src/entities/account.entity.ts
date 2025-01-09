@@ -33,6 +33,12 @@ export class Account {
   @OneToMany(() => Message, (message) => message.sender)
   sentMessages: Message[];
 
+
   @OneToMany(() => Message, (message) => message.recipient)
   receivedMessages: Message[];
+
+    @ManyToMany(() => Property, (property) => property.favorites_ )
+    @JoinTable() // Crea una tabla intermedia que relaciona cuentas y propiedades
+    favorites_: Property[];
+
 }

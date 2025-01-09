@@ -5,7 +5,8 @@ import {
   Post, 
   UploadedFile, 
   UseInterceptors, 
-  BadRequestException 
+  BadRequestException, 
+  Delete
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { ApiOperation, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
@@ -81,4 +82,11 @@ export class ImageController {
   ) {
     return this.imageService.uploadUserPhoto(file, updatePhotoDto.id);
   }
+
+  @Delete()
+  @ApiOperation({summary: "picture id to delete"})
+  deletePicture(@Body() id: UpdateUserPhotoDto) {
+    return this.imageService.deleteImage(id)
+  }
+
 }

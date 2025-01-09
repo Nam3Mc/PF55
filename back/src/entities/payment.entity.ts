@@ -1,5 +1,5 @@
 // import { PaymentStatus } from "../enums/payments";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Contract } from "./contract.entity";
 import { PaymentStatus } from "../enums/payments";
 
@@ -13,15 +13,21 @@ export class Payment {
     id: string
 
     @Column()
-    value: number
+    transactionId: string
 
     @Column()
-    dueDate: Date
+    netAmount: number
+
+    @Column()
+    paymentFee: number
+
+    @Column()
+    paymentDate: Date
 
     @Column()
     status: PaymentStatus = PaymentStatus.PENDING
 
-    @OneToMany( () => Contract, (contract) => contract.payment_)
+    @OneToOne( () => Contract, (contract) => contract.payment_, {cascade: true})
     contract_: Contract
     
 }

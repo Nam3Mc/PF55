@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, MaxLength, Min, MinLength } from "class-validator"
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, MaxLength, Min, MinLength } from "class-validator"
+import { TypeOfProperty } from "../enums/property"
 
 export class CreatePropertyDto {
 
@@ -8,7 +9,7 @@ export class CreatePropertyDto {
     @IsString()
     @MinLength(8)
     @MaxLength(50)
-    title: string
+    name: string
     
     @ApiProperty({ example: "350", description: "Price per mouth" })
     @IsNotEmpty()
@@ -25,10 +26,20 @@ export class CreatePropertyDto {
     @IsString()
     state: string
 
-    @ApiProperty({ example: "Mar del Plata", description: "Price per mouth" })
+    @ApiProperty({ example: "Mar del Plata", description: "ciudad donde se ubica la propiedad" })
     @IsNotEmpty()
     @IsString()
     city: string
+
+    @ApiProperty({ example: "Argentina", description: "Pais donde se ubica la propiedad" })
+    @IsNotEmpty()
+    @IsString()
+    country: string
+
+    @ApiProperty({ example: "Argentina", description: "Pais donde se ubica la propiedad" })
+    @IsString()
+    @IsOptional()
+    address: string
 
     @ApiProperty({ example: false, description: "Deberia ser inactive por defecto para que si el admi lo aprieva sea quien lo cambie " })
     @IsBoolean()
@@ -82,22 +93,32 @@ export class CreatePropertyDto {
     @IsOptional()
     images: string[]
 
+    @ApiProperty({ example: true, description: "Does the property has wifi" })
     @IsBoolean()
     wifi: boolean;
 
+    @ApiProperty({ example: true, description: "Does the property has tv" })
     @IsBoolean()
     tv: boolean;
 
+    @ApiProperty({ example: false, description: "Does the property has air conditioning" })
     @IsBoolean()
     airConditioning: boolean;
-    
+   
+    @ApiProperty({ example: false, description: "Does the property has pool" })
     @IsBoolean()
     piscina: boolean;
-    
+   
+    @ApiProperty({ example: true, description: "Does the property has parking" })
     @IsBoolean()
     parqueadero: boolean;
 
+    @ApiProperty({ example: true, description: "Does the property has kitchen" })
     @IsBoolean()
     cocina: boolean;
+
+    @ApiProperty({ example: TypeOfProperty.HOUSE, description: "Could be apparment, house or room" })
+    @IsEnum(TypeOfProperty)
+    type: TypeOfProperty = TypeOfProperty.HOUSE
 
 }

@@ -1,14 +1,14 @@
 export enum  CivilStatus {
-    MARRIED = "Married",
-    DIVORCE = "Divorce",
-    WIDOW = "Widow",
-    SINGLE = "Single"
+    MARRIED = "Casado",
+    DIVORCE = "Divorciado",
+    WIDOW = "Viudo",
+    SINGLE = "Soltero"
 }
 
 export enum EmploymentStatus {
-    EMPLOYED = "Employed",
-    UNEMPLOYED = "Unemployed",
-    INDEPENDENT = "Independent",
-    RETIRED = "Retired",
-    STUDENT = "Student"
+    EMPLOYED = "Empleado",
+    UNEMPLOYED = "Desempleado",
+    INDEPENDENT = "Independiente",
+    RETIRED = "retirado",
+    STUDENT = "Estudiante"
 }
