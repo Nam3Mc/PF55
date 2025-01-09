@@ -31,7 +31,7 @@ export class PropertyController {
   
   @Get("email/:id")
   @ApiOperation({summary: "devuelve el email de la cuenta relacionado con la propiedad para paypal y recibe el id"})
-  getEmail(@Param() id: string) {
+  getEmail(@Param('id') id: string) {
     return this.propertyService.gettingEmail(id)
   }
 

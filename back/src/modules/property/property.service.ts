@@ -125,8 +125,8 @@ export class PropertyService {
       if (!property) {
         throw new Error('Property not found')
       }
-      const pripertyUpdated = updateProperty(propertyData, property)
-      const updatedProperty = await this.propertyDB.save(property)
+      const propertyUpdated = updateProperty(propertyData, property)
+      const updatedProperty = await this.propertyDB.save(propertyUpdated)
       return updatedProperty
     } catch (error) {
       console.error('Error updating property:', error.message)
