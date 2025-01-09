@@ -21,7 +21,6 @@ export class MessagesController {
           senderId: '123456',
           recipientId: '654321',
           content: 'Hola, este es un mensaje de prueba',
-          timestamp: '2025-01-07T10:00:00.000Z',
         },
       },
     },
