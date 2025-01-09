@@ -9,7 +9,7 @@ export class CreatePropertyDto {
     @IsString()
     @MinLength(8)
     @MaxLength(50)
-    title: string
+    name: string
     
     @ApiProperty({ example: "350", description: "Price per mouth" })
     @IsNotEmpty()
@@ -26,10 +26,20 @@ export class CreatePropertyDto {
     @IsString()
     state: string
 
-    @ApiProperty({ example: "Mar del Plata", description: "Price per mouth" })
+    @ApiProperty({ example: "Mar del Plata", description: "ciudad donde se ubica la propiedad" })
     @IsNotEmpty()
     @IsString()
     city: string
+
+    @ApiProperty({ example: "Argentina", description: "Pais donde se ubica la propiedad" })
+    @IsNotEmpty()
+    @IsString()
+    country: string
+
+    @ApiProperty({ example: "Argentina", description: "Pais donde se ubica la propiedad" })
+    @IsString()
+    @IsOptional()
+    address: string
 
     @ApiProperty({ example: false, description: "Deberia ser inactive por defecto para que si el admi lo aprieva sea quien lo cambie " })
     @IsBoolean()

@@ -60,9 +60,6 @@ export class PaymentsService {
       
       if ( status === "COMPLETED") {
         const contract = await this.contractDB.getContractById(contractId)
-        contract.status = ContractStatus.ACEPTED 
-        contract.startDate = contract.startDate
-        const updatedContract = await this.contractDB.saveContract(contract)
         const payment = new Payment
         payment.transactionId = id
         payment.status = status
@@ -72,7 +69,10 @@ export class PaymentsService {
         payment.paymentDate = new Date(Date.now())
         await this.paymentDB.save(payment)
         console.log(response)
-        return updatedContract
+        contract.status = ContractStatus.ACEPTED 
+        contract.startDate = contract.startDate
+        const updatedContract = await this.contractDB.saveContract(contract)
+        return payment
       }
     } catch (error) {
       throw new InternalServerErrorException('Error capturing order', error.message);

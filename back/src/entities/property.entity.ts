@@ -33,10 +33,16 @@ export class Property {
     description: string
     
     @Column({ length: 50, nullable: false })
+    city: string
+    
+    @Column({ length: 50, nullable: false })
     state: string
 
     @Column({ length: 50, nullable: false })
-    city: string
+    country: string
+
+    @Column({ length: 50, nullable: false })
+    address: string
 
     @Column({ nullable: false })
     capacity: number
