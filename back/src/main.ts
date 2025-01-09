@@ -8,8 +8,15 @@ import { SocketService } from './modules/socket/socket.service';
 
 async function bootstrap() {
   
-
   const app = await NestFactory.create(AppModule);
+
+  const preloadServices = app.get(PreloadServices);
+  try {
+    await preloadServices.onApplicationBootstrap();
+    console.log('Database seeding completed successfully.');
+  } catch (error) {
+    console.error('Error during database seeding:', error);
+  }
 
   const socketService = app.get(SocketService);
   
@@ -30,14 +37,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'Documents backend RentaFacil',
   });
-
-  const preloadServices = app.get(PreloadServices);
-  try {
-    await preloadServices.onApplicationBootstrap();
-    console.log('Database seeding completed successfully.');
-  } catch (error) {
-    console.error('Error during database seeding:', error);
-  }
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? '*',
