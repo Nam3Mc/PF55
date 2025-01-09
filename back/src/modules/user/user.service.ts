@@ -77,22 +77,14 @@ export class UserService {
     return userToReturn;
 }
 
-async getUsers(page: number, limit: number) {
-    const [users, total] = await this.userRepository.findAndCount({
-        skip: (page - 1) * limit,
-        take: limit,
-    });
+async getUsers() {
+    const users = await this.userRepository.find();
 
     if (users.length === 0) {
         throw new NotFoundException('No se encontraron usuarios.');
     }
 
-    return {
-        total,
-        page,
-        limit,
-        users,
-    };
+    return users;
 }
 
 async getUserById(id: string) {
@@ -187,6 +179,22 @@ async getUserById(id: string) {
     await this.userRepository.save(user);
     
   }
+
+  async activateUser(id: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id } });
+  
+    if (!user) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado.`);
+    }
+  
+    if (user.isActive) {
+      throw new BadRequestException(`El usuario con ID ${id} ya está activo.`);
+    }
+  
+    user.isActive = true;
+    await this.userRepository.save(user);
+  }
+  
 // agregue estas funciones para la precarga de datos 
   async getAllUser() {
     return this.userRepository.find()

@@ -9,7 +9,8 @@ import {
   ParseUUIDPipe, 
   HttpException, 
   HttpStatus, 
-  Delete
+  Delete,
+  Patch
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '../../dtos/create-user.dto';
@@ -37,18 +38,11 @@ export class UserController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get a list of users with pagination' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number', example: 1 })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', example: 5 })
-  async getUsers(
-    @Query('page') page: string,
-    @Query('limit') limit: string,
-  ) {
-    const pageNum = parseInt(page) || 1;
-    const limitNum = parseInt(limit) || 5;
-
-    return this.userService.getUsers(pageNum, limitNum);
+  @ApiOperation({ summary: 'Get a list of all users' })
+  async getUsers() {
+    return this.userService.getUsers();
   }
+  
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID' })
@@ -97,4 +91,22 @@ export class UserController {
       );
     }
   }
+
+  @Patch(':id/activate')
+  @ApiOperation({ summary: 'Activate a user by ID' })
+  @ApiParam({ name: 'id', description: 'UUID of the user', example: '123e4567-e89b-12d3-a456-426614174000' })
+  async activateUser(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    try {
+      await this.userService.activateUser(id);
+      return { message: 'Usuario activado exitosamente' };
+    } catch (error) {
+      throw new HttpException(
+        `Error activating user with ID ${id}: ${error.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+}
+
 }
