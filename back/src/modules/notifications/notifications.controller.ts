@@ -1,4 +1,4 @@
-import { Controller, Post, Body, BadRequestException, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
@@ -7,16 +7,6 @@ class UserRegisteredDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
-}
-
-class PasswordResetDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  resetLink: string;
 }
 
 class PropertyPublishedDto {
@@ -54,10 +44,10 @@ export class NotificationsController {
     status: 400,
     description: 'Error al enviar el correo',
   })
-  async notifyUserRegistered(
-    @Body(new ValidationPipe()) body: UserRegisteredDto,
-  ) {
+  async notifyUserRegistered(@Body() body: UserRegisteredDto) {
+   // console.log('Body recibido en notifyUserRegistered:', body);
     try {
+      // Llamar al servicio de notificaciones
       await this.notificationsService.sendEmail(
         body.email,
         '¡Bienvenido a RentaFácil!',
@@ -65,6 +55,7 @@ export class NotificationsController {
       );
       return { message: 'Correo de bienvenida enviado' };
     } catch (error) {
+      console.error('Error al enviar el correo de bienvenida:', error);
       throw new BadRequestException('Error al enviar el correo');
     }
   }
@@ -91,10 +82,9 @@ export class NotificationsController {
     status: 400,
     description: 'Error al enviar el correo',
   })
-  async notifyPropertyPublished(
-    @Body(new ValidationPipe()) body: PropertyPublishedDto,
-  ) {
+  async notifyPropertyPublished(@Body() body: PropertyPublishedDto) {
     try {
+      // Llamar al servicio de notificaciones
       await this.notificationsService.sendEmail(
         body.userEmail,
         'Tu propiedad ha sido publicada',
@@ -102,6 +92,7 @@ export class NotificationsController {
       );
       return { message: 'Correo enviado' };
     } catch (error) {
+      console.error('Error al enviar el correo de propiedad publicada:', error);
       throw new BadRequestException('Error al enviar el correo');
     }
   }

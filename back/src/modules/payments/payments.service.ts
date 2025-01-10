@@ -1,6 +1,4 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import paypal from '@paypal/checkout-server-sdk'
-import axios from 'axios';
 import { ContractService } from '../contract/contract.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from '../../entities/payment.entity';
@@ -8,10 +6,10 @@ import { Repository } from 'typeorm';
 import { CreateContractDto } from '../../dtos/create-contract.dto';
 import { dayCalculator } from '../../helpers/daysCalculator';
 import { PropertyService } from '../property/property.service';
-import { AccountService } from '../account/account.service';
 import { PaypalService } from '../paypal/paypal.service';
-import { ContractStatus } from '../../enums/contract';
 import { PaymentDto } from '../../dtos/payment.dto';
+import { paymentCreator } from '../../helpers/paymentCreator';
+import { reservationCreator } from '../../helpers/reservationCreator';
 
 @Injectable()
 export class PaymentsService {  
@@ -26,26 +24,24 @@ export class PaymentsService {
 
   async orderAndComission(contractData: CreateContractDto) {
     try {
-      const { paypalEmail, startDate, endDate, propertyId} = contractData
-      const price = (await this.propertyDB.justProperty(propertyId)).price
-      const nights = dayCalculator(new Date(startDate), new Date(endDate))
-      const amount = ( (price * nights ) + (price * nights) * 0.04 )
-      const commission = ((price * nights) * 0.04 ) * 2
-      const paymentData  = this.paypalServices.createOrder(amount, paypalEmail, commission)
-      const response = (await paymentData).response
-      const status = (await paymentData).status
-      const link = response.result.links[1].href
-
-      if ( status === "CREATED") {
-        const contract = await this.contractDB.createContract(contractData)
-        const { id } = contract
-        return {link, id}
-      }
-      else {
-        throw new BadRequestException("El pago no se proceso")
-      }
+      const { paypalEmail, startDate, endDate, propertyId} = contractData      
+        const price = (await this.propertyDB.justProperty(propertyId)).price
+        const nights = dayCalculator(startDate, endDate)
+        const amount = ( (price * nights ) + (price * nights) * 0.04 )
+        const commission = ((price * nights) * 0.04 ) * 2
+        const paymentData  = (await this.paypalServices.createOrder(amount, paypalEmail, commission)).response
+        const status = (await this.paypalServices.createOrder(amount, paypalEmail, commission)).status
+        if ( status === "CREATED" && price ) {
+          const link = (await paymentData).result.links[1].href
+          const contract = await this.contractDB.createContract(contractData)
+          const {id} = contract
+          return {link, id}
+       }
+       else {
+        throw new BadRequestException("Las fechas no estan disponibles")
+       }
     } catch (error) {
-      throw new InternalServerErrorException('Error processing order and commission', error.message);
+      throw new BadRequestException('Error processing order and commission', error.message);
     }
   }
 
@@ -57,25 +53,15 @@ export class PaymentsService {
       const status = response.status
       const netAmount = response.seller_receivable_breakdown.net_amount.value
       const paymentFee = response.seller_receivable_breakdown.paypal_fee.value
-      
+      const contract = await this.contractDB.getContractById(contractId)
       if ( status === "COMPLETED") {
-        const contract = await this.contractDB.getContractById(contractId)
-        contract.status = ContractStatus.ACEPTED 
-        contract.startDate = contract.startDate
-        const updatedContract = await this.contractDB.saveContract(contract)
-        const payment = new Payment
-        payment.transactionId = id
-        payment.status = status
-        payment.netAmount = Math.round(netAmount)
-        payment.paymentFee = Math.round(paymentFee)
-        payment.contract_ = contract
-        payment.paymentDate = new Date(Date.now())
-        await this.paymentDB.save(payment)
-        console.log(response)
-        return updatedContract
+        const payment = paymentCreator(id, netAmount, paymentFee, contract)
+        const savedPayment = await this.paymentDB.save(payment)
+        const updatedContract = await this.contractDB.updateContract(contractId)
+        return {savedPayment, updatedContract}
       }
-    } catch (error) {
-      throw new InternalServerErrorException('Error capturing order', error.message);
-    }
+      } catch (error) {
+      throw new BadRequestException('Error capturing order', error.message);
+     }
   }
 }

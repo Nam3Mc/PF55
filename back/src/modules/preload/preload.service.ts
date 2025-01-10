@@ -76,12 +76,13 @@ export class PreloadServices implements OnApplicationBootstrap {
       console.log(property)
       console.log(properties)
       const {
-        title, price, description, state, isActive,
+        title, price, description, state, isActive, country,
         city, bedrooms, bathrooms, capacity, latitude,
         longitude, hasMinor, pets, images, wifi, tv,
         airConditioning, piscina, parqueadero, cocina,
       } = property;
 
+      
       const newProperty = new Property
       newProperty.isActive = isActive;
       newProperty.name = title;
@@ -91,6 +92,8 @@ export class PreloadServices implements OnApplicationBootstrap {
       newProperty.description = description;
       newProperty.state = state;
       newProperty.city = city;
+      newProperty.country = country
+      newProperty.address = `${city}, ${state}, ${country}`
       newProperty.capacity = capacity;
       newProperty.rating = 5;
       newProperty.hasMinor = hasMinor;

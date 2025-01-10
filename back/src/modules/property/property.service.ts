@@ -5,10 +5,11 @@ import { Repository } from 'typeorm'
 import { CreatePropertyDto } from '../../dtos/create-property.dto'
 import { AccountService } from '../account/account.service'
 import { ImageService } from '../image/image.service'
-import { Amenities } from '../../entities/amenitie.entity'
 import { FavoritesDto } from '../../dtos/favorites.dto'
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto'
-import { TypeOfProperty } from '../../enums/property'
+import { FilterDto } from '../../dtos/filter.dto'
+import { propertyCreator } from '../../helpers/createProperty'
+import { updateProperty } from '../../helpers/updateProperty'
 
 @Injectable()
 export class PropertyService {
@@ -70,62 +71,28 @@ export class PropertyService {
     try {
       const properties = await this.propertyDB.find({
         where: { account_: { id } },
-        relations: ["image_", "account_", "amenities_"]
+        relations: ["account_", "amenities_", "image_"], 
       });
-      if (!properties || properties.length === 0 || properties === null) {
-        throw new NotFoundException("You haven't listed a property yet");
-      }
-      return properties;
+      return properties || [];
     } catch (error) {
       throw new BadRequestException('No has listado ninguna propiedad con esta cuenta');
-    }
-  }
+    }
+  }
 
   async createProperty(propertyData: CreatePropertyDto) {
     try {
       const {
-        title, price, images, description, isActive,
-        state, city, bedrooms, bathrooms, capacity,
-        latitude, longitude, hasMinor, 
-        pets, accountId, wifi, cocina, tv, 
-        parqueadero, piscina, airConditioning 
-      } = propertyData;
+       images, accountId} = propertyData;
 
       const account = await this.accountDB.findAccountById(accountId);
       if (!account) {
         throw new BadRequestException("Was not possible to add the property to your account");
       }
-
-      const amenities = new Amenities();
-      amenities.airConditioning = airConditioning;
-      amenities.tv = tv;
-      amenities.cocina = cocina;
-      amenities.wifi = wifi;
-      amenities.parqueadero = parqueadero;
-      amenities.piscina = piscina;
-
-      const newProperty = new Property();
-      newProperty.name = title;
-      newProperty.price = price;
-      newProperty.description = description;
-      newProperty.state = state;
-      newProperty.city = city;
-      newProperty.capacity = capacity;
-      newProperty.bedrooms = bedrooms;
-      newProperty.bathrooms = bathrooms;
-      newProperty.latitude = latitude;
-      newProperty.longitude = longitude;
-      newProperty.hasMinor = hasMinor;
-      newProperty.pets = pets;
-      newProperty.account_ = account;
-      newProperty.isActive = isActive;
-      newProperty.rating = 5;
-      newProperty.amenities_ = amenities;
-
+      const newProperty = propertyCreator(propertyData, account)
       const createdProperty = await this.propertyDB.save(newProperty);
       await this.imageDB.savePicture(createdProperty, images);
 
-      return createdProperty;
+      return createdProperty
     } catch (error) {
       throw new InternalServerErrorException('Error creating property');
     }
@@ -153,34 +120,13 @@ export class PropertyService {
 
   async updateProperty(propertyData: UpdatePropertyDto) {
     try {
-      const { id, title, price, description, state, city, capacity,
-              bedrooms, bathrooms, hasMinor, pets, isActive, wifi, 
-              piscina, parqueadero, cocina, tv, airConditioning 
-            } = propertyData
-      const properties = await this.getPropertyById(id)
+      const properties = await this.getPropertyById(propertyData.id)
       const property = properties[0]
       if (!property) {
         throw new Error('Property not found')
       }
-      property.name = title ?? property.name
-      property.price = price ?? property.price
-      property.description = description ?? property.description
-      property.state = state ?? property.state
-      property.city = city ?? property.city
-      property.capacity = capacity ?? property.capacity
-      property.bedrooms = bedrooms ?? property.bedrooms
-      property.bathrooms = bathrooms ?? property.bathrooms
-      property.hasMinor = hasMinor ?? property.hasMinor
-      property.pets = pets ?? property.pets
-      property.isActive = isActive ?? property.isActive
-      property.amenities_[1] = wifi ?? property.amenities_[1]
-      property.amenities_[2] = tv ?? property.amenities_[2]
-      property.amenities_[3] = airConditioning ?? property.amenities_[3]
-      property.amenities_[4] = piscina ?? property.amenities_[4]
-      property.amenities_[5] = parqueadero ?? property.amenities_[5]
-      property.amenities_[6] = cocina ?? property.amenities_[6]
-  
-      const updatedProperty = await this.propertyDB.save(property)
+      const propertyUpdated = updateProperty(propertyData, property)
+      const updatedProperty = await this.propertyDB.save(propertyUpdated)
       return updatedProperty
     } catch (error) {
       console.error('Error updating property:', error.message)
@@ -188,18 +134,57 @@ export class PropertyService {
     }
   }
 
-  async propertyByType(type: string): Promise<Property[]> {
+  async searchProperties(filters: Partial<FilterDto>): Promise<Property[]> {
+    const  { capacity, minors, pets, checkIn, checkOut, isActive, country, type } = filters
     try {
-      const properties = await this.propertyDB
-        .createQueryBuilder('property')
-        .where('property.type = :type', { type })  
-        .getMany();
-  
-      return properties;
+      if (checkIn && checkOut) {
+        const inDate = new Date(checkIn);
+        const outDate = new Date(checkOut);
+        if (isNaN(inDate.getTime()) || isNaN(outDate.getTime())) {
+          throw new Error('Las fechas de check-in o check-out no son válidas.');
+        }
+        if (inDate >= outDate) {
+          throw new Error('La fecha de check-in debe ser anterior a la fecha de check-out.');
+        }
+      }
+      const queryBuilder = this.propertyDB.createQueryBuilder('property')
+      if (country) {
+        queryBuilder.andWhere('property.country = :country', { country })
+      }
+      if (capacity) {
+        queryBuilder.andWhere('property.capacity >= :capacity', { capacity })
+      }
+      if (type) {
+        queryBuilder.andWhere('property.type = :type', { type })
+      }
+      if (minors !== undefined) {
+        queryBuilder.andWhere('property.hasMinor = :minors', { minors })
+      }
+      if (pets !== undefined) {
+        queryBuilder.andWhere('property.pets = :pets', { pets })
+      }
+      if (isActive !== undefined) {
+        queryBuilder.andWhere('property.isActive = :isActive', { isActive })
+      }
+        return await queryBuilder.getMany();
     } catch (error) {
-      console.error('Error fetching properties by type:', error)
-      throw new Error('No se pudieron obtener las propiedades.')
+      console.error('Error al buscar propiedades:', error.message);
+      throw new Error('No se pudieron buscar propiedades. Por favor, revise los filtros e intente nuevamente.');
     }
   }
-  
+
+  async changePropertyStatus(id: string) {
+    try { 
+      const property = await this.justProperty(id)
+      if (property.isActive === true) {
+        property.isActive = false
+      }
+      else {
+        property.isActive = true
+      }
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
 }

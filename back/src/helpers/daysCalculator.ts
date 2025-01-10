@@ -1,6 +1,6 @@
 
 
-export function dayCalculator (startDate: Date, endDate: Date) {
+export function dayCalculator (startDate: string, endDate: string) {
     const start = new Date(startDate).getTime()
     const end = new Date(endDate).getTime()
     const diferencesInMs = Math.abs(end - start)

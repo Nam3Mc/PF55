@@ -4,7 +4,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { FavoritesDto } from '../../dtos/favorites.dto';
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
-import { get } from 'http';
+import { FilterDto } from '../../dtos/filter.dto';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -29,16 +29,16 @@ export class PropertyController {
     return this.propertyService.getProperties()
   }
   
-  @Get("email/")
+  @Get("email/:id")
   @ApiOperation({summary: "devuelve el email de la cuenta relacionado con la propiedad para paypal y recibe el id"})
-  getEmail(@Body() body: {id: string}) {
-    return this.propertyService.gettingEmail(body.id)
+  getEmail(@Param('id') id: string) {
+    return this.propertyService.gettingEmail(id)
   }
 
-  @Get('type')
+  @Post('filter')
   @ApiOperation({summary: 'Get Properties by type'})
-  getPropertiesByType(@Body() type: string) {
-    return this.propertyService.propertyByType(type)
+  getPropertiesByType(@Body() filter: Partial<FilterDto>) {
+    return this.propertyService.searchProperties(filter)
   }
 
   @Get('unique/:id')
@@ -58,5 +58,10 @@ export class PropertyController {
   updateProperty(@Body() propertyData: UpdatePropertyDto) {
     return this.propertyService.updateProperty( propertyData)
   }
-
+  
+  @Put("status")
+  @ApiOperation({ summary: "this endpoint change the property status if property is active will be desactivated and bisebersa"})
+  changePropertyStatus(@Body() id: string) {
+    return this.propertyService.changePropertyStatus(id)
+  }
 }

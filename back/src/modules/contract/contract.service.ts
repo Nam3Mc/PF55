@@ -6,6 +6,7 @@ import { CreateContractDto } from "../../dtos/create-contract.dto";
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { AccountService } from "../account/account.service";
 import { ContractStatus } from "../../enums/contract";
+import { reservationCreator } from "../../helpers/reservationCreator";
 
 @Injectable()
 export class ContractService {
@@ -16,26 +17,38 @@ export class ContractService {
     private readonly propertyDB: PropertyService,
     private readonly accountDB: AccountService
   ) {}
-  
-  async isDateAvailable(checkIn: Date, checkOut: Date): Promise<boolean> {
+  async isDateAvailable(checkIn: string, checkOut: string, propertyId: string): Promise<boolean> {
     try {
-      const isAvailable = await this.contractDB
-        .createQueryBuilder('contract')
-        .where(
-          '(:checkIn BETWEEN contract.startDate AND contract.endDate OR :checkOut BETWEEN contract.startDate AND contract.endDate)',
-          { checkIn, checkOut },
-        )
-        .orWhere(
-          '(:checkIn <= contract.startDate AND :checkOut >= contract.endDate)',
-          { checkIn, checkOut },
-        )
-        .getCount();
-
-      return isAvailable === 0;
+      const inDay = new Date(checkIn);
+      const outDay = new Date(checkOut);
+        if (isNaN(inDay.getTime()) || isNaN(outDay.getTime())) {
+        throw new Error('Las fechas proporcionadas no son válidas');
+      }
+      const contracts = await this.contractDB.find({
+        where: { property_: { id: propertyId } },
+      });
+  
+      if (contracts.length > 0) {
+        for (let contract of contracts) {
+          const contractStart = new Date(contract.startDate);
+          const contractEnd = new Date(contract.endDate);
+            if (
+            (inDay >= contractStart && inDay < contractEnd) ||
+            (outDay > contractStart && outDay <= contractEnd) || 
+            (inDay <= contractStart && outDay >= contractEnd) 
+          ) {
+            return false; 
+          }
+        }
+      }
+        return true;
     } catch (error) {
-      throw new InternalServerErrorException('Error al verificar la disponibilidad de fechas');
+      throw new InternalServerErrorException(
+        `Error al verificar la disponibilidad de fechas: ${error.message}`
+      );
     }
   }
+  
 
   async getContractById(id: string): Promise<Contract> {
     try {
@@ -59,53 +72,25 @@ export class ContractService {
   }
 
   async createContract(contractData: CreateContractDto) {
-    const { startDate, endDate, guests, pet, minor, accountId, propertyId } = contractData;
-    try {
-      const property = await this.propertyDB.justProperty(propertyId);
-      if (!property) {
-        throw new NotFoundException('Propiedad no encontrada');
-      }
-
-      const account = await this.accountDB.justAccount(accountId);
-      if (!account) {
-        throw new NotFoundException('Cuenta no encontrada');
-      }
-
-      const checkIn = new Date(startDate);
-      const checkOut = new Date(endDate);
-
-      const available = await this.isDateAvailable(checkIn, checkOut);
-      if (!available) {
-        throw new BadRequestException('Las fechas seleccionadas no están disponibles');
-      }
-
-      const contract = new Contract();
-      contract.startDate = checkIn;
-      contract.endDate = checkOut;
-      contract.guests = guests;
-      contract.pet = pet;
-      contract.minor = minor;
-      contract.property_ = property;
-      contract.account_ = account;
-      const createdContract = await this.contractDB.save(contract);
+    const { startDate, endDate, accountId, propertyId } = contractData;
+    const property = await this.propertyDB.justProperty(propertyId);
+    const account = await this.accountDB.justAccount(accountId);
+    const contract = reservationCreator(contractData, property, account)
+    const isAvailable = await this.isDateAvailable(startDate, endDate, propertyId)
+    if (isAvailable) {
+      const createdContract = await this.saveContract(contract)
       return createdContract
-    } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('No se pudo generar el contrato');
+    }
+    else {
+      throw new BadRequestException( "Los dias de su reservacion no estan disponibles")
     }
   }
-
+  
   async updateContract(contractId: string) {
-    const contract = await this.contractDB
-    .createQueryBuilder()
-    .update(Contract)
-    .set({status: ContractStatus.ACEPTED})
-    .where( 'id = :contractId', {contractId})
-    .execute(
-    )
-    const uodatedContract = await this.getContractById(contractId)
-    return uodatedContract
+    const contract = await this.getContractById(contractId)
+    contract.status = ContractStatus.ACEPTED
+    const updateContract = await this.contractDB.save(contract)
+    return updateContract
   }
+  
 }
