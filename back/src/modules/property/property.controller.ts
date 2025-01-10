@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Query } from '@nestjs/common';
 import { PropertyService } from './property.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { FavoritesDto } from '../../dtos/favorites.dto';
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
@@ -35,9 +35,17 @@ export class PropertyController {
     return this.propertyService.gettingEmail(id)
   }
 
-  @Post('filter')
+  @Get('filter')
   @ApiOperation({summary: 'Get Properties by type'})
-  getPropertiesByType(@Body() filter: Partial<FilterDto>) {
+  @ApiQuery({ name: 'type', required: false, description: 'Type of the property', type: String})
+  @ApiQuery({ name: 'capacity', required: false, description: 'Capacity of the property', type: Number })
+  @ApiQuery({ name: 'country', required: false, description: 'Capacity of the property', type: String})
+  @ApiQuery({ name: 'checkIn', required: false, description: 'Capacity of the property', type: String})
+  @ApiQuery({ name: 'checkOut', required: false, description: 'Capacity of the property', type: String})
+  @ApiQuery({ name: 'isActive', required: false, description: 'Capacity of the property', type: Boolean })
+  @ApiQuery({ name: 'pets', required: false, description: 'Capacity of the property', type: Boolean })
+  @ApiQuery({ name: 'minors', required: false, description: 'Capacity of the property', type: Boolean })
+  getPropertiesByType(@Query() filter: Partial<FilterDto>) {
     return this.propertyService.searchProperties(filter)
   }
 
