@@ -8,9 +8,6 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  Matches,
-  MaxLength,
-  MinLength,
   Validate
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
@@ -26,9 +23,9 @@ export class CreateUserDto {
   name: string;
 
   @ApiProperty({ example: "Doe", description: "Last name of the user" })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty({ example: "johndoe@example.com", description: "Email of the user" })
   @IsNotEmpty()
@@ -84,21 +81,16 @@ export class CreateUserDto {
 
   @ApiProperty({ 
     example: "StrongPass1!", 
-    description: "Password with at least one uppercase letter, one lowercase letter, one number, and one special character",
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  @MinLength(8)
-  @MaxLength(15)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,15}$/, 
-      { message: "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character [!@#$%^&*]. It must be between 8 and 15 characters long." }
-  )
-  password: string;
+  password?: string;
 
   @ApiProperty({ example: "StrongPass1!", description: "Confirmation of the password" })
-  @IsNotEmpty()
+  @IsOptional()
+  @IsString()
   @Validate(MatchPassword, ["password"])
-  confirmPassword: string;
+  confirmPassword?: string;
 
   @ApiProperty({ example: Role.USER, enum: Role, description: "Role of the user" })
   @IsEnum(Role)
