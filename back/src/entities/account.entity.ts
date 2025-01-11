@@ -10,16 +10,15 @@ export class Account {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false })
-  password: string;
+  @Column({ nullable: true })
+  password?: string;
 
   @Column({ default: Role.USER })
   role: Role;
 
-  @OneToOne(() => User, (user) => user.account_, { nullable: false })
+  @OneToOne(() => User, (user) => user.account_) //eliminé nullable para que google login funcione
   @JoinColumn({ name: 'user_id' })
   user_: User;
-
 
   @OneToMany(() => Contract, (contract) => contract.account_)
   contract_: Contract[];

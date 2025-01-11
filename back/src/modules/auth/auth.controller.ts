@@ -1,18 +1,13 @@
 import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { OAuth2Client } from 'google-auth-library';
 import { ApiOperation, ApiResponse, ApiBody, ApiTags } from '@nestjs/swagger';
 import { GoogleLoginDto } from '../../dtos/google-login.dto';
 import { LoginUserDto } from '../../dtos/login-user.dto';
 
-@ApiTags('Authentication') // Etiqueta para Swagger
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  private googleClient: OAuth2Client;
-
-  constructor(private readonly authService: AuthService) {
-    this.googleClient = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-  }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('/signin')
   @ApiOperation({ summary: 'Login with email and password' })
@@ -43,23 +38,22 @@ export class AuthController {
     description: 'Successfully authenticated with Google',
     schema: {
       example: {
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwicGhvdG8iOiJodHRwczovL2V4YW1wbGUuY29tL3Bob3RvLmpwZyIsImV4cCI6MTY4NDU5MjMwMCwiaWF0IjoxNjg0NTg4NzAwfQ.dummy-signature",
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
         user: {
-          id: null,
-          name: "John Doe",
-          lastName: null,
-          email: "example@gmail.com",
-          phone: null,
-          nationality: null,
-          dni: null,
-          DOB: null,
-          civilStatus: null,
-          employmentStatus: null,
-          isActive: null,
-          photo: "https://example.com/photo.jpg",
+          id: "12345678-1234-5678-1234-567812345678",
+          name: "John",
+          lastName: "Doe",
+          email: "johndoe@example.com",
+          phone: "5551234567",
+          nationality: "American",
+          dni: "00000000",
+          DOB: "1990-01-01T00:00:00.000Z",
+          civilStatus: "Soltero",
+          employmentStatus: "Empleado",
+          isActive: true,
+          photo: "https://example.com/johndoe.jpg",
           role: "user",
-          isRegistered: false
-        }
+        }        
       },
     },
   })
@@ -68,15 +62,6 @@ export class AuthController {
     description: 'Invalid Google token',
   })
   async googleLogin(@Body() googleLoginDto: GoogleLoginDto) {
-    try {
-      const { token } = googleLoginDto;
-  
-      const userResponse = await this.authService.googleLogin(token); // Cambiado: Pasar solo el token
-  
-      return userResponse;
-    } catch (error) {
-      console.error('Error verifying Google token:', error);
-      throw new UnauthorizedException('Invalid Google token');
-    }
+    return this.authService.googleLogin(googleLoginDto.token);
   }
 }
