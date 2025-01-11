@@ -1,12 +1,13 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Contract } from "../../entities/contract.entity";
 import { Repository } from "typeorm";
-import { PropertyService } from "../property/property.service";
 import { CreateContractDto } from "../../dtos/create-contract.dto";
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { AccountService } from "../account/account.service";
 import { ContractStatus } from "../../enums/contract";
 import { reservationCreator } from "../../helpers/reservationCreator";
+import { Property } from "../../entities/property.entity";
+import { UpdateContractDto } from "../../dtos/updateContract.dto";
 
 @Injectable()
 export class ContractService {
@@ -14,10 +15,17 @@ export class ContractService {
   constructor(
     @InjectRepository(Contract)
     private readonly contractDB: Repository<Contract>,
-    private readonly propertyDB: PropertyService,
-    private readonly accountDB: AccountService
+    private readonly accountDB: AccountService,
   ) {}
-  async isDateAvailable(checkIn: string, checkOut: string, propertyId: string): Promise<boolean> {
+  
+  async getContracts () {
+    const contracts = await this.contractDB.find({
+      relations: ['account_']
+    });
+    return contracts
+  }
+
+  async isDateAvailable(checkIn: string, checkOut: string, propertyId: string): Promise<{}> {
     try {
       const inDay = new Date(checkIn);
       const outDay = new Date(checkOut);
@@ -49,7 +57,6 @@ export class ContractService {
     }
   }
   
-
   async getContractById(id: string): Promise<Contract> {
     try {
       const contract = await this.contractDB.findOneBy({ id });
@@ -62,6 +69,17 @@ export class ContractService {
     }
   }
 
+  async getPropertyContracts(id: string) {
+    try {
+      const contracts = await this.contractDB.find({
+        where: {property_: {id}}
+      })
+        return contracts
+    } catch (error) {
+      throw new BadRequestException('Nopuedimos encontrar contratos en esta propiedad')
+    }
+  }
+
   async saveContract(contract: Contract): Promise<Contract> {
     try {
       const savedContract = await this.contractDB.save(contract);
@@ -71,9 +89,9 @@ export class ContractService {
     }
   }
 
-  async createContract(contractData: CreateContractDto) {
+  async createContract(contractData: CreateContractDto, givenProperty: Property) {
     const { startDate, endDate, accountId, propertyId } = contractData;
-    const property = await this.propertyDB.justProperty(propertyId);
+    const property = givenProperty
     const account = await this.accountDB.justAccount(accountId);
     const contract = reservationCreator(contractData, property, account)
     const isAvailable = await this.isDateAvailable(startDate, endDate, propertyId)
@@ -92,5 +110,16 @@ export class ContractService {
     const updateContract = await this.contractDB.save(contract)
     return updateContract
   }
-  
+
+  async modifyContract(contratData:Partial<UpdateContractDto> ) {
+    try {
+      const {startDate, endDate, contractId, propertyId} = contratData
+      const isAvailable = await this.isDateAvailable(startDate, endDate, propertyId)
+
+
+    } catch (error) {
+      return error
+    }
+  }
+
 }

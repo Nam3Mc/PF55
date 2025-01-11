@@ -3,10 +3,11 @@ import { CreatePropertyDto } from "../dtos/create-property.dto";
 import { Property } from "../entities/property.entity";
 import { Account } from "../entities/account.entity";
 import { typeDeterminer } from "./typeDeterminer";
+import { PropertyStatus } from "../enums/property";
 
 export const propertyCreator = (propertyData: CreatePropertyDto, account: Account) => {
     const {
-        name, price, description, isActive,
+        name, price, description,
         state, city, bedrooms, bathrooms, capacity,
         latitude, longitude, hasMinor, country,
         pets, wifi, cocina, tv, address,
@@ -38,7 +39,7 @@ export const propertyCreator = (propertyData: CreatePropertyDto, account: Accoun
     newProperty.hasMinor = hasMinor
     newProperty.pets = pets
     newProperty.account_ = account
-    newProperty.isActive = isActive
+    newProperty.isActive = PropertyStatus.PENDING
     newProperty.rating = 5
     newProperty.amenities_ = amenities
     newProperty.type = tp
