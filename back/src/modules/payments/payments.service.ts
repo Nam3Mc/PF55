@@ -25,7 +25,8 @@ export class PaymentsService {
   async orderAndComission(contractData: CreateContractDto) {
     try {
       const { paypalEmail, startDate, endDate, propertyId} = contractData      
-        const price = (await this.propertyDB.justProperty(propertyId)).price
+        const property = (await this.propertyDB.justProperty(propertyId))
+        const price = property.price
         const nights = dayCalculator(startDate, endDate)
         const amount = ( (price * nights ) + (price * nights) * 0.04 )
         const commission = ((price * nights) * 0.04 ) * 2
@@ -33,7 +34,7 @@ export class PaymentsService {
         const status = (await this.paypalServices.createOrder(amount, paypalEmail, commission)).status
         if ( status === "CREATED" && price ) {
           const link = (await paymentData).result.links[1].href
-          const contract = await this.contractDB.createContract(contractData)
+          const contract = await this.contractDB.createContract(contractData, property)
           const {id} = contract
           return {link, id}
        }

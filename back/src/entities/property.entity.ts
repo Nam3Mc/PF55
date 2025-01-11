@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, PropertyType } from "typeorm";
 import { Contract } from "./contract.entity";
 import { Account } from "./account.entity";
-import { Image } from "./image.entity";
 import { Amenities } from "./amenitie.entity";
-import { TypeOfProperty } from "../enums/property";
+import { PropertyStatus, TypeOfProperty } from "../enums/property";
+import { Image } from "./image.entity";
 
 @Entity({
     name: "properties"
@@ -15,7 +15,7 @@ export class Property {
     id: string
 
     @Column()
-    isActive: boolean
+    isActive: PropertyStatus = PropertyStatus.PENDING
 
     @Column({ length: 50, nullable: false })
     name: string

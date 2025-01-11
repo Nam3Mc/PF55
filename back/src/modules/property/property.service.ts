@@ -10,6 +10,8 @@ import { UpdatePropertyDto } from '../../dtos/updateProperty.dto'
 import { FilterDto } from '../../dtos/filter.dto'
 import { propertyCreator } from '../../helpers/createProperty'
 import { updateProperty } from '../../helpers/updateProperty'
+import { PropertyStatus } from '../../enums/property'
+import { Contract } from '../../entities/contract.entity'
 
 @Injectable()
 export class PropertyService {
@@ -30,7 +32,6 @@ export class PropertyService {
     } catch (error) {
       throw new InternalServerErrorException('error obteniendo el email');
     }
-
   }
   
   async getProperties() {
@@ -55,7 +56,7 @@ export class PropertyService {
       }
       return property;
     } catch (error) {
-      throw new InternalServerErrorException('Error fetching property by ID');
+      throw new BadRequestException('Error fetching property by ID');
     }
   }
 
@@ -63,7 +64,7 @@ export class PropertyService {
     try {
       return await this.propertyDB.findOneBy({ id });
     } catch (error) {
-      throw new InternalServerErrorException('Error fetching single property');
+      throw new BadRequestException('Error fetching single property');
     }
   }
   
@@ -94,7 +95,7 @@ export class PropertyService {
 
       return createdProperty
     } catch (error) {
-      throw new InternalServerErrorException('Error creating property');
+      throw new BadRequestException('Error creating property');
     }
   }
 
@@ -102,7 +103,7 @@ export class PropertyService {
     try {
       return await this.propertyDB.save(property);
     } catch (error) {
-      throw new InternalServerErrorException('Error creating new property');
+      throw new BadRequestException('Error creating new property');
     }
   }
 
@@ -114,7 +115,7 @@ export class PropertyService {
         await this.accountDB.addFavorite(accountId, property);
       }
     } catch (error) {
-      throw new InternalServerErrorException('Error adding favorite property');
+      throw new BadRequestException('Error adding favorite property');
     }
   }
 
@@ -135,52 +136,59 @@ export class PropertyService {
   }
 
   async searchProperties(filters: Partial<FilterDto>): Promise<Property[]> {
-    const  { capacity, minors, pets, checkIn, checkOut, isActive, country, type } = filters
+    const  { capacity, minors, pets, checkIn, checkOut, country, type } = filters
+    const queryBuilder = this.propertyDB.createQueryBuilder('property')
+    queryBuilder.andWhere('property.status = :status', { status: 'active' })
+    if (checkIn && checkOut) {
+      const inDay = new Date(checkIn)
+      const outDay = new Date(checkOut)
+      queryBuilder.andWhere(qb => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from(Contract, 'contract')
+          .where('contract.property_id = property.id')
+          .andWhere('contract.startDate <= :outDay', { outDay })
+          .andWhere('contract.endDate >= :inDay', { inDay })
+          .getQuery();
+        return `NOT EXISTS (${subQuery})`
+      })
+    }
+    if (capacity) {
+      queryBuilder.andWhere('property.capacity >= :capacity', { capacity })
+    }
+    if (minors !== undefined) {
+      queryBuilder.andWhere('property.hasMinor = :minors', { minors })
+    }
+    if (pets !== undefined) {
+      queryBuilder.andWhere('property.pets = :pets', { pets })
+    }
+    if (country) {
+      queryBuilder.andWhere('property.country = :country', { country })
+    }
+    if (type) {
+      queryBuilder.andWhere('property.type = :type', { type })
+    }
     try {
-      if (checkIn && checkOut) {
-        const inDate = new Date(checkIn);
-        const outDate = new Date(checkOut);
-        if (isNaN(inDate.getTime()) || isNaN(outDate.getTime())) {
-          throw new Error('Las fechas de check-in o check-out no son válidas.');
-        }
-        if (inDate >= outDate) {
-          throw new Error('La fecha de check-in debe ser anterior a la fecha de check-out.');
-        }
-      }
-      const queryBuilder = this.propertyDB.createQueryBuilder('property')
-      if (country) {
-        queryBuilder.andWhere('property.country = :country', { country })
-      }
-      if (capacity) {
-        queryBuilder.andWhere('property.capacity >= :capacity', { capacity })
-      }
-      if (type) {
-        queryBuilder.andWhere('property.type = :type', { type })
-      }
-      if (minors !== undefined) {
-        queryBuilder.andWhere('property.hasMinor = :minors', { minors })
-      }
-      if (pets !== undefined) {
-        queryBuilder.andWhere('property.pets = :pets', { pets })
-      }
-      if (isActive !== undefined) {
-        queryBuilder.andWhere('property.isActive = :isActive', { isActive })
-      }
-        return await queryBuilder.getMany();
+      const properties = await queryBuilder.getMany()
+      return properties
     } catch (error) {
-      console.error('Error al buscar propiedades:', error.message);
-      throw new Error('No se pudieron buscar propiedades. Por favor, revise los filtros e intente nuevamente.');
+      console.error('Error al buscar propiedades:', error.message)
+      throw new Error('No se pudieron buscar propiedades. Por favor, revise los filtros e intente nuevamente.')
     }
   }
 
   async changePropertyStatus(id: string) {
     try { 
       const property = await this.justProperty(id)
-      if (property.isActive === true) {
-        property.isActive = false
+      if (property.isActive === PropertyStatus.PENDING) {
+        property.isActive = PropertyStatus.ACTIVATED
+      }
+      else if (property.isActive = PropertyStatus.ACTIVATED) {
+        property.isActive = PropertyStatus.INACTIVE
       }
       else {
-        property.isActive = true
+        property.isActive = PropertyStatus.ACTIVATED
       }
     } catch (error) {
       throw new BadRequestException(error)
