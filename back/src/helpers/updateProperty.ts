@@ -3,7 +3,7 @@ import { UpdatePropertyDto } from "../dtos/updateProperty.dto";
 
 export const updateProperty = (propertyData: UpdatePropertyDto, property: Property) => {
     const { name, price, description, state, city, capacity,
-        bedrooms, bathrooms, hasMinor, pets, isActive, wifi, address, 
+        bedrooms, bathrooms, hasMinor, pets, wifi, address, 
         piscina, parqueadero, cocina, tv, airConditioning, country
     } = propertyData
     
@@ -21,7 +21,6 @@ export const updateProperty = (propertyData: UpdatePropertyDto, property: Proper
     property.bathrooms = bathrooms ?? property.bathrooms
     property.hasMinor = hasMinor ?? property.hasMinor
     property.pets = pets ?? property.pets
-    property.isActive = isActive ?? property.isActive
     property.amenities_.wifi = wifi ?? property.amenities_.wifi
     property.amenities_.tv = tv ?? property.amenities_.tv
     property.amenities_.airConditioning = airConditioning ?? property.amenities_.airConditioning
