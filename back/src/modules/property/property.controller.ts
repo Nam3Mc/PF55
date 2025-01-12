@@ -5,6 +5,7 @@ import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { FavoritesDto } from '../../dtos/favorites.dto';
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
 import { FilterDto } from '../../dtos/filter.dto';
+import { IdDto } from '../../dtos/id.dto';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -61,15 +62,16 @@ export class PropertyController {
     return this.propertyService.getOwnersProperties(id)
   }
 
-  @Put("update")
+  @Put()
   @ApiOperation({summary: "this end point received a partial fto and update properties"})
   updateProperty(@Body() propertyData: UpdatePropertyDto) {
     return this.propertyService.updateProperty( propertyData)
   }
-  
+
   @Put("status")
-  @ApiOperation({ summary: "this endpoint change the property status if property is active will be desactivated and bisebersa"})
-  changePropertyStatus(@Body() id: string) {
-    return this.propertyService.changePropertyStatus(id)
+  @ApiOperation({ summary: "This endpoint changes the property status" })
+  changePropertyStatus(@Body() id:IdDto) {
+    return this.propertyService.changePropertyStatus(id);
   }
+  
 }

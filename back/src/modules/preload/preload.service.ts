@@ -12,6 +12,7 @@ import { Property } from '../../entities/property.entity';
 import { ImageService } from '../../modules/image/image.service';
 import { Amenities } from '../../entities/amenitie.entity';
 import { AmenitiesService } from '../amenities/amenities.service';
+import { PropertyStatus } from '../../enums/property';
 
 @Injectable()
 export class PreloadServices implements OnApplicationBootstrap {
@@ -39,29 +40,65 @@ export class PreloadServices implements OnApplicationBootstrap {
       console.log('Database already seeded.');
       return;
     }
-
     const newUser = new User();
     newUser.name = 'John';
     newUser.lastName = 'Doe';
-    newUser.email = 'johndoe@example.com';
-    newUser.phone = 1234567890;
-    newUser.dni = 12345678;
+    newUser.email = 'user@email.com';
+    newUser.phone = 12345678901;
+    newUser.dni = 123456789;
     newUser.nationality = 'American';
     newUser.DOB = new Date('1990-01-01');
     newUser.civilStatus = CivilStatus.SINGLE;
     newUser.employmentStatus = EmploymentStatus.EMPLOYED;
     newUser.photo = 'https://example.com/photo.jpg';
     const createdUser = await this.userDB.createNewUser(newUser);
+    const userPassword = 'User1234!';
+    const userHashedPassword = await bcrypt.hash(userPassword, 10);
+    const userNewAccount = new Account();
+    userNewAccount.password = userHashedPassword;
+    userNewAccount.role = Role.USER;
+    userNewAccount.user_ = createdUser;
+    await this.accountDB.createNewAccount(userNewAccount);
 
-    const password = 'User1234!';
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUserAdmin = new User();
+    newUserAdmin.name = 'John';
+    newUserAdmin.lastName = 'Doe';
+    newUserAdmin.email = 'admin@email.com';
+    newUserAdmin.phone = 123456789012;
+    newUserAdmin.dni = 1234567890;
+    newUserAdmin.nationality = 'American';
+    newUserAdmin.DOB = new Date('1990-01-01');
+    newUserAdmin.civilStatus = CivilStatus.SINGLE;
+    newUserAdmin.employmentStatus = EmploymentStatus.EMPLOYED;
+    newUserAdmin.photo = 'https://example.com/photo.jpg';
+    const createdAdminUser = await this.userDB.createNewUser(newUserAdmin);
+    const adminPassword = 'User1234!';
+    const adminHashedPassword = await bcrypt.hash(adminPassword, 10);
+    const newAdminAccount = new Account();
+    newAdminAccount.password = adminHashedPassword;
+    newAdminAccount.role = Role.ADMIN;
+    newAdminAccount.user_ = createdAdminUser;
+    await this.accountDB.createNewAccount(newAdminAccount);
 
-    const newAccount = new Account();
-    newAccount.password = hashedPassword;
-    newAccount.role = Role.OWNER;
-    newAccount.user_ = createdUser;
-
-   const createdAccount = await this.accountDB.createNewAccount(newAccount);
+    const newUserOwner = new User();
+    newUserOwner.name = 'John';
+    newUserOwner.lastName = 'Doe';
+    newUserOwner.email = 'owner@email.com';
+    newUserOwner.phone = 123456789;
+    newUserOwner.dni = 1234567;
+    newUserOwner.nationality = 'American';
+    newUserOwner.DOB = new Date('1990-01-01');
+    newUserOwner.civilStatus = CivilStatus.SINGLE;
+    newUserOwner.employmentStatus = EmploymentStatus.EMPLOYED;
+    newUserOwner.photo = 'https://example.com/photo.jpg';
+    const createdOwnerUser = await this.userDB.createNewUser(newUserOwner);
+    const Ownerpassword = 'User1234!';
+    const OwnerhashedPassword = await bcrypt.hash(Ownerpassword, 10);
+    const OwnernewAccount = new Account();
+    OwnernewAccount.password = OwnerhashedPassword;
+    OwnernewAccount.role = Role.OWNER;
+    OwnernewAccount.user_ = createdOwnerUser;
+    const createdAccount = await this.accountDB.createNewAccount(OwnernewAccount);
 
     const filePath = 'src/helpers/properties.json';
     if (!fs.existsSync(filePath)) {
@@ -76,7 +113,7 @@ export class PreloadServices implements OnApplicationBootstrap {
       console.log(property)
       console.log(properties)
       const {
-        title, price, description, state, isActive, country,
+        title, price, description, state, country,
         city, bedrooms, bathrooms, capacity, latitude,
         longitude, hasMinor, pets, images, wifi, tv,
         airConditioning, piscina, parqueadero, cocina,
@@ -84,7 +121,7 @@ export class PreloadServices implements OnApplicationBootstrap {
 
       
       const newProperty = new Property
-      newProperty.isActive = isActive;
+      newProperty.isActive = PropertyStatus.PENDING
       newProperty.name = title;
       newProperty.price = price;
       newProperty.bedrooms = bedrooms;
