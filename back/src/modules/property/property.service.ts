@@ -12,6 +12,7 @@ import { propertyCreator } from '../../helpers/createProperty'
 import { updateProperty } from '../../helpers/updateProperty'
 import { PropertyStatus } from '../../enums/property'
 import { Contract } from '../../entities/contract.entity'
+import { IdDto } from '../../dtos/id.dto'
 
 @Injectable()
 export class PropertyService {
@@ -134,65 +135,62 @@ export class PropertyService {
       throw new Error('Failed to update property')
     }
   }
-
-  async searchProperties(filters: Partial<FilterDto>): Promise<Property[]> {
-    const  { capacity, minors, pets, checkIn, checkOut, country, type } = filters
-    const queryBuilder = this.propertyDB.createQueryBuilder('property')
-    queryBuilder.andWhere('property.status = :status', { status: 'active' })
-    if (checkIn && checkOut) {
-      const inDay = new Date(checkIn)
-      const outDay = new Date(checkOut)
-      queryBuilder.andWhere(qb => {
-        const subQuery = qb
-          .subQuery()
-          .select('1')
-          .from(Contract, 'contract')
-          .where('contract.property_id = property.id')
-          .andWhere('contract.startDate <= :outDay', { outDay })
-          .andWhere('contract.endDate >= :inDay', { inDay })
-          .getQuery();
-        return `NOT EXISTS (${subQuery})`
-      })
-    }
-    if (capacity) {
-      queryBuilder.andWhere('property.capacity >= :capacity', { capacity })
-    }
-    if (minors !== undefined) {
-      queryBuilder.andWhere('property.hasMinor = :minors', { minors })
-    }
-    if (pets !== undefined) {
-      queryBuilder.andWhere('property.pets = :pets', { pets })
-    }
-    if (country) {
-      queryBuilder.andWhere('property.country = :country', { country })
-    }
-    if (type) {
-      queryBuilder.andWhere('property.type = :type', { type })
-    }
-    try {
-      const properties = await queryBuilder.getMany()
-      return properties
-    } catch (error) {
-      console.error('Error al buscar propiedades:', error.message)
-      throw new Error('No se pudieron buscar propiedades. Por favor, revise los filtros e intente nuevamente.')
-    }
-  }
-
-  async changePropertyStatus(id: string) {
+  
+  async changePropertyStatus(id: IdDto) {
     try { 
-      const property = await this.justProperty(id)
-      if (property.isActive === PropertyStatus.PENDING) {
+      const property = await this.justProperty(id.id)
+      if (property.isActive === "pendiente" || property.isActive === "inactiva") {
         property.isActive = PropertyStatus.ACTIVATED
-      }
-      else if (property.isActive = PropertyStatus.ACTIVATED) {
-        property.isActive = PropertyStatus.INACTIVE
+        const updatedProperty = await this.propertyDB.save(property)
+        return updatedProperty
       }
       else {
-        property.isActive = PropertyStatus.ACTIVATED
+        property.isActive = PropertyStatus.INACTIVE
+        const updatedProperty = await this.propertyDB.save(property)
+        return updatedProperty
       }
     } catch (error) {
       throw new BadRequestException(error)
     }
+  }
+
+  async searchProperties(filter: Partial<FilterDto>) {
+    const { checkIn, checkOut, minors, pets, country, capacity, type} = filter
+    const query = this.propertyDB.createQueryBuilder("property")
+    .leftJoinAndSelect("property.contract_", "contract")
+    .where("property.isActive = :isActive", { isActive: "activa" })
+    .andWhere((qb) => {
+      const subQuery = qb.subQuery()
+        .select("contract.id")
+        .from(Contract, "contract")
+        .where("contract.property_ = property.id")
+        .andWhere("contract.status != :status", { status: "CANCELLED" });
+      if (checkIn && checkOut) {
+        const startDate = new Date(checkIn);
+        const endDate = new Date(checkOut);
+        subQuery.andWhere(
+          "((contract.startDate <= :endDate AND contract.endDate >= :startDate))",
+          { startDate, endDate },
+        );
+       }
+       return `NOT EXISTS ${subQuery.getQuery()}`;
+    });
+    if (minors !== undefined) {
+     query.andWhere("property.hasMinor = :minors", { minors });
+    }
+    if (pets !== undefined) {
+      query.andWhere("property.pets = :pets", { pets });
+    }
+    if (country) {
+      query.andWhere("property.country = :country", { country });
+    }
+    if (capacity) {
+      query.andWhere("property.capacity >= :capacity", { capacity });
+    }
+    if (type) {
+      query.andWhere("property.type = :type", { type });
+    }
+    return query.getMany();
   }
 
 }
