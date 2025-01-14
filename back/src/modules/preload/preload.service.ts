@@ -12,7 +12,7 @@ import { Property } from '../../entities/property.entity';
 import { ImageService } from '../../modules/image/image.service';
 import { Amenities } from '../../entities/amenitie.entity';
 import { AmenitiesService } from '../amenities/amenities.service';
-import { PropertyStatus } from '../../enums/property';
+import { normalizeString } from '../../helpers/wordsConverter';
 
 @Injectable()
 export class PreloadServices implements OnApplicationBootstrap {
@@ -113,24 +113,26 @@ export class PreloadServices implements OnApplicationBootstrap {
       console.log(property)
       console.log(properties)
       const {
-        title, price, description, state, country,
-        city, bedrooms, bathrooms, capacity, latitude,
+        title, price, description, state, country, isActive,
+        city, bedrooms, bathrooms, capacity, latitude, type,
         longitude, hasMinor, pets, images, wifi, tv,
         airConditioning, piscina, parqueadero, cocina,
       } = property;
 
-      
+      const stateS = normalizeString(state)
+      const cityS = normalizeString(city)
+      const countryS = normalizeString(country)
       const newProperty = new Property
-      newProperty.isActive = PropertyStatus.PENDING
+      newProperty.isActive = isActive
       newProperty.name = title;
       newProperty.price = price;
       newProperty.bedrooms = bedrooms;
       newProperty.bathrooms = bathrooms;
       newProperty.description = description;
-      newProperty.state = state;
-      newProperty.city = city;
-      newProperty.country = country
-      newProperty.address = `${city}, ${state}, ${country}`
+      newProperty.state = stateS;
+      newProperty.city = cityS;
+      newProperty.country = countryS
+      newProperty.address = `${cityS}, ${stateS}, ${countryS}`
       newProperty.capacity = capacity;
       newProperty.rating = 5;
       newProperty.hasMinor = hasMinor;
@@ -138,6 +140,7 @@ export class PreloadServices implements OnApplicationBootstrap {
       newProperty.longitude = longitude;
       newProperty.latitude = latitude;
       newProperty.account_ = createdAccount
+      newProperty.type = type
 
       const newAmenities = new Amenities;
       newAmenities.airConditioning = airConditioning;

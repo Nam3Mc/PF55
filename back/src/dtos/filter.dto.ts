@@ -39,13 +39,6 @@ export class FilterDto {
   checkOut: string
 
   @ApiProperty({
-    description: 'Indica si la propiedad está activa (siempre debe ser true)',
-    example: true,
-  })
-  @IsBoolean()
-  isActive: boolean = true
-
-  @ApiProperty({
     description: 'Indica si se permiten mascotas',
     example: true,
   })

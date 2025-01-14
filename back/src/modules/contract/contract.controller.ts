@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Put } from '@nestjs/common';
-import { ContractService } from './contract.service';
-import { ApiOperation } from '@nestjs/swagger';
-import { CreateContractDto } from '../../dtos/create-contract.dto';
+import { Controller, Get, Param } from '@nestjs/common'
+import { ContractService } from './contract.service'
+import { ApiOperation } from '@nestjs/swagger'
+import { IdDto } from '../../dtos/id.dto'
 
 @Controller('contract')
 export class ContractController {
@@ -13,6 +13,12 @@ export class ContractController {
   @ApiOperation({ summary: 'this endpoint gives all contracts for an specific property'})
   getPropertyContracts(@Param('properrtyId') propertyId: string) {
     return this.contractService.getPropertyContracts(propertyId)
+  }
+
+  @Get("user/:id")
+  @ApiOperation({ summary: "Get all reservations for an user by his account ID"})
+  getUserContrats(@Param('id') id: IdDto) {
+    return this.contractService.userContracts(id)
   }
 
   @Get(':id')
@@ -27,10 +33,5 @@ export class ContractController {
     return this.contractService.getContracts()
   }
 
-  // @Put()
-  // @ApiOperation({summary: 'You can request a modification in your contrat o reservation'})
-  // updateContract(@Body() contractData: Partial<CreateContractDto>) {
-    // return this.contractService.modifyContract(contractData)
-  // }
 
 }
