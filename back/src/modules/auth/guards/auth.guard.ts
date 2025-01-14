@@ -11,35 +11,35 @@ export class AuthGuard implements CanActivate {
     ) {}
 
     canActivate(context: ExecutionContext): boolean | Promise<boolean> {
-        const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles', [
-            context.getHandler(),
-            context.getClass(),
-        ]);
+        // const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles', [
+            // context.getHandler(),
+            // context.getClass(),
+        // ]);
 
         const request = context.switchToHttp().getRequest();
         const authHeader = request.headers.authorization;
 
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            throw new UnauthorizedException('Invalid authorization header');
-        }
+        // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            // throw new UnauthorizedException('Invalid authorization header');
+        // }
 
-        const token = authHeader.split(' ')[1];
-        try {
-            const secret = process.env.JWT_SECRET;
-            const user = this.jwtService.verify(token, { secret });
-
-            request.user = {
-                ...user,
-                roles: user.roles || [Role.USER],
-            };
-
-            if (requiredRoles && !requiredRoles.some((role) => request.user.roles.includes(role))) {
-                throw new UnauthorizedException('Access denied');
-            }
-
+        // const token = authHeader.split(' ')[1];
+        // try {
+            // const secret = process.env.JWT_SECRET;
+            // const user = this.jwtService.verify(token, { secret });
+            // 
+            // request.user = {
+                // ...user,
+                // roles: user.role || [Role.USER],
+            // };
+            // 
+            // if (requiredRoles && !requiredRoles.some((role) => request.user.role.includes(role))) {
+                // throw new UnauthorizedException('Access denied');
+            // }
+            console.log( context)
             return true;
-        } catch (error) {
-            throw new UnauthorizedException('Not authorized');
-        }
+        // } catch (error) {
+            // throw new UnauthorizedException('Not authorized');
+        // }
     }
 }

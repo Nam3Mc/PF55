@@ -13,7 +13,9 @@
     "longitude": -74.006,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,"images": [
+    "isActive": "pendiente",
+    "type": "casa",
+    "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
     "https://www.casasparaconstruir.com/projetos/161/02.jpg",
@@ -40,7 +42,8 @@
     "longitude": -80.1918,
     "hasMinor": true,
     "pets": true,
-    "isActive": true,
+    "isActive": "pendiente",
+    "type": "casa",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -68,7 +71,8 @@
     "longitude": -106.8175,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,
+    "isActive": "pendiente",
+    "type": "apartamento",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -96,7 +100,8 @@
     "longitude": -122.4194,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,
+    "isActive": "pendiente",
+    "type": "apartamento",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -124,7 +129,8 @@
     "longitude": -96.797,
     "hasMinor": true,
     "pets": true,
-    "isActive": true,
+    "isActive": "pendiente",
+    "type": "habitacion",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -152,7 +158,8 @@
     "longitude": -85.6206,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,
+    "isActive": "activa",
+    "type": "casa",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -180,7 +187,8 @@
     "longitude": -111.7609,
     "hasMinor": true,
     "pets": true,
-    "isActive": true,
+    "isActive": "activa",
+    "type": "casa",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -208,7 +216,8 @@
     "longitude": -86.7816,
     "hasMinor": true,
     "pets": true,
-    "isActive": true,
+    "isActive": "activa",
+    "type": "habitacion",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -236,7 +245,8 @@
     "longitude": -87.6298,
     "hasMinor": false,
     "pets": false,
-    "isActive": true,
+    "isActive": "activa",
+    "type": "apartamento",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -264,7 +274,8 @@
     "longitude": -111.4979,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,
+    "isActive": "activa",
+    "type": "apartamento",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -292,7 +303,8 @@
     "longitude": -99.1332,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,
+    "isActive": "inactiva",
+    "type": "casa",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -320,7 +332,8 @@
     "longitude": -84.6304,
     "hasMinor": true,
     "pets": true,
-    "isActive": true,
+    "isActive": "inactiva",
+    "type": "casa",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -348,7 +361,8 @@
     "longitude": -75.5812,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,
+    "isActive": "inactiva",
+    "type": "habitacion",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -376,7 +390,8 @@
     "longitude": -57.9545,
     "hasMinor": true,
     "pets": true,
-    "isActive": true,
+    "isActive": "inactiva",
+    "type": "apartamento",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",
@@ -404,7 +419,8 @@
     "longitude": -91.2288,
     "hasMinor": true,
     "pets": false,
-    "isActive": true,
+    "isActive": "inactiva",
+    "type": "apartamento",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
     "https://images.homify.com/c_fill,f_auto,h_500,q_auto,w_1280/v1461736282/p/photo/image/1478928/mv_chontay_02.jpg",

@@ -8,6 +8,7 @@ import { ContractStatus } from "../../enums/contract";
 import { reservationCreator } from "../../helpers/reservationCreator";
 import { Property } from "../../entities/property.entity";
 import { UpdateContractDto } from "../../dtos/updateContract.dto";
+import { IdDto } from "../../dtos/id.dto";
 
 @Injectable()
 export class ContractService {
@@ -23,6 +24,19 @@ export class ContractService {
       relations: ['account_']
     });
     return contracts
+  }
+
+  async userContracts(id: IdDto) {
+    try {
+      const contracts = await this.contractDB.find({
+        where: {account_: {id: id.id}},
+        relations: ["payment_", 'property_']
+      })
+      return contracts
+    } catch (error) {
+      console.log(error)
+      return []
+    }
   }
 
   async isDateAvailable(checkIn: string, checkOut: string, propertyId: string): Promise<{}> {
@@ -105,21 +119,19 @@ export class ContractService {
   }
   
   async updateContract(contractId: string) {
-    const contract = await this.getContractById(contractId)
-    contract.status = ContractStatus.ACEPTED
-    const updateContract = await this.contractDB.save(contract)
-    return updateContract
-  }
-
-  async modifyContract(contratData:Partial<UpdateContractDto> ) {
     try {
-      const {startDate, endDate, contractId, propertyId} = contratData
-      const isAvailable = await this.isDateAvailable(startDate, endDate, propertyId)
-
-
+      const contract = await this.getContractById(contractId)
+      contract.status = ContractStatus.ACEPTED
+      const updateContract = await this.contractDB.save(contract)
+      return updateContract
+      
     } catch (error) {
-      return error
+      throw new BadRequestException("No se pudo actualizar el contrato")
     }
   }
 
+
+
 }
+
+
