@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Account } from '../../entities/account.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -73,6 +75,16 @@ export class UserService {
     if (userToReturn) {
         delete (userToReturn as any).account_.password;
     }
+    
+    //servicio de notificaciones, después de crear el usuario, enviamos el correo
+    const subject = 'Bienvenido a nuestra plataforma';
+    const text = `Hola ${name}, tu cuenta ha sido creada exitosamente. ¡Bienvenido!`;
+    const html = `
+      <h1>Bienvenido ${name} ${lastName}</h1>
+      <p>Tu cuenta ha sido creada exitosamente.</p>
+      <p>Te invitamos a explorar nuestra plataforma.</p>
+    `;
+    await this.notificationsService.sendEmail(savedUser.email, subject, text, html);
 
     return userToReturn;
 }
