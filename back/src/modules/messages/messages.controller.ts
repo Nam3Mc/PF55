@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { MessageService } from './messages.service';
 import { CreateMessageDto } from '../../dtos/create-message.dto';
@@ -50,5 +50,29 @@ export class MessagesController {
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   async getReceivedMessages(@Param('userId') userId: string) {
     return this.messagesService.getReceivedMessages(userId);
+  }
+
+  // Endpoint para filtrar mensajes enviados de A hacia B
+  @Get('sentFromTo')
+  @ApiOperation({ summary: 'Obtener mensajes enviados de A hacia B' })
+  @ApiResponse({ status: 200, description: 'Lista de mensajes enviados de A hacia B.' })
+  @ApiResponse({ status: 404, description: 'No se encontraron mensajes.' })
+  async getMessagesFromTo(
+    @Query('senderId') senderId: string,
+    @Query('recipientId') recipientId: string,
+  ) {
+    return this.messagesService.getMessagesFromTo(senderId, recipientId);
+  }
+
+  // Endpoint para filtrar mensajes recibidos por B de parte de A
+  @Get('receivedFrom')
+  @ApiOperation({ summary: 'Obtener mensajes recibidos por B de parte de A' })
+  @ApiResponse({ status: 200, description: 'Lista de mensajes recibidos por B de parte de A.' })
+  @ApiResponse({ status: 404, description: 'No se encontraron mensajes.' })
+  async getMessagesToFrom(
+    @Query('recipientId') recipientId: string,
+    @Query('senderId') senderId: string,
+  ) {
+    return this.messagesService.getMessagesToFrom(recipientId, senderId);
   }
 }
