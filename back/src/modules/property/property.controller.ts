@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Query, UseGuards } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
@@ -6,6 +6,7 @@ import { FavoritesDto } from '../../dtos/favorites.dto';
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
 import { FilterDto } from '../../dtos/filter.dto';
 import { IdDto } from '../../dtos/id.dto';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -25,9 +26,16 @@ export class PropertyController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all properties'})
+  @ApiOperation({ summary: 'Get all activated properties'})
   getAllProperties() {
     return this.propertyService.getProperties()
+  }
+
+  @Get("all")
+  @ApiOperation({ summary: "get all properties endpoint for admin"})
+  @UseGuards(AuthGuard)
+  getProperties() {
+    return this.propertyService.getAllProperties()
   }
   
   @Get("email/:id")

@@ -4,6 +4,7 @@ import { Property } from "../entities/property.entity";
 import { Account } from "../entities/account.entity";
 import { typeDeterminer } from "./typeDeterminer";
 import { PropertyStatus } from "../enums/property";
+import { normalizeString } from "./wordsConverter";
 
 export const propertyCreator = (propertyData: CreatePropertyDto, account: Account) => {
     const {
@@ -13,6 +14,10 @@ export const propertyCreator = (propertyData: CreatePropertyDto, account: Accoun
         pets, wifi, cocina, tv, address,
         parqueadero, piscina, airConditioning, type
     } = propertyData;
+
+    const stateS = normalizeString(state)
+    const cityS = normalizeString(city)
+    const countryS = normalizeString(country)
     
     const tp = typeDeterminer(type)
     const amenities = new Amenities();
@@ -27,10 +32,10 @@ export const propertyCreator = (propertyData: CreatePropertyDto, account: Accoun
     newProperty.name = name
     newProperty.price = price
     newProperty.description = description
-    newProperty.state = state
-    newProperty.city = city
-    newProperty.country = country ?? null
-    newProperty.address = address ?? `${state}, ${city}, ${country}`
+    newProperty.state = stateS
+    newProperty.city = cityS
+    newProperty.country = countryS ?? null
+    newProperty.address = address ?? `${stateS}, ${cityS}, ${countryS}`
     newProperty.capacity = capacity
     newProperty.bedrooms = bedrooms
     newProperty.bathrooms = bathrooms

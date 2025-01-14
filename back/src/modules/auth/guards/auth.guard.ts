@@ -30,10 +30,10 @@ export class AuthGuard implements CanActivate {
 
             request.user = {
                 ...user,
-                roles: user.roles || [Role.USER],
+                roles: user.role || [Role.USER],
             };
 
-            if (requiredRoles && !requiredRoles.some((role) => request.user.roles.includes(role))) {
+            if (requiredRoles && !requiredRoles.some((role) => request.user.role.includes(role))) {
                 throw new UnauthorizedException('Access denied');
             }
 

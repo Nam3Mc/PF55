@@ -14,6 +14,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { MessagesModule } from './modules/messages/messages.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { PaypalModule } from './modules/paypal/paypal.module';
+import { JwtModule } from '@nestjs/jwt';
 
 const cloudinary = require('cloudinary');
 
