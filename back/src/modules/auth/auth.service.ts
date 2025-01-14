@@ -9,8 +9,6 @@ import { LoginUserDto } from '../../dtos/login-user.dto';
 import { CreateUserDto } from '../../dtos/create-user.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { Role } from '../../enums/account';
-import { NotificationsService } from '../notifications/notifications.service';
-
 
 @Injectable()
 export class AuthService {
@@ -22,7 +20,6 @@ export class AuthService {
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
     private readonly jwtService: JwtService,
-    private readonly notificationsService: NotificationsService,
   ) {
     this.googleClient = new OAuth2Client(
       process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
@@ -78,6 +75,7 @@ export class AuthService {
       role = Role.USER,
     } = createUserDto;
 
+    // Verificar si el email ya existe en la base de datos
     const existingUser = await this.userRepository.findOne({
       where: { email },
       relations: ['account_'],
@@ -115,13 +113,6 @@ export class AuthService {
 
     // Guardar el usuario
     await this.userRepository.save(user);
-
-    // Enviar notificación de correo después de crear el usuario
-    await this.notificationsService.sendEmail(
-      user.email,
-      'Bienvenido a la plataforma',
-      `Hola ${user.name}, tu cuenta ha sido creada exitosamente.`
-    );
 
     return {
       message: 'User created successfully',
@@ -165,9 +156,7 @@ export class AuthService {
         password: null, // Google login doesn't require a password
       };
 
-      const newUser = await this.createUser(createUserDto);
-
-      return newUser;
+      return await this.createUser(createUserDto);
     } catch (error) {
       console.error('Error verifying Google token:', error);
       throw new UnauthorizedException('Invalid Google token');

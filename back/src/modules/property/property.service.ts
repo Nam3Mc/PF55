@@ -181,47 +181,54 @@ export class PropertyService {
 
   async searchProperties(filter: Partial<FilterDto>) {
     try {
-    const { checkIn, checkOut, minors, pets, country, capacity, type} = filter
-    const query = this.propertyDB.createQueryBuilder("property")
-    .leftJoinAndSelect("property.contract_", "contract")
-    .leftJoinAndSelect("property.image_", "image")
-    .where("property.isActive = :isActive", { isActive: "activa" })
-    .andWhere((qb) => {
-      const subQuery = qb.subQuery()
-        .select("contract.id")
-        .from(Contract, "contract")
-        .where("contract.property_ = property.id")
-        .andWhere("contract.status = :status", { status: "aceptado"})
-      if (checkIn && checkOut) {
-        const startDate = new Date(checkIn);
-        const endDate = new Date(checkOut);
-        subQuery.andWhere(
-          "((contract.startDate <= :endDate AND contract.endDate >= :startDate))",
-          { startDate, endDate },
-        );
-       }
-       return `NOT EXISTS ${subQuery.getQuery()}`;
-    });
-    if (minors !== undefined) {
-     query.andWhere("property.hasMinor = :minors", { minors })
+      const { checkIn, checkOut, minors, pets, country, capacity, type } = filter;
+      const query = this.propertyDB.createQueryBuilder("property")
+        .leftJoinAndSelect("property.contract_", "contract")
+        .leftJoinAndSelect("property.image_", "image")
+        .where("property.isActive = :isActive", { isActive: "activa" });
+  
+      query.andWhere((qb) => {
+        const subQuery = qb.subQuery()
+          .select("contract.id")
+          .from(Contract, "contract")
+          .where("contract.property_ = property.id")
+          .andWhere("contract.status = :status", { status: "aceptado" });
+        if (checkIn && checkOut) {
+          const startDate = new Date(checkIn);
+          const endDate = new Date(checkOut);
+          if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            throw new Error("Invalid dates provided for checkIn or checkOut.");
+          }
+          subQuery.andWhere(
+            "((contract.startDate <= :endDate AND contract.endDate >= :startDate))",
+            { startDate, endDate },
+          );
+        }
+        return `NOT EXISTS ${subQuery.getQuery()}`;
+      });
+  
+      if (minors !== undefined) {
+        query.andWhere("property.hasMinor = :minors", { minors });
+      }
+      if (pets !== undefined) {
+        query.andWhere("property.pets = :pets", { pets });
+      }
+      if (country) {
+        query.andWhere("property.country = :country", { country });
+      }
+      if (capacity) {
+        query.andWhere("property.capacity >= :capacity", { capacity });
+      }
+      if (type) {
+        query.andWhere("property.type = :type", { type });
+      }
+  
+      return await query.getMany();
+    } catch (error) {
+      console.error(error);
+      return [];
     }
-    if (pets !== undefined) {
-      query.andWhere("property.pets = :pets", { pets })
-    }
-    if (country) {
-      query.andWhere("property.country = :country", { country })
-    }
-    if (capacity) {
-      query.andWhere("property.capacity >= :capacity", { capacity })
-    }
-    if (type) {
-      query.andWhere("property.type = :type", { type })
-    }
-    return query.getMany();
-  } catch (error) {
-    console.log(error)
-    return []
   }
-  }
+  
 
 }

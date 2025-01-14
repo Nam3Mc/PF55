@@ -6,10 +6,7 @@ import { FavoritesDto } from '../../dtos/favorites.dto';
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
 import { FilterDto } from '../../dtos/filter.dto';
 import { IdDto } from '../../dtos/id.dto';
-import { NormalizeCountryPipe } from '../../pipes/normalizeCountry.pipe';
-
-
-import { AuthGuard } from '../auth/guards/auth.guard';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @ApiTags('Properties')
 @Controller('property')
@@ -57,7 +54,7 @@ export class PropertyController {
   @ApiQuery({ name: 'isActive', required: false, description: 'Capacity of the property', type: Boolean })
   @ApiQuery({ name: 'pets', required: false, description: 'Capacity of the property', type: Boolean })
   @ApiQuery({ name: 'minors', required: false, description: 'Capacity of the property', type: Boolean })
-  getPropertiesByType(@Query(NormalizeCountryPipe) filter: Partial<FilterDto>) {
+  getPropertiesByType(@Query() filter: Partial<FilterDto>) {
     return this.propertyService.searchProperties(filter)
   }
 
