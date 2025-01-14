@@ -49,52 +49,47 @@ export class MessageService {
   }
 
   async sendMessage(senderId: string, recipientId: string, content: string): Promise<Message> {
-    // Buscar al remitente y destinatario en la base de datos
     const sender = await this.accountRepository.findOne({
-        where: { user_: { id: senderId } },
-        relations: ['user_'],
+      where: { user_: { id: senderId } },
+      relations: ['user_'],
     });
 
     const recipient = await this.accountRepository.findOne({
-        where: { user_: { id: recipientId } },
-        relations: ['user_'],
+      where: { user_: { id: recipientId } },
+      relations: ['user_'],
     });
 
     if (!sender) {
-        throw new NotFoundException(`El remitente con ID ${senderId} no existe`);
+      throw new NotFoundException(`El remitente con ID ${senderId} no existe`);
     }
 
     if (!recipient) {
-        throw new NotFoundException(`El destinatario con ID ${recipientId} no existe`);
+      throw new NotFoundException(`El destinatario con ID ${recipientId} no existe`);
     }
 
-    // Crear y guardar el mensaje en la base de datos
     const newMessage = this.messageRepository.create({
-        sender,
-        recipient,
-        message: content,
+      sender,
+      recipient,
+      message: content,
     });
 
     const savedMessage = await this.messageRepository.save(newMessage);
 
-    // Eliminar el campo `password` de los objetos relacionados
     if (savedMessage.sender) {
-        delete savedMessage.sender.password; // Campo en account
+      delete savedMessage.sender.password;
     }
 
     if (savedMessage.recipient) {
-        delete savedMessage.recipient.password; // Campo en account
+      delete savedMessage.recipient.password;
     }
 
-    // Buscar si el destinatario está conectado
     const recipientSocketId = this.userSocketMap.get(recipientId);
 
     if (recipientSocketId) {
-        // Emitir el mensaje al destinatario conectado
-        this.io.to(recipientSocketId).emit('newMessage', savedMessage);
-        console.log(`Mensaje enviado al socket ${recipientSocketId}`);
+      this.io.to(recipientSocketId).emit('newMessage', savedMessage);
+      console.log(`Mensaje enviado al socket ${recipientSocketId}`);
     } else {
-        console.log(`El destinatario con ID ${recipientId} no está conectado. Mensaje guardado en la base de datos.`);
+      console.log(`El destinatario con ID ${recipientId} no está conectado. Mensaje guardado en la base de datos.`);
     }
 
     return savedMessage;
@@ -107,7 +102,6 @@ export class MessageService {
       order: { timestamp: 'DESC' },
     });
 
-    // Excluir el campo password de las cuentas relacionadas
     return sentMessages.map((message) => {
       if (message.recipient) {
         delete message.recipient.password;
@@ -123,7 +117,6 @@ export class MessageService {
       order: { timestamp: 'DESC' },
     });
 
-    // Excluir el campo password de las cuentas relacionadas
     return receivedMessages.map((message) => {
       if (message.sender) {
         delete message.sender.password;
@@ -147,4 +140,48 @@ export class MessageService {
 
     return this.messageRepository.save(message);
   }
+
+  async getMessagesFromTo(senderId: string, recipientId: string): Promise<Message[]> {
+    const messages = await this.messageRepository.find({
+        where: {
+            sender: { user_: { id: senderId } },
+            recipient: { user_: { id: recipientId } },
+        },
+        relations: ['sender', 'recipient'],
+        order: { timestamp: 'DESC' },
+    });
+
+    return messages.map((message) => {
+        const { sender, recipient, ...filteredMessage } = message;
+        return filteredMessage as Message;
+    });
+}
+
+async getMessagesToFrom(recipientId: string, senderId: string): Promise<Message[]> {
+    const messages = await this.messageRepository.find({
+        where: {
+            recipient: { user_: { id: recipientId } },
+            sender: { user_: { id: senderId } },
+        },
+        relations: ['sender', 'recipient'],
+        order: { timestamp: 'DESC' },
+    });
+
+    // Actualizar el campo isRead a true
+    const recipient = await this.accountRepository.findOne({ where: { user_: { id: recipientId } } });
+    const sender = await this.accountRepository.findOne({ where: { user_: { id: senderId } } });
+
+    await this.messageRepository.update(
+        {
+            recipient,
+            sender,
+        },
+        { isRead: true },
+    );
+
+    return messages.map((message) => {
+        const { sender, recipient, ...filteredMessage } = message;
+        return filteredMessage as Message;
+    });
+}
 }
