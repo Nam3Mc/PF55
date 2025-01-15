@@ -43,8 +43,8 @@ export class PaypalService {
         }
       ],
       application_context: {
-        return_url: `http://localhost:${port}/profile`,
-        cancel_url: `http://localhost:${port}/CheckoutPreview`,
+        return_url: `http://localhost:3000/profile`,
+        cancel_url: `http://localhost:3000/CheckoutPreview`,
       },
       payment_instruction: {
         disbursement_mode: 'INSTANT',
