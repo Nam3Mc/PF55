@@ -8,9 +8,9 @@ export class ContractController {
     private readonly contractService: ContractService
   ) {}
 
-  @Get('propety/:id')
+  @Get('proprety/:id')
   @ApiOperation({ summary: 'this endpoint gives all contracts for an specific property'})
-  getPropertyContracts(@Param('properrtyId') propertyId: string) {
+  getPropertyContracts(@Param('propertyId') propertyId: string) {
     return this.contractService.getPropertyContracts(propertyId)
   }
 
