@@ -11,8 +11,9 @@ import { FilterDto } from '../../dtos/filter.dto'
 import { propertyCreator } from '../../helpers/createProperty'
 import { updateProperty } from '../../helpers/updateProperty'
 import { PropertyStatus } from '../../enums/property'
-import { Contract } from '../../entities/contract.entity'
 import { IdDto } from '../../dtos/id.dto'
+import { ContractService } from '../contract/contract.service'
+import { Contract } from '../../entities/contract.entity'
 import { normalizeString } from '../../helpers/wordsConverter'
 
 @Injectable()
@@ -23,6 +24,7 @@ export class PropertyService {
     private readonly propertyDB: Repository<Property>,
     private readonly accountDB: AccountService,
     private readonly imageDB: ImageService,
+    private readonly contractDB: ContractService
   ) {}
 
   async gettingEmail(id: string) {
@@ -181,54 +183,55 @@ export class PropertyService {
 
   async searchProperties(filter: Partial<FilterDto>) {
     try {
-      const { checkIn, checkOut, minors, pets, country, capacity, type } = filter;
-      const query = this.propertyDB.createQueryBuilder("property")
-        .leftJoinAndSelect("property.contract_", "contract")
-        .leftJoinAndSelect("property.image_", "image")
-        .where("property.isActive = :isActive", { isActive: "activa" });
-  
-      query.andWhere((qb) => {
-        const subQuery = qb.subQuery()
-          .select("contract.id")
-          .from(Contract, "contract")
-          .where("contract.property_ = property.id")
-          .andWhere("contract.status = :status", { status: "aceptado" });
-        if (checkIn && checkOut) {
-          const startDate = new Date(checkIn);
-          const endDate = new Date(checkOut);
-          if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            throw new Error("Invalid dates provided for checkIn or checkOut.");
+      const { checkIn, checkOut, minors, pets, country, capacity, type } = filter  
+      
+      const allProperties = this.propertyDB
+      .createQueryBuilder('property')
+      .leftJoinAndSelect('property.image_', 'image')
+      .leftJoinAndSelect('property.amenities_', 'amenities')
+      .where('property.isActive = :activa', {activa: 'activa'})
+      
+      if (checkIn && checkOut) {
+        const inDay = new Date(checkIn)
+        const outDay = new Date(checkOut)
+        const dataFilter = await allProperties
+          .andWhere((qb) => {
+            const subQuery = qb
+              .subQuery()
+              .select('1') 
+              .from(Contract, 'contract')
+              .where('contract.property_ = property.id') 
+              .andWhere('contract.startDate < :outDay', { outDay }) 
+              .andWhere('contract.endDate > :inDay', { inDay }) 
+              .andWhere('contract.status = :aceptado', { aceptado: 'aceptado' })
+              .getQuery(); 
+              return `NOT EXISTS (${subQuery})`
+            })
           }
-          subQuery.andWhere(
-            "((contract.startDate <= :endDate AND contract.endDate >= :startDate))",
-            { startDate, endDate },
-          );
-        }
-        return `NOT EXISTS ${subQuery.getQuery()}`;
-      });
-  
-      if (minors !== undefined) {
-        query.andWhere("property.hasMinor = :minors", { minors });
+          if (country) {
+            const countryS = normalizeString(country)
+            allProperties.andWhere('property.country = :country', {country: countryS})
+          }
+          if (capacity) {
+            allProperties.andWhere('property.capacity >= :capacity', { capacity })
+          }
+          if (type) {
+            const typeS = normalizeString(type)
+            allProperties.andWhere('property.type = :type', { type: typeS })
+          }
+          if (pets !== undefined) {
+            allProperties.andWhere('property.petsAllowed = :pets', { pets })
+          }
+          if (minors !== undefined) {
+            allProperties.andWhere('property.minorsAllowed = :minors', { minors })
+          }  
+        const filteredProperties = await allProperties.getMany()
+        return filteredProperties
       }
-      if (pets !== undefined) {
-        query.andWhere("property.pets = :pets", { pets });
-      }
-      if (country) {
-        query.andWhere("property.country = :country", { country });
-      }
-      if (capacity) {
-        query.andWhere("property.capacity >= :capacity", { capacity });
-      }
-      if (type) {
-        query.andWhere("property.type = :type", { type });
-      }
-  
-      return await query.getMany();
-    } catch (error) {
-      console.error(error);
-      return [];
+      catch (error) {
+      console.error(error)
+      return []
     }
   }
-  
 
 }
