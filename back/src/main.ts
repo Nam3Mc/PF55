@@ -23,13 +23,22 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('RentaFacil')
     .setDescription('This is RentaFacil Backend')
-    .setVersion('1.0')
-    .addBearerAuth()
+    .setVersion('3.0.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+     },
+    'AuthGuard'
+     )
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'Documents backend RentaFacil',
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
   });
 
   const preloadServices = app.get(PreloadServices);
@@ -41,11 +50,12 @@ async function bootstrap() {
   }
 
   app.enableCors({
-    allowedHeaders: 'Authorization, Content-Type',
+    allowedHeaders: ['Authorization', 'Content-Type', 'Accept'],
     origin: process.env.CORS_ORIGIN ?? '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   });
+  
 
   app.useGlobalPipes(new ValidationPipe());
 
