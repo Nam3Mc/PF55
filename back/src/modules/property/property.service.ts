@@ -77,7 +77,7 @@ export class PropertyService {
     try {
       const property = await this.propertyDB.find({
         where: { id: id },
-        relations: ["account_", "amenities_", "image_"],
+        relations: ["account_", "amenities_", "image_", 'contract_'],
       });
       if (!property || property.length === 0) {
         throw new NotFoundException("This property does not exist");
@@ -181,9 +181,9 @@ export class PropertyService {
     }
   }
 
-  async deleteProperty( id: IdDto) {
+  async deleteProperty( id: string) {
     try {
-      await this.propertyDB.delete(id.id)
+      await this.propertyDB.delete(id)
       return "La propidad fue eliminada exitosamente"      
     } catch (error) {
       throw new BadRequestException("Ocurrio un error al eliminar la propiedad")

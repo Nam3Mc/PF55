@@ -19,7 +19,7 @@ export class ContractService {
   
   async getContracts () {
     const contracts = await this.contractDB.find({
-      relations: ['account_']
+      relations: ['account_', 'account_.user_']
     });
     return contracts
   }
