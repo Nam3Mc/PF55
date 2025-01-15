@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Put, Query, UseGuards, Delete, Req } from '@nestjs/common';
 import { PropertyService } from './property.service';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePropertyDto } from '../../dtos/create-property.dto';
 import { FavoritesDto } from '../../dtos/favorites.dto';
 import { UpdatePropertyDto } from '../../dtos/updateProperty.dto';
@@ -9,6 +9,7 @@ import { IdDto } from '../../dtos/id.dto';
 import { AuthGuard } from '../../guards/auth.guard';
 
 @ApiTags('Properties')
+@ApiBearerAuth("AuthGuard")
 @Controller('property')
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
@@ -35,9 +36,7 @@ export class PropertyController {
   @ApiOperation({ summary: "get all properties endpoint for admin"})
   @UseGuards(AuthGuard)
   getProperties(@Req() request: Express.Request) {
-    const a = request.isAuthenticated
-    console.log(request)
-    // return "done"
+    // console.log(request)
     return this.propertyService.getAllProperties()
   }
   
@@ -86,7 +85,7 @@ export class PropertyController {
 
   @Delete()
   @ApiOperation({ summary: "Endpoint to delete a property"})
-  deleteProperty(@Param('id') id: IdDto) {
+  deleteProperty(@Param('id') id: string) {
     return this.propertyService.deleteProperty(id) 
   }
    
