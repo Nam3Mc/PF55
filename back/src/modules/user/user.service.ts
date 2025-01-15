@@ -77,12 +77,12 @@ export class UserService {
     }
     
     //servicio de notificaciones, después de crear el usuario, enviamos el correo
-    const subject = 'Bienvenido a nuestra plataforma';
+    const subject = 'Renta Facil - Bienvenido a nuestra plataforma';
     const text = `Hola ${name}, tu cuenta ha sido creada exitosamente. ¡Bienvenido!`;
     const html = `
-      <h1>Bienvenido ${name} ${lastName}</h1>
-      <p>Tu cuenta ha sido creada exitosamente.</p>
-      <p>Te invitamos a explorar nuestra plataforma.</p>
+      <h1>RentaFacil te da la Bienvenida ${name} ${lastName}</h1>
+      <h2>Tu cuenta ha sido creada exitosamente.</h2>
+      <h3>Te invitamos a explorar nuestra plataforma rentafacil.</h3>
     `;
     await this.notificationsService.sendEmail(savedUser.email, subject, text, html);
 

@@ -9,6 +9,7 @@ import { LoginUserDto } from '../../dtos/login-user.dto';
 import { CreateUserDto } from '../../dtos/create-user.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { Role } from '../../enums/account';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
     private readonly jwtService: JwtService,
+    private readonly notificationsService: NotificationsService,
   ) {
     this.googleClient = new OAuth2Client(
       process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
@@ -156,7 +158,19 @@ export class AuthService {
         password: null, // Google login doesn't require a password
       };
 
-      return await this.createUser(createUserDto);
+      const response = await this.createUser(createUserDto);
+
+      // Enviar correo de notificación al nuevo usuario
+      const subject = 'Renta Facil - Bienvenido a nuestra plataforma';
+      const text = `Hola ${createUserDto.name}, tu cuenta ha sido creada exitosamente. ¡Bienvenido!`;
+      const html = `
+        <h1>RentaFacil te da la Bienvenida ${createUserDto.name} ${createUserDto.lastName}</h1>
+        <h2>Tu cuenta ha sido creada exitosamente.</h2>
+        <h3>Te invitamos a explorar nuestra plataforma rentafacil.</h3>
+      `;
+      await this.notificationsService.sendEmail(createUserDto.email, subject, text, html);
+
+      return response;
     } catch (error) {
       console.error('Error verifying Google token:', error);
       throw new UnauthorizedException('Invalid Google token');

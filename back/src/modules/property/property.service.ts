@@ -15,6 +15,7 @@ import { IdDto } from '../../dtos/id.dto'
 import { ContractService } from '../contract/contract.service'
 import { Contract } from '../../entities/contract.entity'
 import { normalizeString } from '../../helpers/wordsConverter'
+import { NotificationsService } from '../notifications/notifications.service'
 
 @Injectable()
 export class PropertyService {
@@ -24,7 +25,8 @@ export class PropertyService {
     private readonly propertyDB: Repository<Property>,
     private readonly accountDB: AccountService,
     private readonly imageDB: ImageService,
-    private readonly contractDB: ContractService
+    private readonly contractDB: ContractService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   async gettingEmail(id: string) {
@@ -164,23 +166,33 @@ export class PropertyService {
   }
   
   async changePropertyStatus(id: IdDto) {
-    try { 
-      const property = await this.justProperty(id.id)
+    try {
+      const property = await this.justProperty(id.id);
+      const previousStatus = property.isActive;  // Guardamos el estado previo
+  
+      // Cambiar el estado dependiendo del valor actual
       if (property.isActive === "pendiente" || property.isActive === "inactiva") {
-        property.isActive = PropertyStatus.ACTIVATED
-        const updatedProperty = await this.propertyDB.save(property)
-        return updatedProperty
+        property.isActive = PropertyStatus.ACTIVATED;
+      } else {
+        property.isActive = PropertyStatus.INACTIVE;
       }
-      else {
-        property.isActive = PropertyStatus.INACTIVE
-        const updatedProperty = await this.propertyDB.save(property)
-        return updatedProperty
+  
+      // Guardamos la propiedad con el nuevo estado
+      const updatedProperty = await this.propertyDB.save(property);
+  
+      // Enviar correo solo si el estado ha cambiado
+      if (previousStatus !== property.isActive) {
+        this.notificationsService.sendStatusChangeEmail(property.id).catch((error) => {
+          console.error('Error sending email:', error);
+        });
       }
+  
+      return updatedProperty;
     } catch (error) {
-      throw new BadRequestException(error)
+      throw new BadRequestException(error);
     }
   }
-
+ 
   async deleteProperty( id: IdDto) {
     try {
       await this.propertyDB.delete(id.id)

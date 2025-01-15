@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Property } from '../../entities/property.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class NotificationsService {
   private transporter: nodemailer.Transporter;
 
-  constructor() {
+  constructor(
+    @InjectRepository(Property)
+    private readonly propertyRepository: Repository<Property>,
+  ) {
     const user = process.env.EMAIL_USER;
     const pass = process.env.EMAIL_PASS;
 
@@ -15,8 +21,8 @@ export class NotificationsService {
 
     this.transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, 
+      port: 587, //Usar el puerto 465 para SSL
+      secure: false, //cambiar a true para SSL
       auth: {
         user: user,
         pass: pass,
@@ -30,7 +36,7 @@ export class NotificationsService {
   async sendEmail(to: string, subject: string, text: string, html?: string): Promise<void> {
     //console.log(`Enviando correo a ${to} con el asunto: ${subject}`);
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM,
       to,
       subject,
       text,
@@ -50,18 +56,38 @@ export class NotificationsService {
     }
   }
 
-  async notifyPropertyPublished(to: string, propertyDetails: any): Promise<void> {
-    const subject = '¡Tu propiedad ha sido publicada!';
-    const text = `Hola, tu propiedad ha sido publicada exitosamente. Detalles: ${JSON.stringify(propertyDetails)}`;
+  async sendStatusChangeEmail(propertyId: string): Promise<void> {
+    // Buscar la propiedad con relaciones usando el repositorio inyectado
+    const property = await this.propertyRepository.findOne({
+      where: { id: propertyId },
+      relations: ['account_', 'account_.user_'],
+    });
+
+    // Validar si la propiedad y las relaciones necesarias existen
+    if (!property || !property.account_ || !property.account_.user_) {
+      throw new Error('No se encontró la propiedad o el usuario asociado para enviar el correo.');
+    }
+
+    // Extraer el email del usuario y otros datos relevantes
+    const userEmail = property.account_.user_.email;
+    const subject = `Cambio de estado en tu propiedad: ${property.name}`;
+    const text = `Hola, el estado de tu propiedad "${property.name}" ha cambiado a: ${property.isActive}`;
     const html = `
-      <h1>¡Tu propiedad ha sido publicada!</h1>
-      <p>Detalles de tu propiedad:</p>
+      <h1>Cambio de estado en tu propiedad</h1>
+      <p>Tu propiedad ha cambiado de estado:</p>
       <ul>
-        <li>Nombre: ${propertyDetails.name}</li>
-        <li>Ubicación: ${propertyDetails.location}</li>
-        <li>Precio: ${propertyDetails.price}</li>
+        <li><strong>Nombre:</strong> ${property.name}</li>
+        <li><strong>Nuevo estado:</strong> ${property.isActive}</li>
       </ul>
     `;
-    await this.sendEmail(to, subject, text, html);
+
+    // Enviar el correo utilizando el método sendEmail
+    try {
+      await this.sendEmail(userEmail, subject, text, html);
+      console.log(`Correo enviado correctamente a ${userEmail}`);
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      throw new Error('No se pudo enviar el correo al usuario.');
+    }
   }
 }
