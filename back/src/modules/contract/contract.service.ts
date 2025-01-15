@@ -7,7 +7,6 @@ import { AccountService } from "../account/account.service";
 import { ContractStatus } from "../../enums/contract";
 import { reservationCreator } from "../../helpers/reservationCreator";
 import { Property } from "../../entities/property.entity";
-import { UpdateContractDto } from "../../dtos/updateContract.dto";
 import { IdDto } from "../../dtos/id.dto";
 
 @Injectable()

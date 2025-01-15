@@ -6,6 +6,7 @@ import { User } from '../../entities/user.entity';
 import { Account } from '../../entities/account.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { NotificationsService } from '../notifications/notifications.service';
+import { AuthRepo } from './auth.repo';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { NotificationsService } from '../notifications/notifications.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, NotificationsService],
+  providers: [AuthService, NotificationsService, AuthRepo],
 })
 export class AuthModule {}

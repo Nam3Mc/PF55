@@ -3,11 +3,14 @@ import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiBody, ApiTags } from '@nestjs/swagger';
 import { GoogleLoginDto } from '../../dtos/google-login.dto';
 import { LoginUserDto } from '../../dtos/login-user.dto';
+import { AuthRepo } from './auth.repo';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService,
+    private readonly authRepo: AuthRepo
+  ) {}
 
   @Post('/signin')
   @ApiOperation({ summary: 'Login with email and password' })
@@ -64,4 +67,12 @@ export class AuthController {
   async googleLogin(@Body() googleLoginDto: GoogleLoginDto) {
     return this.authService.googleLogin(googleLoginDto.token);
   }
+
+  @Post("test")
+  singIn(@Body() credentials: LoginUserDto) {
+    // return credentials
+    return this.authRepo.singIn(credentials)
+  }
+
+
 }

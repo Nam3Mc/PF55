@@ -40,11 +40,6 @@ export class CreatePropertyDto {
     @IsString()
     @IsOptional()
     address: string
-
-    @ApiProperty({ example: false, description: "Deberia ser inactive por defecto para que si el admi lo aprieva sea quien lo cambie " })
-    @IsBoolean()
-    @IsOptional()
-    isActive: boolean
     
     @ApiProperty({ example: "2", description: "How many Bedrooms your property has" })
     @IsNotEmpty()
