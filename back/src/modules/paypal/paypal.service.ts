@@ -2,9 +2,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import paypal from '@paypal/checkout-server-sdk';
 import axios from 'axios';
-import { url } from 'inspector';
-const port = process.env.PORT
-
 
 @Injectable()
 export class PaypalService {
@@ -43,7 +40,7 @@ export class PaypalService {
         }
       ],
       application_context: {
-        return_url: `http://localhost:3000/profile`,
+        return_url: `http://localhost:3000/profile/reservations`,
         cancel_url: `http://localhost:3000/CheckoutPreview`,
       },
       payment_instruction: {
