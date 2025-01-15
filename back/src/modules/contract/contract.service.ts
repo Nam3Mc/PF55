@@ -7,7 +7,6 @@ import { AccountService } from "../account/account.service";
 import { ContractStatus } from "../../enums/contract";
 import { reservationCreator } from "../../helpers/reservationCreator";
 import { Property } from "../../entities/property.entity";
-import { IdDto } from "../../dtos/id.dto";
 
 @Injectable()
 export class ContractService {
@@ -25,11 +24,11 @@ export class ContractService {
     return contracts
   }
 
-  async userContracts(id: IdDto) {
+  async userContracts(id: string) {
     try {
       const contracts = await this.contractDB.find({
-        where: {account_: {id: id.id}},
-        relations: ["payment_", 'property_']
+        where: {account_: {id}},
+        relations: ['property_', 'property_.image_']
       })
       return contracts
     } catch (error) {
