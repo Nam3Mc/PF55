@@ -16,17 +16,17 @@ import {
     ): boolean | Promise<boolean> | Observable<boolean> {
       const request = context.switchToHttp().getRequest();
       const token = request.headers.authorization?.split(' ')[1];
-    //   if (!token) throw new UnauthorizedException('No se envió token');
+      // if (!token) throw new UnauthorizedException('No se envió token');
   
-    //   try {
+      // try {
         // const secret = process.env.JWT_SECRET;
         // const user = this.jwtService.verify(token, { secret });
         // request.user = user;
-        console.log(token)
+        console.log(request )
         return true;
-    //   } catch (error) {
+      // } catch (error) {
         // throw new UnauthorizedException('Token inválido o expirado');
-    //   }
+      // }
     }
   }
   
