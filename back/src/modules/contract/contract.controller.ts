@@ -1,7 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common'
 import { ContractService } from './contract.service'
 import { ApiOperation } from '@nestjs/swagger'
-import { IdDto } from '../../dtos/id.dto'
 
 @Controller('contract')
 export class ContractController {
@@ -9,15 +8,15 @@ export class ContractController {
     private readonly contractService: ContractService
   ) {}
 
-  @Get('propety/:id')
+  @Get('proprety/:id')
   @ApiOperation({ summary: 'this endpoint gives all contracts for an specific property'})
-  getPropertyContracts(@Param('properrtyId') propertyId: string) {
+  getPropertyContracts(@Param('propertyId') propertyId: string) {
     return this.contractService.getPropertyContracts(propertyId)
   }
 
   @Get("user/:id")
   @ApiOperation({ summary: "Get all reservations for an user by his account ID"})
-  getUserContrats(@Param('id') id: IdDto) {
+  getUserContrats(@Param('id') id: string) {
     return this.contractService.userContracts(id)
   }
 

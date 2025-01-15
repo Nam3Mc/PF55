@@ -7,7 +7,6 @@ import { AccountService } from "../account/account.service";
 import { ContractStatus } from "../../enums/contract";
 import { reservationCreator } from "../../helpers/reservationCreator";
 import { Property } from "../../entities/property.entity";
-import { IdDto } from "../../dtos/id.dto";
 
 @Injectable()
 export class ContractService {
@@ -20,18 +19,21 @@ export class ContractService {
   
   async getContracts () {
     const contracts = await this.contractDB.find({
-      relations: ['account_']
+      relations: ['account_', 'account_.user_']
     });
     return contracts
   }
 
-  async userContracts(id: IdDto) {
+  async userContracts(id: string) {
     try {
-      const contracts = await this.contractDB.find({
-        where: {account_: {id: id.id}},
-        relations: ["payment_", 'property_']
-      })
-      return contracts
+      const activatedContracts = this.contractDB
+      .createQueryBuilder('contract')
+      .leftJoinAndSelect('contract.account_', 'account')
+      .leftJoinAndSelect('contract.property_', 'property')
+      .where('account.id = :id', { id })
+      .getMany();
+
+    return activatedContracts;
     } catch (error) {
       console.log(error)
       return []
