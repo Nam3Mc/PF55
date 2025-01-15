@@ -181,6 +181,15 @@ export class PropertyService {
     }
   }
 
+  async deleteProperty( id: IdDto) {
+    try {
+      await this.propertyDB.delete(id.id)
+      return "La propidad fue eliminada exitosamente"      
+    } catch (error) {
+      throw new BadRequestException("Ocurrio un error al eliminar la propiedad")
+    }
+  }
+
   async searchProperties(filter: Partial<FilterDto>) {
     try {
       const { checkIn, checkOut, minors, pets, country, capacity, type } = filter  

@@ -37,6 +37,11 @@ cloudinary.config({
         ...config.get('typeorm'),
       }),
     }),
+    JwtModule.register({
+      global: true,
+      signOptions: { expiresIn: '1h' },
+      secret: process.env.JWT_SECRET
+    }),
     UserModule,
     AuthModule,
     AccountModule,
