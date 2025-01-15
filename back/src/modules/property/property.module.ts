@@ -8,6 +8,7 @@ import { ImageModule } from '../image/image.module';
 import { AmenitiesModule } from '../amenities/amenities.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ContractModule } from '../contract/contract.module';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Module({
   imports: 
@@ -22,7 +23,7 @@ import { ContractModule } from '../contract/contract.module';
   }),
 ],
   controllers: [PropertyController],
-  providers: [PropertyService],
+  providers: [PropertyService, NotificationsService],
   exports: [PropertyService]
 })
 export class PropertyModule {}
