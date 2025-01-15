@@ -26,11 +26,14 @@ export class ContractService {
 
   async userContracts(id: string) {
     try {
-      const contracts = await this.contractDB.find({
-        where: {account_: {id}},
-        relations: ['property_', 'property_.image_']
-      })
-      return contracts
+      const activatedContracts = this.contractDB
+      .createQueryBuilder('contract')
+      .leftJoinAndSelect('contract.account_', 'account')
+      .leftJoinAndSelect('contract.property_', 'property')
+      .where('account.id = :id', { id })
+      .getMany();
+
+    return activatedContracts;
     } catch (error) {
       console.log(error)
       return []
