@@ -41,8 +41,8 @@ export class PaypalService {
       ],
       application_context: {
         // return_url: `https://ft-55-front.vercel.app/profile/reservations`,
-        return_url: `https://localhost:3000/profile/reservations`,
-        cancel_url: `https://ft-55-front.vercel.app/CheckoutPreview`,
+        return_url: `http://localhost:3000/profile/reservations`,
+        cancel_url: `http://ft-55-front.vercel.app/CheckoutPreview`,
       },
       payment_instruction: {
         disbursement_mode: 'INSTANT',
