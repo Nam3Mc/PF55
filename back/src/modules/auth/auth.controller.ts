@@ -67,12 +67,4 @@ export class AuthController {
   async googleLogin(@Body() googleLoginDto: GoogleLoginDto) {
     return this.authService.googleLogin(googleLoginDto.token);
   }
-
-  @Post("test")
-  singIn(@Body() credentials: LoginUserDto) {
-    // return credentials
-    return this.authRepo.singIn(credentials)
-  }
-
-
 }

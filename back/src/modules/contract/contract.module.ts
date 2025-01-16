@@ -4,11 +4,13 @@ import { ContractController } from './contract.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Contract } from '../../entities/contract.entity';
 import { AccountModule } from '../account/account.module';
+import { PropertyModule } from '../property/property.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Contract]),
-    AccountModule
+    AccountModule,
+    PropertyModule
   ],
   controllers: [ContractController],
   providers: [ContractService],

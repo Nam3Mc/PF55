@@ -7,12 +7,14 @@ import {
   UseInterceptors, 
   BadRequestException, 
   Delete,
-  Param
+  Param,
+  UseGuards
 } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { ApiOperation, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserPhotoDto } from '../../dtos/update-photo-user.dto';
+import { AuthGuard } from '../../guards/auth.guard';
 
 const imageFileFilter = (req, file, callback) => {
   if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
@@ -23,18 +25,21 @@ const imageFileFilter = (req, file, callback) => {
 const maxFileSize = 1 * 1024 * 1024; // 1 MB
 
 @ApiTags('Images')
+@ApiBearerAuth('AuthGuard')
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all pictures' })
+  @UseGuards(AuthGuard)
   getPictures() {
     return this.imageService.getAllPictures();
   }
 
   @Post()
   @ApiOperation({ summary: 'Endpoint to upload an image' })
+  @UseGuards(AuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Upload image file',
@@ -60,6 +65,7 @@ export class ImageController {
 
   @Post('/user-photo')
   @ApiOperation({ summary: 'Upload a photo for a user' })
+  @UseGuards(AuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Upload user photo',
@@ -86,6 +92,7 @@ export class ImageController {
 
   @Delete()
   @ApiOperation({summary: "picture id to delete"})
+  @UseGuards(AuthGuard)
   deletePicture(@Param() id: UpdateUserPhotoDto) {
     return this.imageService.deleteImage(id)
   }

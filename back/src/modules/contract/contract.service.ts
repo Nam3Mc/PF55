@@ -26,13 +26,12 @@ export class ContractService {
 
   async userContracts(id: string) {
     try {
-      const activatedContracts = this.contractDB
+      const activatedContracts = await this.contractDB
       .createQueryBuilder('contract')
       .leftJoinAndSelect('contract.account_', 'account')
       .leftJoinAndSelect('contract.property_', 'property')
       .where('account.id = :id', { id })
       .getMany();
-
     return activatedContracts;
     } catch (error) {
       console.log(error)
@@ -87,9 +86,12 @@ export class ContractService {
   async getPropertyContracts(id: string) {
     try {
       const contracts = await this.contractDB.find({
-        where: {property_: {id}}
+        where: {
+          status: ContractStatus.ACEPTED,
+          property_: { id },
+        },
       })
-        return contracts
+      return contracts
     } catch (error) {
       throw new BadRequestException('Nopuedimos encontrar contratos en esta propiedad')
     }
