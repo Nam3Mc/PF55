@@ -47,7 +47,9 @@ export class ContractService {
         throw new Error('Las fechas proporcionadas no son válidas');
       }
       const contracts = await this.contractDB.find({
-        where: { property_: { id: propertyId } },
+        where: { 
+          status: ContractStatus.NEGOCIATION,
+          property_: { id: propertyId } },
       });
   
       if (contracts.length > 0) {
