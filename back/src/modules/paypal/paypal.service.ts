@@ -41,7 +41,7 @@ export class PaypalService {
       ],
       application_context: {
         // return_url: `https://ft-55-front.vercel.app/profile/reservations`,
-        return_url: `https://local:3000/profile/reservations`,
+        return_url: `https://localhost:3000/profile/reservations`,
         cancel_url: `https://ft-55-front.vercel.app/CheckoutPreview`,
       },
       payment_instruction: {
