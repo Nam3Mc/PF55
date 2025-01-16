@@ -67,6 +67,7 @@ export class PaypalService {
   }
 
   async captureOrder(code: string): Promise<any> {
+    console.log(code)
     try {
       const url = new URL(code);
       const orderId = url.searchParams.get('token');
