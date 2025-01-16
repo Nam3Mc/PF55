@@ -27,46 +27,55 @@ export class ContractService {
   async userContracts(id: string) {
     try {
       const activatedContracts = await this.contractDB
-      .createQueryBuilder('contract')
-      .leftJoinAndSelect('contract.account_', 'account')
-      .leftJoinAndSelect('contract.property_', 'property')
-      .leftJoinAndSelect('contract.image_', 'image')
-      .where('account.id = :id', { id })
-      .getMany();
-    return activatedContracts;
+        .createQueryBuilder('contract')
+        .leftJoinAndSelect('contract.account_', 'account')
+        .leftJoinAndSelect('contract.property_', 'property')
+        .leftJoinAndSelect('property.image_', 'image')
+        .where('account.id = :id', { id })
+        .andWhere('contract.status = :status', { status: 'aceptado' }) // Corregido aquí
+        .andWhere('contract.status != :negociacion', { negociacion: 'negociacion' }) // Evita contratos en negociación
+        .getMany();
+  
+      return activatedContracts;
     } catch (error) {
-      console.log(error)
-      return []
+      console.error("Error al obtener contratos:", error);
+      return [];
     }
   }
-
-  async isDateAvailable(checkIn: string, checkOut: string, propertyId: string): Promise<{}> {
+  async isDateAvailable(checkIn: string, checkOut: string, propertyId: string): Promise<boolean> {
     try {
       const inDay = new Date(checkIn);
       const outDay = new Date(checkOut);
-        if (isNaN(inDay.getTime()) || isNaN(outDay.getTime())) {
+  
+      // Validar fechas
+      if (isNaN(inDay.getTime()) || isNaN(outDay.getTime())) {
         throw new Error('Las fechas proporcionadas no son válidas');
       }
+  
+      // Buscar contratos en estado "negociacion" que pertenezcan a la propiedad
       const contracts = await this.contractDB.find({
         where: { 
-          status: ContractStatus.NEGOCIATION,
-          property_: { id: propertyId } },
+          status: ContractStatus.ACEPTED, // Solo contratos en negociación
+          property_: { id: propertyId },
+        },
       });
   
-      if (contracts.length > 0) {
-        for (let contract of contracts) {
-          const contractStart = new Date(contract.startDate);
-          const contractEnd = new Date(contract.endDate);
-            if (
-            (inDay >= contractStart && inDay < contractEnd) ||
-            (outDay > contractStart && outDay <= contractEnd) || 
-            (inDay <= contractStart && outDay >= contractEnd) 
-          ) {
-            return false; 
-          }
+      // Verificar si las fechas están disponibles
+      for (const contract of contracts) {
+        const contractStart = new Date(contract.startDate);
+        const contractEnd = new Date(contract.endDate);
+  
+        // Verificar solapamiento de fechas
+        if (
+          (inDay >= contractStart && inDay < contractEnd) || // Check-in dentro del rango
+          (outDay > contractStart && outDay <= contractEnd) || // Check-out dentro del rango
+          (inDay <= contractStart && outDay >= contractEnd) // Fechas envuelven el contrato
+        ) {
+          return false; // No disponible
         }
       }
-        return true;
+  
+      return true; // Disponible si no hay solapamientos
     } catch (error) {
       throw new InternalServerErrorException(
         `Error al verificar la disponibilidad de fechas: ${error.message}`
