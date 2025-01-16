@@ -99,8 +99,8 @@ export class ContractService {
     try {
       const contracts = await this.contractDB.find({
         where: {
+          property_: { id: id },
           status: ContractStatus.ACEPTED,
-          property_: { id },
         },
       })
       return contracts
