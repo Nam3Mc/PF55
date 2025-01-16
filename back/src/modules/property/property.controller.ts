@@ -66,6 +66,7 @@ export class PropertyController {
 
   @Get('unique/:id')
   @ApiOperation({ summary: 'Get property by ID'})
+  @UseGuards(AuthGuard)
   getPropertyById(@Param('id') id:string) {
     return this.propertyService.getPropertyById(id)
   }
