@@ -83,7 +83,7 @@ export class PreloadServices implements OnApplicationBootstrap {
     const newUserOwner = new User();
     newUserOwner.name = 'John';
     newUserOwner.lastName = 'Doe';
-    newUserOwner.email = 'owner@email.com';
+    newUserOwner.email = 'owner1@email.com';
     newUserOwner.phone = 123456789;
     newUserOwner.dni = 1234567;
     newUserOwner.nationality = 'American';

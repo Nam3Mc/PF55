@@ -30,6 +30,7 @@ export class ContractService {
       .createQueryBuilder('contract')
       .leftJoinAndSelect('contract.account_', 'account')
       .leftJoinAndSelect('contract.property_', 'property')
+      .leftJoinAndSelect('contract.image_', 'image')
       .where('account.id = :id', { id })
       .getMany();
     return activatedContracts;
