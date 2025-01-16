@@ -24,7 +24,6 @@ export class PropertyService {
     private readonly propertyDB: Repository<Property>,
     private readonly accountDB: AccountService,
     private readonly imageDB: ImageService,
-    private readonly contractDB: ContractService,
     private readonly notificationsService: NotificationsService
   ) {}
 
