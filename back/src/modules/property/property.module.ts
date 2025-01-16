@@ -7,7 +7,6 @@ import { AccountModule } from '../account/account.module';
 import { ImageModule } from '../image/image.module';
 import { AmenitiesModule } from '../amenities/amenities.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ContractModule } from '../contract/contract.module';
 
 @Module({
   imports: 
@@ -15,7 +14,6 @@ import { ContractModule } from '../contract/contract.module';
   AccountModule,
   ImageModule,
   AmenitiesModule,
-  ContractModule,
   JwtModule.register({
     secret: process.env.JWT_SECRET,
     signOptions: { expiresIn: '1h' },

@@ -21,8 +21,11 @@ export class PropertyController {
   }
 
   @Post("favorite")
-  @ApiOperation({})
-  addFavorite(@Body() favoriteData: FavoritesDto) {
+  @ApiOperation({ summary: 'Favorites properties for an account'})
+  @UseGuards(AuthGuard)
+  addFavorite(
+    @Req() request: Express.Request,
+    @Body() favoriteData: FavoritesDto) {
     return this.propertyService.addFavorite(favoriteData)
   }
 
@@ -36,13 +39,15 @@ export class PropertyController {
   @ApiOperation({ summary: "get all properties endpoint for admin"})
   @UseGuards(AuthGuard)
   getProperties(@Req() request: Express.Request) {
-    // console.log(request)
     return this.propertyService.getAllProperties()
   }
   
   @Get("email/:id")
   @ApiOperation({summary: "devuelve el email de la cuenta relacionado con la propiedad para paypal y recibe el id"})
-  getEmail(@Param('id') id: string) {
+  @UseGuards(AuthGuard)
+  getEmail(
+    @Req() request: Express.Request,
+    @Param('id') id: string) {
     return this.propertyService.gettingEmail(id)
   }
 
@@ -66,26 +71,38 @@ export class PropertyController {
   }
 
   @Get('owner/:id')
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get all prperties for an owner'})
-  getOwnersProperties(@Param('id') id:string ) {
+  getOwnersProperties(
+    @Req() request: Express.Request,
+    @Param('id') id:string ) {
     return this.propertyService.getOwnersProperties(id)
   }
 
   @Put()
+  @UseGuards(AuthGuard)
   @ApiOperation({summary: "this end point received a partial fto and update properties"})
-  updateProperty(@Body() propertyData: UpdatePropertyDto) {
+  updateProperty(
+    @Req() request: Express.Request,
+    @Body() propertyData: UpdatePropertyDto) {
     return this.propertyService.updateProperty( propertyData)
   }
 
   @Put("status")
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: "This endpoint changes the property status" })
-  changePropertyStatus(@Body() id:IdDto) {
+  changePropertyStatus(
+    @Req() request: Express.Request,
+    @Body() id:IdDto) {
     return this.propertyService.changePropertyStatus(id);
   }
 
   @Delete()
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: "Endpoint to delete a property"})
-  deleteProperty(@Param('id') id: string) {
+  deleteProperty(
+    @Req() request: Express.Request,
+    @Param('id') id: string) {
     return this.propertyService.deleteProperty(id) 
   }
    
