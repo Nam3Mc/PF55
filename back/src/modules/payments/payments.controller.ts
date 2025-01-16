@@ -6,7 +6,6 @@ import { PaymentDto } from '../../dtos/payment.dto';
 import { AuthGuard } from '../../guards/auth.guard';
 
 @ApiTags('Payments')
-@ApiBearerAuth('AuthGuard')
 @Controller('payments')
 export class PaymentsController {
 
@@ -15,6 +14,7 @@ export class PaymentsController {
   ) {}
 
   @Post('paid') 
+  @ApiBearerAuth('AuthGuard')
   @ApiOperation({ summary: 'This end point give you all the details after procesing the payment'})
   @UseGuards(AuthGuard)
   paymentData(@Body() paymentData: PaymentDto) {
@@ -23,7 +23,7 @@ export class PaymentsController {
   
   @Post()
   @ApiOperation({ summary: 'This endponit rewdirect client to payment page or give the payment page link'})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   payWithComission(@Body() contractData: CreateContractDto) {
     return this.paymentsService.orderAndComission(contractData )
   }
