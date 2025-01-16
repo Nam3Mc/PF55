@@ -27,16 +27,19 @@ export class ContractService {
   async userContracts(id: string) {
     try {
       const activatedContracts = await this.contractDB
-      .createQueryBuilder('contract')
-      .leftJoinAndSelect('contract.account_', 'account')
-      .leftJoinAndSelect('contract.property_', 'property')
-      .leftJoinAndSelect('contract.image_', 'image')
-      .where('account.id = :id', { id })
-      .getMany();
-    return activatedContracts;
+        .createQueryBuilder('contract')
+        .leftJoinAndSelect('contract.account_', 'account')
+        .leftJoinAndSelect('contract.property_', 'property')
+        .leftJoinAndSelect('property.image_', 'image')
+        .where('account.id = :id', { id })
+        .andWhere('contract.status = :status', { status: 'aceptado' }) // Corregido aquí
+        .andWhere('contract.status != :negociacion', { negociacion: 'negociacion' }) // Evita contratos en negociación
+        .getMany();
+  
+      return activatedContracts;
     } catch (error) {
-      console.log(error)
-      return []
+      console.error("Error al obtener contratos:", error);
+      return [];
     }
   }
 
