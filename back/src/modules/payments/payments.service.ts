@@ -55,6 +55,7 @@ export class PaymentsService {
       const netAmount = response.seller_receivable_breakdown.net_amount.value
       const paymentFee = response.seller_receivable_breakdown.paypal_fee.value
       const contract = await this.contractDB.getContractById(contractId)
+      console.log(response)
       if ( status === "COMPLETED") {
         const payment = paymentCreator(id, netAmount, paymentFee, contract)
         const savedPayment = await this.paymentDB.save(payment)
