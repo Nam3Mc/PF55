@@ -39,9 +39,9 @@ export class CreateUserDto {
   phone?: number;
 
   @ApiProperty({ example: "American", description: "Nationality of the user" })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  nationality: string;
+  nationality?: string;
 
   @ApiProperty({ example: "12345678", description: "Unique DNI of the user" })
   @Transform(({ value }) => value === "" ? undefined : value)
