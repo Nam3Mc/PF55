@@ -25,21 +25,21 @@ const imageFileFilter = (req, file, callback) => {
 const maxFileSize = 1 * 1024 * 1024; // 1 MB
 
 @ApiTags('Images')
-@ApiBearerAuth('AuthGuard')
+// @ApiBearerAuth('AuthGuard')
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all pictures' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getPictures() {
     return this.imageService.getAllPictures();
   }
 
   @Post()
   @ApiOperation({ summary: 'Endpoint to upload an image' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Upload image file',
@@ -65,7 +65,7 @@ export class ImageController {
 
   @Post('/user-photo')
   @ApiOperation({ summary: 'Upload a photo for a user' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Upload user photo',
@@ -92,7 +92,7 @@ export class ImageController {
 
   @Delete()
   @ApiOperation({summary: "picture id to delete"})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   deletePicture(@Param() id: UpdateUserPhotoDto) {
     return this.imageService.deleteImage(id)
   }

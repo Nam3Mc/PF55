@@ -9,7 +9,7 @@ import { IdDto } from '../../dtos/id.dto';
 import { AuthGuard } from '../../guards/auth.guard';
 
 @ApiTags('Properties')
-@ApiBearerAuth("AuthGuard")
+// @ApiBearerAuth("AuthGuard")
 @Controller('property')
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
@@ -22,7 +22,7 @@ export class PropertyController {
 
   @Post("favorite")
   @ApiOperation({ summary: 'Favorites properties for an account'})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   addFavorite(
     @Req() request: Express.Request,
     @Body() favoriteData: FavoritesDto) {
@@ -37,14 +37,14 @@ export class PropertyController {
 
   @Get("all")
   @ApiOperation({ summary: "get all properties endpoint for admin"})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getProperties(@Req() request: Express.Request) {
     return this.propertyService.getAllProperties()
   }
   
   @Get("email/:id")
   @ApiOperation({summary: "devuelve el email de la cuenta relacionado con la propiedad para paypal y recibe el id"})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getEmail(
     @Req() request: Express.Request,
     @Param('id') id: string) {
@@ -66,14 +66,13 @@ export class PropertyController {
 
   @Get('unique/:id')
   @ApiOperation({ summary: 'Get property by ID'})
-  @UseGuards(AuthGuard)
   getPropertyById(@Param('id') id:string) {
     return this.propertyService.getPropertyById(id)
   }
 
   @Get('owner/:id')
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get all prperties for an owner'})
+  // @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get all properties for an owner'})
   getOwnersProperties(
     @Req() request: Express.Request,
     @Param('id') id:string ) {
@@ -81,7 +80,7 @@ export class PropertyController {
   }
 
   @Put()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiOperation({summary: "this end point received a partial fto and update properties"})
   updateProperty(
     @Req() request: Express.Request,
@@ -90,7 +89,7 @@ export class PropertyController {
   }
 
   @Put("status")
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiOperation({ summary: "This endpoint changes the property status" })
   changePropertyStatus(
     @Req() request: Express.Request,
@@ -99,7 +98,7 @@ export class PropertyController {
   }
 
   @Delete()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiOperation({ summary: "Endpoint to delete a property"})
   deleteProperty(
     @Req() request: Express.Request,
