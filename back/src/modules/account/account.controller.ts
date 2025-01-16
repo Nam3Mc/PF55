@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '../../guards/auth.guard';
 
 @Controller('account')
-@ApiBearerAuth('AuthGuard')
+// @ApiBearerAuth('AuthGuard')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 

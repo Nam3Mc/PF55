@@ -21,7 +21,7 @@ import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs
 import { AuthGuard } from '../../guards/auth.guard';
 
 @ApiTags('Users')
-@ApiBearerAuth("AuthGuard")
+// @ApiBearerAuth("AuthGuard")
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -42,7 +42,7 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'Get a list of all users' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async getUsers() {
     return this.userService.getUsers();
   }
@@ -50,7 +50,7 @@ export class UserController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiParam({ name: 'id', description: 'UUID of the user', example: '123e4567-e89b-12d3-a456-426614174000' })
   async getUserById(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
     try {
@@ -65,7 +65,7 @@ export class UserController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a user by ID' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiParam({ name: 'id', description: 'UUID of the user', example: '123e4567-e89b-12d3-a456-426614174000' })
   async updateUserById(
     @Param('id', ParseUUIDPipe) id: string,
@@ -83,7 +83,7 @@ export class UserController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deactivate a user by ID' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiParam({ name: 'id', description: 'UUID of the user', example: '123e4567-e89b-12d3-a456-426614174000' })
   async deactivateUser(
     @Param('id', ParseUUIDPipe) id: string,
@@ -101,7 +101,7 @@ export class UserController {
 
   @Patch(':id/activate')
   @ApiOperation({ summary: 'Activate a user by ID' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiParam({ name: 'id', description: 'UUID of the user', example: '123e4567-e89b-12d3-a456-426614174000' })
   async activateUser(
     @Param('id', ParseUUIDPipe) id: string,
