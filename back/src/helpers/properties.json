@@ -151,7 +151,7 @@
     "longitude": -85.6206,
     "hasMinor": true,
     "pets": false,
-    "isActive": "activa",
+    "isActive": "inactiva",
     "type": "casa",
     "images": [
     "https://pics.nuroa.com/casa_en_venta_en_los_patios_los_patios_santa_clara_1660006708542607185.jpg",
@@ -179,7 +179,7 @@
     "longitude": -111.7609,
     "hasMinor": true,
     "pets": true,
-    "isActive": "activa",
+    "isActive": "inactiva",
     "type": "casa",
     "images": [
     "https://nucleosdemadera.com/wp-content/uploads/2020/05/Casa-base-1-300x300.jpg",
@@ -207,7 +207,7 @@
     "longitude": -86.7816,
     "hasMinor": true,
     "pets": true,
-    "isActive": "activa",
+    "isActive": "inactiva",
     "type": "habitacion",
     "images": [
     "https://www.cucutanuestra.com/temas/ventas-propiedades/imagenes-venta/casas/casa-loma-de-bolivar/imagenes/casa-loma-de-bolivar-1.jpg",
@@ -234,7 +234,7 @@
     "longitude": -87.6298,
     "hasMinor": false,
     "pets": false,
-    "isActive": "activa",
+    "isActive": "inacticva",
     "type": "apartamento",
     "images": [
     "https://hips.hearstapps.com/hmg-prod/images/casa-caracol-1526458370.jpeg?crop=0.669xw:1.00xh;0.331xw,0&resize=640:*",
@@ -263,7 +263,7 @@
     "longitude": -111.4979,
     "hasMinor": true,
     "pets": false,
-    "isActive": "activa",
+    "isActive": "inacticva",
     "type": "apartamento",
     "images": [
     "https://madera-sostenible.com/wp-content/uploads/2021/10/casa-1.jpg"
@@ -289,7 +289,7 @@
     "longitude": -99.1332,
     "hasMinor": true,
     "pets": false,
-    "isActive": "inactiva",
+    "isActive": "activa",
     "type": "casa",
     "images": [
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOL9exqBeQ-vBkN6CLoO1RPZJ6rGR5u06N9U9nSX90Mu4S04Qg-44Y2mV5ldtI0XH1RGs&usqp=CAU"
@@ -315,7 +315,7 @@
     "longitude": -84.6304,
     "hasMinor": true,
     "pets": true,
-    "isActive": "inactiva",
+    "isActive": "activa",
     "type": "casa",
     "images": [
     "https://construcasasprefabricados.com.co/wp-content/uploads/2021/11/venta-de-casas-prefabricadas-2.jpg",
@@ -342,7 +342,7 @@
     "longitude": -75.5812,
     "hasMinor": true,
     "pets": false,
-    "isActive": "inactiva",
+    "isActive": "activa",
     "type": "habitacion",
     "images": [
     "https://images.ctfassets.net/8lc7xdlkm4kt/0lx2M8CZEMZRY8JcGsfYv/89b95ec69bf23ae634c58c1491ac23dd/17-AyC-_-Guayacanes-casas-_-4-Oct.jpg?w=1366&h=768&fl=progressive&q=60&fm=jpg",
@@ -370,7 +370,7 @@
     "longitude": -57.9545,
     "hasMinor": true,
     "pets": true,
-    "isActive": "inactiva",
+    "isActive": "activa",
     "type": "apartamento",
     "images": [
     "https://www.centralcasas.cl/wp-content/uploads/2024/06/PUYEHUE-1024x576.jpg",
@@ -399,7 +399,7 @@
     "longitude": -91.2288,
     "hasMinor": true,
     "pets": false,
-    "isActive": "inactiva",
+    "isActive": "activa",
     "type": "apartamento",
     "images": [
     "https://media1.amarilo.com.co/website/s3fs-public/proyectos/2023-10/casa-modelo-refugio-del-valle-7_0.jpg",
