@@ -10,21 +10,20 @@ export class AccountController {
 
   @Get()
   @ApiOperation({ summary: 'An admin can check all accounts'})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getAllAccoumns() {
     return this.accountService.getAllAccounts()
   }
 
   @Get('favorites/:id')
   @ApiOperation({ summary: 'favorites properties for an account '})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getFavorites(@Param("id") id: string) {
     return this.accountService.getFavorites(id)
   }
 
   @Get("user/:id")
   @ApiOperation({ summary: 'you can have just one specific account'})
-  @UseGuards(AuthGuard)
   getAccountById(@Param("id") id: string) {
     return this.accountService.findAccountById(id)
   }
