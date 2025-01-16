@@ -66,7 +66,7 @@ export class AuthService {
       lastName = 'Unknown',
       email,
       phone = null,
-      nationality = 'Not specified',
+      nationality = null,
       dni = null,
       DOB,
       civilStatus = null,
@@ -153,7 +153,7 @@ export class AuthService {
         email: payload.email,
         photo: payload.picture || null,
         DOB: new Date('2000-01-01'), // Default DOB
-        nationality: 'Not specified',
+        nationality: null,
         role: Role.USER,
         password: null, // Google login doesn't require a password
       };

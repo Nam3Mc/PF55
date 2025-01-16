@@ -23,7 +23,7 @@ export class User {
     @Column({ nullable: true, type: "bigint" })
     phone?: number;
     
-    @Column({ length: 50, nullable: false })
+    @Column({ length: 50, nullable: true })
     nationality: string;
 
     @Column({ unique: true, nullable: true, type: "bigint" })
