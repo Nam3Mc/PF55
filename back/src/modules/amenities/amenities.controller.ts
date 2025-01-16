@@ -5,9 +5,4 @@ import { AmenitiesService } from './amenities.service';
 export class AmenitiesController {
   constructor(private readonly amenitiesService: AmenitiesService) {}
 
-  @Post()
-  create(@Body() amenities: any) {
-    // return this.amenitiesService.setAmenities(amenities);
-  }
-
 }

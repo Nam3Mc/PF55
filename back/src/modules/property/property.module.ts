@@ -16,7 +16,6 @@ import { NotificationsService } from '../notifications/notifications.service';
   AccountModule,
   ImageModule,
   AmenitiesModule,
-  ContractModule,
   JwtModule.register({
     secret: process.env.JWT_SECRET,
     signOptions: { expiresIn: '1h' },

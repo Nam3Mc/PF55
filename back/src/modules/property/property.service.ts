@@ -12,7 +12,6 @@ import { propertyCreator } from '../../helpers/createProperty'
 import { updateProperty } from '../../helpers/updateProperty'
 import { PropertyStatus } from '../../enums/property'
 import { IdDto } from '../../dtos/id.dto'
-import { ContractService } from '../contract/contract.service'
 import { Contract } from '../../entities/contract.entity'
 import { normalizeString } from '../../helpers/wordsConverter'
 import { NotificationsService } from '../notifications/notifications.service'
@@ -25,7 +24,6 @@ export class PropertyService {
     private readonly propertyDB: Repository<Property>,
     private readonly accountDB: AccountService,
     private readonly imageDB: ImageService,
-    private readonly contractDB: ContractService,
     private readonly notificationsService: NotificationsService
   ) {}
 
