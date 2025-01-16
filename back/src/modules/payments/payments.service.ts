@@ -47,19 +47,21 @@ export class PaymentsService {
   }
 
   async captureOrder(paymentData: PaymentDto) {
+    console.log("aqui estamos recibiendo esto:", paymentData)
     try {
       const {url, contractId} = paymentData
+      const cleanId = contractId.replace(/"/g, '');
       const response = await this.paypalServices.captureOrder(url)
       const id = response.id
       const status = response.status
       const netAmount = response.seller_receivable_breakdown.net_amount.value
       const paymentFee = response.seller_receivable_breakdown.paypal_fee.value
-      const contract = await this.contractDB.getContractById(contractId)
-      console.log(response)
+      const contract = await this.contractDB.getContractById(cleanId)
+      console.log('y devolvemos esto', response)
       if ( status === "COMPLETED") {
         const payment = paymentCreator(id, netAmount, paymentFee, contract)
         const savedPayment = await this.paymentDB.save(payment)
-        const updatedContract = await this.contractDB.updateContract(contractId)
+        const updatedContract = await this.contractDB.updateContract(cleanId)
         return {savedPayment, updatedContract}
       }
       } catch (error) {

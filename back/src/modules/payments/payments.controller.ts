@@ -14,11 +14,10 @@ export class PaymentsController {
   ) {}
 
   @Post('paid') 
-  @ApiBearerAuth('AuthGuard')
+  // @ApiBearerAuth('AuthGuard')
   @ApiOperation({ summary: 'This end point give you all the details after procesing the payment'})
   // @UseGuards(AuthGuard)
   paymentData(@Body() paymentData: PaymentDto) {
-    console.log(paymentData.contractId, paymentData.url)
     return this.paymentsService.captureOrder(paymentData)
   }
   
