@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthGuard } from '../../guards/auth.guard'
 
 @ApiTags('Contracts')
-@ApiBearerAuth('AuthGuard')
+// @ApiBearerAuth('AuthGuard')
 @Controller('contract')
 export class ContractController {
   constructor(
@@ -19,13 +19,13 @@ export class ContractController {
 
   @Get("user/:id")
   @ApiOperation({ summary: "Get all reservations for an user by his account ID"})
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getUserContrats(@Param('id') id: string) {
     return this.contractService.userContracts(id)
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiOperation({ summary: "get an specifict contract by its ID"})
   getContractById(@Param("id") id: string) {
     return this.contractService.getContractById(id)
@@ -33,7 +33,7 @@ export class ContractController {
 
   @Get()
   @ApiOperation({ summary: 'This endpoint gets all the contracts or reservations' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getContracts() {
     return this.contractService.getContracts()
   }
