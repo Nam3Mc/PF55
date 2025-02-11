@@ -1,8 +1,8 @@
 FROM node
 
-WORKDIR /app
+WORKDIR /back
 
-COPY package*.json ./
+COPY . /app/.
 
 RUN npm install typeorm
 
