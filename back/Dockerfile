@@ -2,7 +2,7 @@
 FROM node:18
 
 # Define el directorio de trabajo
-WORKDIR /app
+WORKDIR /back
 
 # Copia solo los archivos necesarios primero (para aprovechar la caché)
 COPY package*.json ./
