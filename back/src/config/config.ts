@@ -16,7 +16,7 @@ const config = {
     migrations: ['dist/**/migrations/*{.ts,.js}'],
     autoLoadEntities: true,
     dropSchema: true, 
-    synchronize: true
+    synchronize: true,
     ssl: process.env.NODE_ENV === 'production' ? {rejectUnauthorized: false } : false
 };
 
