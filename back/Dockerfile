@@ -16,5 +16,8 @@ RUN npm install
 # Construir el proyecto
 RUN npm run build
 
+# Exponer el puerto (ajústalo según tu configuración)
+EXPOSE 3000
+
 # Especificar el comando de inicio
 CMD ["npm", "start"]
