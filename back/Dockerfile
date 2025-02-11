@@ -1,17 +1,20 @@
-# Usa la última versión de Node.js
+# Usa la última versión estable de Node.js
 FROM node:18
 
-# Define el directorio de trabajo dentro del contenedor
+# Define el directorio de trabajo
 WORKDIR /app
 
-# Copia solo los archivos necesarios primero (para aprovechar la caché de Docker)
+# Copia solo los archivos necesarios primero (para aprovechar la caché)
 COPY package*.json ./
 
-# Instala las dependencias antes de copiar el resto del código
+# Instala las dependencias
 RUN npm install
 
-# Ahora copia el resto de los archivos del proyecto
+# Copia el resto del código fuente
 COPY . .
+
+# Construye la aplicación (si es necesario)
+RUN npm run build
 
 # Expone el puerto en el que corre la app
 EXPOSE 3000
