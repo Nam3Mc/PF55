@@ -2,7 +2,7 @@
 back/node_modules/
 
 # Ignorar archivos de logs
-back/logs/
+/logs/
 *.log
 
 # Ignorar compilaciones y builds
@@ -22,5 +22,3 @@ back/some-folder-to-ignore/
 node_modules/
 .env
 README.md.backup
-
-.env.development
